@@ -75,8 +75,6 @@ class Tokensservice {
       if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
         await change_token_status(token);
         return token;
-      } else if (existing != null && existing.isNotEmpty && existing["inuse"]) {
-        await change_token_status(token);
       }
     } catch (e) {
       print(e);

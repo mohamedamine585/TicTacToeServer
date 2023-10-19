@@ -28,12 +28,12 @@ class Authservice {
         WriteResult result = await playerscollection.insertOne({
           "playername": "${playername}",
           "password": hashIT(password),
-          "lastconnection": Timestamp(DateTime.now().millisecondsSinceEpoch),
+          "lastconnection": Timestamp(DateTime.now().second),
           "playedgames": 0,
           "wongames": 0
         });
-        final player = Player(result.id, playername,
-            Timestamp(DateTime.now().millisecondsSinceEpoch), 0, 0);
+        final player = Player(
+            result.id, playername, Timestamp(DateTime.now().second), 0, 0);
         await Tokensservice.getInstance().prepare_token(player: player);
         return player;
       } else {
@@ -64,10 +64,17 @@ class Authservice {
       if (existing == null || existing.isEmpty) {
         return null;
       } else {
+        await playerscollection.update(where.id(existing["_id"]), {
+          "_id": existing["_id"],
+          "playername": playername,
+          "lastconnection": Timestamp(DateTime.now().second),
+          "playedgames": existing["playedgames"],
+          "wongames": existing["wongames"]
+        });
         final player = Player(
             existing["_id"],
             playername,
-            existing["lastconnection"],
+            Timestamp(DateTime.now().second),
             existing["playedgames"],
             existing["wongames"]);
         await Tokensservice.getInstance().prepare_token(player: player);

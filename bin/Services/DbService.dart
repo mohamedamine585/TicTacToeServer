@@ -2,6 +2,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import '../utils.dart';
 import 'Authservice.dart';
+import 'PlayRoomService.dart';
 import 'Tokensservice.dart';
 
 class Dbservice {
@@ -22,6 +23,7 @@ class Dbservice {
     await db.open();
     Authservice.getInstance().init();
     Tokensservice.getInstance().init();
+    PlayRoomService.getInstance().init();
     print(db.databaseName);
   }
 }
