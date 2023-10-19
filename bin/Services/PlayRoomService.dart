@@ -27,9 +27,24 @@ class PlayRoomService {
       final p1 = await Tokensservice.getInstance()
           .fetch_player_byToken(token: play_room.player1!.token);
       final doc = playroomscollection.findOne(where.id(id));
+
+      await playerscollection.update(where.id(p0!.Id), {
+        "_id": p0.Id,
+        "playername": p0.playername,
+        "lastconnection": p0.lastconnection,
+        "playedgames": p0.playedGames + 1,
+        "wongames": (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames
+      });
+      await playerscollection.update(where.id(p1!.Id), {
+        "_id": p1.Id,
+        "playername": p1.playername,
+        "lastconnection": p1.lastconnection,
+        "playedgames": p1.playedGames + 1,
+        "wongames": (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames
+      });
       await playroomscollection.update(where.id(id), {
-        "createrid": p0?.Id,
-        "joinerid": p1?.Id,
+        "createrid": p0.Id,
+        "joinerid": p1.Id,
         "start": (await doc)!["start"],
         "winner": play_room.hand,
         "end": Timestamp(DateTime.now().second),
