@@ -1,7 +1,6 @@
 name: tic_tac_toe_server
 description: A tictactoe server app .
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
