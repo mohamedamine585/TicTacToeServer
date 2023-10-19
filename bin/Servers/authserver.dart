@@ -47,7 +47,7 @@ class AuthServer {
           authrequest.response
               .write(json.encode({"message": "Signing in failed"}));
         }
-      }
+      } else {}
       authrequest.response.close();
     });
   }
