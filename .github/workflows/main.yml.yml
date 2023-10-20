@@ -1,5 +1,5 @@
 jobs:
-  build:
+  test:
 
     run: dart pub get
     run: dart test test/server_test.dart
