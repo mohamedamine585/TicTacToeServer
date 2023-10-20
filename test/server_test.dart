@@ -23,11 +23,9 @@ void main() {
     // Wait for server to start and print to stdout.
   });
 
-  print("rooms :");
-  String? rooms = stdin.readLineSync();
-  print("prefix : ");
-  String? prefix = stdin.readLineSync();
-  List<String> playernames = generateNames(int.parse(rooms!) * 2, prefix ?? "");
+  String? rooms = "10";
+  String? prefix = "1d4";
+  List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
 

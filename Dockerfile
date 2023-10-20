@@ -12,6 +12,5 @@ COPY . .
 
 
 # Start server.
-EXPOSE 8080
-EXPOSE 8081
-CMD ["dart", "bin/main.dart"]
+EXPOSE 8080 8081
+CMD ["dart",  "run" ,"bin/main.dart"]
