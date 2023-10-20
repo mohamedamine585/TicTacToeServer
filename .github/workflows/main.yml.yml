@@ -9,6 +9,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     run: dart pub get
-    run: dart test "test/server_test.dart"
+    run: dart test
 
 # Add more steps as needed, such as deployment steps
