@@ -8,7 +8,6 @@ on:
 jobs:
   build-and-test:
     steps:
-      runs-on: ubuntu-latest
       run: dart pub get
 
 # Add more steps as needed, such as deployment steps
