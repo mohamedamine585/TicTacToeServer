@@ -14,13 +14,14 @@ String hashIT(String psw) {
   return Crypt.sha256(psw, salt: "salt&&&").hash;
 }
 
-init() async {
+init(String dbname) async {
   final dbs = Dbservice.getInstance();
-  await dbs.init();
+  await dbs.init(dbname);
 }
 
+String dbname = "TictactoeTest";
 runServer() async {
-  await init();
+  await init(dbname);
   await GameServer.serve();
   await AuthServer.DoJob();
 }

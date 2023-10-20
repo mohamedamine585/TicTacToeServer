@@ -22,17 +22,22 @@ void main() {
 
     // Wait for server to start and print to stdout.
   });
-  List<String> playernames = generateNames(8);
-  List<String> passwords = generatePasswords(8);
-  test_case(playernames, passwords, host1, host2);
+
+  print("rooms :");
+  String? rooms = stdin.readLineSync();
+  print("prefix : ");
+  String? prefix = stdin.readLineSync();
+  List<String> playernames = generateNames(int.parse(rooms!) * 2, prefix ?? "");
+  List<String> passwords = generatePasswords(int.parse(rooms) * 2);
+  test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
 
   tearDownAll(() => p.kill());
 }
 
-List<String> generateNames(int count) {
+List<String> generateNames(int count, String prefix) {
   final List<String> names = [];
   for (int i = 0; i < count; i++) {
-    names.add('UserAlphaa${i + 1}');
+    names.add('User$prefix${i + 1}');
   }
   return names;
 }

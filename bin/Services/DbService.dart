@@ -17,9 +17,9 @@ class Dbservice {
     return _instance;
   }
 
-  Future<void> init() async {
+  Future<void> init(String dbname) async {
     db = await Db.create(
-        "mongodb+srv://mohamedamine:medaminetlili123@cluster0.qf8cb49.mongodb.net/Tictactoe");
+        "mongodb+srv://mohamedamine:medaminetlili123@cluster0.qf8cb49.mongodb.net/$dbname");
     await db.open();
     Authservice.getInstance().init();
     Tokensservice.getInstance().init();
