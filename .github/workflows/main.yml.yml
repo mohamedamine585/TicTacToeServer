@@ -3,25 +3,14 @@ name: Dart Test
 on:
   push:
     branches:
-      - main  # Adjust the branch name as needed
+      - develop  # Adjust the branch name as needed
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Dart
-        uses: dawidd6/setup-dart@v4  # Use a Dart setup action, this is an example
-        with:
-          channel: stable  # Choose the Dart channel (stable, dev, beta)
-
-      - name: Install dependencies
         run: dart pub get
-
-      - name: Run tests
-        run: dart test test/server_test.dart
+        run: dart test "test/server_test.dart"
 
 # Add more steps as needed, such as deployment steps
