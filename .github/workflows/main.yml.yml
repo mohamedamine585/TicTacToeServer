@@ -6,17 +6,17 @@ on:
       - main  # Adjust the branch name as needed
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  test:
+      runs-on: ubuntu-latest
 
-    steps:
-      - uses: dart-lang/setup-dart@v1
-      - uses: actions/checkout@v3
+      steps:
+        - uses: dart-lang/setup-dart@v1
+        - uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: dart pub get
+        - name: Install dependencies
+          run: dart pub get
 
-      - name: Run tests
-        run: dart test test/sever_test.dart
+        - name: Run tests
+          run: dart test test/sever_test.dart
 
 # Add more steps as needed, such as deployment steps
