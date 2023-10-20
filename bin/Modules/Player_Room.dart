@@ -114,14 +114,14 @@ class Play_room {
     player1 =
         Player_Token(await WebSocketTransformer.upgrade(player_req), token);
     player0?.socket.add(json.encode({
-      "message": "opponent found !",
+      "message": "Opponent found !",
       "Grid":
           "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
       "hand": "${hand}"
     }));
 
     player1?.socket.add(json.encode({
-      "message": "opponent found !",
+      "message": "Opponent found !",
       "Grid":
           "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
       "hand": "${hand}"
