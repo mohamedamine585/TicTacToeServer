@@ -17,6 +17,6 @@ jobs:
           run: dart pub get
 
         - name: Run tests
-          run: dart test sever_test.dart
+          run: dart test server_test.dart
 
 # Add more steps as needed, such as deployment steps
