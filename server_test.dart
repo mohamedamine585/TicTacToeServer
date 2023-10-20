@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:test/test.dart';
 
-import 'test_case.dart';
+import 'test/test_case.dart';
 
 void main() {
   final port1 = '8080';
