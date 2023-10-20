@@ -7,7 +7,8 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
-    run: dart pub get
+    steps:
+      runs-on: ubuntu-latest
+      run: dart pub get
 
 # Add more steps as needed, such as deployment steps
