@@ -9,6 +9,8 @@ dependencies:
   args: ^2.3.0
   crypt: ^4.3.1
   mongo_dart: ^0.9.3
+  web_socket_channel: ^2.4.0
+  webdev: ^2.7.12
 
 
 dev_dependencies:
