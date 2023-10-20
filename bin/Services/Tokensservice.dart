@@ -31,15 +31,29 @@ class Tokensservice {
               "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}",
           "inuse": false
         });
-      } else {
+        return "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}";
+      } else if (existing?.isEmpty ?? true) {
         await tokenscollection.insertOne({
           "_id": player.Id,
           "token":
               "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}",
           "inuse": false
         });
+        return "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}";
       }
-      return "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}";
+      return null;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<bool?> delete_token({required ObjectId id}) async {
+    try {
+      final existing = await tokenscollection.findOne(where.eq("_id", id));
+      if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
+        final res = await tokenscollection.deleteOne(where.eq("_id", id));
+        return res.isSuccess;
+      }
     } catch (e) {
       print(e);
     }

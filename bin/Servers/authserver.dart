@@ -4,6 +4,7 @@ import 'dart:io';
 
 import '../Modules/Player.dart';
 import '../Services/Authservice.dart';
+import '../Services/Tokensservice.dart';
 
 class AuthServer {
   static late HttpServer server;
@@ -21,7 +22,8 @@ class AuthServer {
     server.listen((HttpRequest authrequest) async {
       Player? player;
       authrequest.response.headers.contentType = ContentType.json;
-      authrequest.response.headers.add(HttpHeaders.contentTypeHeader, "json");
+      authrequest.response.headers
+          .add(HttpHeaders.contentTypeHeader, "application/json");
       Map<String, String> queryparm = authrequest.uri.queryParameters;
       if (authrequest.uri.path == '/Signup/') {
         player = await Authservice.getInstance().Signup(
@@ -39,15 +41,21 @@ class AuthServer {
         player = await Authservice.getInstance().Signin(
             queryparm.entries.first.value,
             queryparm.entries.elementAt(1).value);
-
         if (player != null) {
-          authrequest.response
-              .write(json.encode({"message": "Player is signed in"}));
+          String? token =
+              await Tokensservice.getInstance().prepare_token(player: player);
+          authrequest.response.write(
+              json.encode({"message": "Player is signed in", "token": token}));
         } else {
           authrequest.response
               .write(json.encode({"message": "Signing in failed"}));
         }
-      } else {}
+      } else if (authrequest.uri.path == '/Delete/') {
+        final resp = await Authservice.getInstance().delete_user(
+            playername: queryparm.entries.first.value,
+            password: queryparm.entries.elementAt(1).value);
+        authrequest.response.write(json.encode(resp));
+      }
       authrequest.response.close();
     });
   }

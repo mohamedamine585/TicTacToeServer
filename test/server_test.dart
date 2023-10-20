@@ -1,39 +1,47 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final port = '8080';
-  final host = 'http://0.0.0.0:$port';
+  final port1 = '8080';
+  final host1 = 'ws://127.0.0.1:$port1';
+  final port2 = '8081';
+  final host2 = 'http://127.0.0.1:$port2';
+  final playername = 'medaminetlili155';
+  final playerpassword = playername;
   late Process p;
 
   setUp(() async {
     p = await Process.start(
       'dart',
-      ['run', 'bin/server.dart'],
-      environment: {'PORT': port},
+      ['run', 'bin/main.dart'],
     );
+    await Future.delayed(Duration(seconds: 3));
+
     // Wait for server to start and print to stdout.
-    await p.stdout.first;
+  });
+
+  group('Auth server Test', () {
+    test('Signup', () async {
+      var response = await get(Uri.parse(
+          '$host2/Signup/?playername=$playername&password=$playerpassword'));
+      expect(jsonDecode(response.body)["message"], "Player is signed up");
+    });
+
+    test('Signin', () async {
+      var response = await get(Uri.parse(
+          '$host2/Signin/?playername=$playername&password=$playerpassword'));
+      expect(jsonDecode(response.body)["message"], "Player is signed in");
+    });
+    test('Delete', () async {
+      var response = await get(Uri.parse(
+          '$host2/Delete/?playername=$playername&password=$playerpassword'));
+      expect(jsonDecode(response.body)["res"], true);
+      expect(jsonDecode(response.body)["res"], true);
+    });
   });
 
   tearDown(() => p.kill());
-
-  test('Root', () async {
-    final response = await get(Uri.parse('$host/'));
-    expect(response.statusCode, 200);
-    expect(response.body, 'Hello, World!\n');
-  });
-
-  test('Echo', () async {
-    final response = await get(Uri.parse('$host/echo/hello'));
-    expect(response.statusCode, 200);
-    expect(response.body, 'hello\n');
-  });
-
-  test('404', () async {
-    final response = await get(Uri.parse('$host/foobar'));
-    expect(response.statusCode, 404);
-  });
 }

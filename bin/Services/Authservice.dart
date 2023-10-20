@@ -60,13 +60,13 @@ class Authservice {
     try {
       final existing = await playerscollection.findOne(
           where.eq("playername", playername).eq("password", hashIT(password)));
-
       if (existing == null || existing.isEmpty) {
         return null;
       } else {
         await playerscollection.update(where.id(existing["_id"]), {
           "_id": existing["_id"],
           "playername": playername,
+          "password": hashIT(password),
           "lastconnection": Timestamp(DateTime.now().second),
           "playedgames": existing["playedgames"],
           "wongames": existing["wongames"]
@@ -79,6 +79,24 @@ class Authservice {
             existing["wongames"]);
         await Tokensservice.getInstance().prepare_token(player: player);
         return player;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<Map<String, bool>?> delete_user(
+      {required String playername, required String password}) async {
+    try {
+      final existing = await playerscollection.findOne(
+          where.eq("playername", playername).eq("password", hashIT(password)));
+      if (existing == null || existing.isEmpty) {
+      } else {
+        final rest =
+            await Tokensservice.getInstance().delete_token(id: existing["_id"]);
+        final res =
+            await playerscollection.deleteOne(where.id(existing["_id"]));
+        return {"rest": rest ?? false, "res": res.isSuccess};
       }
     } catch (e) {
       print(e);
