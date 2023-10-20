@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set up Dart
+        uses: dawidd6/setup-dart@v4 
 
       - name: Install dependencies
         run: dart pub get
