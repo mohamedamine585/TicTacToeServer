@@ -11,7 +11,6 @@ void main() {
   final port2 = '8081';
   final host2 = 'http://127.0.0.1:$port2';
   late Process p;
-  var message0;
 
   setUp(() async {
     p = await Process.start(
