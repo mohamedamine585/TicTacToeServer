@@ -1,38 +1,35 @@
-name: Dart Test
+stages:
+  - build
+  - test
 
-on:
-  push:
-    branches:
-      - develop  # Adjust the branch name as needed
+variables:
+  # Define variables as needed
 
-jobs:
-  
-     
+build_docker_image:
+  stage: build
+  image: docker:19.03.13
+  script:
+    - docker build -t tictactoeserver .
+  only:
+    - develop  # Adjust the branch name as needed
 
- 
-      
+run_docker_container:
+  stage: test
+  script:
+    - docker run -d -p 8080:8080 -p 8081:8081 tictactoeserver $
+  only:
+    - develop  # Adjust the branch name as needed
 
-  test:
-      runs-on: ubuntu-latest
+install_dependencies:
+  stage: test
+  script:
+    - dart pub get
+  only:
+    - develop  # Adjust the branch name as needed
 
-      steps:
-        - uses: dart-lang/setup-dart@v1
-        - uses: actions/checkout@v3
-       
-        - name: Build Docker
-          run:  docker build  -t tictactoeserver .       
-        
-        - name: Run Docker container 
-        
-          
-          run: BG_PID=$! docker run -p 8080:8080 -p 8081:8081 tictactoeserver &
-          shell: bash
-
-
-        - name: Install dependencies
-          run: dart pub get
-        
-
-          
-        - name: Run tests
-          run: dart test test/server_test.dart
+run_tests:
+  stage: test
+  script:
+    - dart test test/server_test.dart
+  only:
+    - develop  # Adjust the branch name as needed
