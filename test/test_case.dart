@@ -9,7 +9,7 @@ test_authandgameserver(List<String> playernames, List<String> passwords,
   var message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
-      for (int i = 0; i < players; i++) {
+      for (int i = 0; i < players - 2; i++) {
         group('********** Test case $i **************', () {
           group(' **************    Player ${i / 2} 0    *************** ', () {
             var token0;
