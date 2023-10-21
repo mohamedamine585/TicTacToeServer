@@ -73,13 +73,13 @@ test_authandgameserver(List<String> playernames, List<String> passwords,
       }
     });
 
-    group('******* Test Delete  *******', () async {
-      await Future.delayed(Duration(seconds: 2));
-
+    group('******* Test Delete  *******', () {
       for (int i = 0; i < players; i++) {
         print(playernames[i]);
         print(passwords[i]);
         test('Delete  ${i / 2} 0 ', () async {
+          Future.delayed(Duration(seconds: 2));
+
           var response = await get(Uri.parse(
               '$host2/Delete/?playername=${playernames[i]}&password=${passwords[i]}'));
           expect(jsonDecode(response.body)["res"], true);

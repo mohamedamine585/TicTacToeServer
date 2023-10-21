@@ -23,7 +23,7 @@ void main() {
   });
 
   String? rooms = "4";
-  String? prefix = "dssqd98723d";
+  String? prefix = "dssqd9788723d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   test_authandgameserver(
