@@ -27,7 +27,7 @@ class Play_room {
           await WebSocketTransformer.upgrade(game_request), ptoken);
       hand = 0;
       opened = true;
-      player0?.socket.add(json.encode({"message": "Room Owned"}));
+      player0?.socket.add(json.encode({"message": "Room owned"}));
       listen_to_player0();
     } catch (e) {
       print(e);
