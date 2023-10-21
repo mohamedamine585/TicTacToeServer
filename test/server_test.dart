@@ -12,7 +12,7 @@ void main() {
   final port2 = '8081';
   final host2 = 'http://127.0.0.1:$port2';
 
-  String? prefix = "dssqd2547dsds3d";
+  String? prefix = "dssqd2547dds3d";
   List<String> playernames = generateNames(10, prefix);
   List<String> passwords = generatePasswords(10);
   test_authandgameserver(playernames, passwords, host1, host2, 10);
