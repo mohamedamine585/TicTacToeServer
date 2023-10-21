@@ -6,29 +6,27 @@ on:
       - feature  # Adjust the branch name as needed
 
 jobs:
-  build_container:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: dart-lang/setup-dart@v1
-      - uses: actions/checkout@v3
-
-      - name: Build Docker
-        run:  docker build -f Dockerfile -t tictactoeserver .
-      
+  
      
 
   run_container:
-    needs: build_container
     runs-on: ubuntu-latest
     steps:
+      - uses: dart-lang/setup-dart@v1
+      - uses: actions/checkout@v3
+      - name: Build Docker
+        run:  docker build -f Dockerfile -t tictactoeserver       
+        
       - name: Run Docker container 
-        run: 
-          
-            docker run -p 8080:8080 -p 8081:8081 tictactoeserver
+
+        run: docker run -p 8080:8080 -p 8081:8081 tictactoeserver
+      - name : Stop Container
+        run : |
+           sleep 600 
+           docker stop tictactoeserver
+
 
   test:
-      needs: build_container
       runs-on: ubuntu-latest
 
       steps:
@@ -41,8 +39,7 @@ jobs:
         - name: Run tests
           run: dart test test/server_test.dart
 
-        - name: Stop Docker container
-          run : docker stop tictactoeserver
+        
       concurrency:
         group: test-and-run_container
         cancel-in-progress: true
