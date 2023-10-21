@@ -12,7 +12,7 @@ jobs:
     steps:
 
       - name: Build Docker
-        run:  docker build -t tictactoeserver .
+        run:  docker build -f Dockerfile -t tictactoeserver .
       
       - name: Run Docker container 
         run: 
