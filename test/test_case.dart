@@ -73,8 +73,8 @@ test_authandgameserver(List<String> playernames, List<String> passwords,
       }
     });
 
-    group('******* Test Delete  *******', () {
-      Future.delayed(Duration(seconds: 2));
+    group('******* Test Delete  *******', () async {
+      await Future.delayed(Duration(seconds: 2));
 
       for (int i = 0; i < players; i++) {
         print(playernames[i]);
