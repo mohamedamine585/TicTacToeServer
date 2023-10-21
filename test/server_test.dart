@@ -23,11 +23,10 @@ void main() {
   });
 
   String? rooms = "4";
-  String? prefix = "dssqd9788723d";
+  String? prefix = "dssqd97887ds3d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
-  test_authandgameserver(
-      playernames, passwords, host1, host2, int.parse(rooms));
+  test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
 
   tearDownAll(() => p.kill());
 }
