@@ -22,6 +22,7 @@ jobs:
             docker run -p 8080:8080 -p 8081:8081 tictactoeserver
 
   run_container:
+    needs: build_container
     runs-on: ubuntu-latest
     steps:
       - name: Run Docker container 
