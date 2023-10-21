@@ -23,9 +23,10 @@ jobs:
           run:  docker build  -t tictactoeserver .       
         
         - name: Run Docker container 
-
-          run: docker run -p 8080:8080 -p 8081:8081 tictactoeserver &
         
+          
+          run: BG_PID=$! docker run -p 8080:8080 -p 8081:8081 tictactoeserver &
+          shell: bash
 
 
         - name: Install dependencies
@@ -36,7 +37,8 @@ jobs:
           run: dart test test/server_test.dart
 
         - name : Stop Container
-          run : docker stop tictactoeserver
+          run : kill $BG_PID
+          shell: bash
 
         
      
