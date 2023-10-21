@@ -7,8 +7,6 @@ on:
 
 jobs:
 
-
-    
   test:
       runs-on: ubuntu-latest
       steps:
@@ -16,8 +14,9 @@ jobs:
           run:  docker build -t tictactoeserver .
         
         - name: Run Docker container 
-          run: 
-              &docker run -p 8080:8080 -p 8081:8081 tictactoeserver
+          run: |
+              docker run -p 8080:8080 -p 8081:8081 tictactoeserver  
+        
         - uses: dart-lang/setup-dart@v1
         - uses: actions/checkout@v3
 
