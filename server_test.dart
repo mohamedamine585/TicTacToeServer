@@ -22,8 +22,8 @@ void main() {
     // Wait for server to start and print to stdout.
   });
 
-  String? rooms = "10";
-  String? prefix = "1d4";
+  String? rooms = "2";
+  String? prefix = "dsqzads";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   test_authandgameserver(
