@@ -6,7 +6,7 @@ on:
       - feature  # Adjust the branch name as needed
 
 jobs:
-  start_container:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,7 @@ jobs:
         run: |
             docker run -p 8080:8080 -p 8081:8081 tictactoeserver
   test:
-      needs: start_container
+      needs: build
       runs-on: ubuntu-latest
 
       steps:
@@ -38,7 +38,7 @@ jobs:
         - name: Stop Docker container
           run : docker stop tictactoeserver
       concurrency:
-        group: build-and-start_container
+        group: test-and-build
         cancel-in-progress: true
     
   deploy:
