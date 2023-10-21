@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:test/test.dart';
 
-import 'test/test_case.dart';
+import 'test_case.dart';
 
 void main() {
   final port1 = '8080';
@@ -23,10 +23,11 @@ void main() {
   });
 
   String? rooms = "2";
-  String? prefix = "dssqd523d";
+  String? prefix = "dssqd7723d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
-  test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
+  test_authandgameserver(
+      playernames, passwords, host1, host2, int.parse(rooms));
 
   tearDownAll(() => p.kill());
 }
