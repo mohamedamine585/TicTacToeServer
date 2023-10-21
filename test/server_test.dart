@@ -12,12 +12,10 @@ void main() {
   final port2 = '8081';
   final host2 = 'http://127.0.0.1:$port2';
 
-  String? rooms = "4";
   String? prefix = "dssqd2547dsds3d";
-  List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
-  List<String> passwords = generatePasswords(int.parse(rooms) * 2);
-  test_authandgameserver(
-      playernames, passwords, host1, host2, int.parse(rooms) * 2);
+  List<String> playernames = generateNames(10, prefix);
+  List<String> passwords = generatePasswords(10);
+  test_authandgameserver(playernames, passwords, host1, host2, 10);
 }
 
 List<String> generateNames(int count, String prefix) {
