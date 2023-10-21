@@ -36,9 +36,7 @@ jobs:
         - name: Run tests
           run: dart test test/server_test.dart
 
-        - name : Stop Container
-          run : kill -SIGKILL
-          shell: bash
+        
 
         
      
