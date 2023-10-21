@@ -23,9 +23,14 @@ jobs:
         
          
         - name: Build Docker
-          run:  docker build  -t tictactoeserver .       
+          run:  docker build  -t tictactoeserver .    
+        - name: Run tests
+          run: |
+           sleep 60
+           dart test test/server_test.dart   
             
         - name: Run Docker container 
+
     
           run: docker run -p 8080:8080 -p 8081:8081 tictactoeserver
         - name : Stop Container
