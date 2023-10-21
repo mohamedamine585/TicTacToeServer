@@ -6,21 +6,18 @@ on:
       - feature  # Adjust the branch name as needed
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
 
-    steps:
-      - name: Build Docker
-        run:  docker build -t tictactoeserver .
-      
-      - name: Run Docker container 
-        run: |
-            docker run -p 8080:8080 -p 8081:8081 tictactoeserver
+
+    
   test:
-      needs: build
       runs-on: ubuntu-latest
-
       steps:
+        - name: Build Docker
+          run:  docker build -t tictactoeserver .
+        
+        - name: Run Docker container 
+          run: 
+              &docker run -p 8080:8080 -p 8081:8081 tictactoeserver
         - uses: dart-lang/setup-dart@v1
         - uses: actions/checkout@v3
 
@@ -33,9 +30,7 @@ jobs:
 
         - name: Stop Docker container
           run : docker stop tictactoeserver
-      concurrency:
-        group: test-and-build
-        cancel-in-progress: true
+  
     
   deploy:
     runs-on: ubuntu-latest
