@@ -19,14 +19,13 @@ class PlayRoomService {
     playroomscollection = DbCollection(db, "playrooms");
   }
 
-  Future<void> close_PlayRoom(
-      {required Play_room play_room, required ObjectId id}) async {
+  Future<void> close_PlayRoom({required Play_room play_room}) async {
     try {
       final p0 = await Tokensservice.getInstance()
           .fetch_player_byToken(token: play_room.player0!.token);
       final p1 = await Tokensservice.getInstance()
           .fetch_player_byToken(token: play_room.player1!.token);
-      final doc = playroomscollection.findOne(where.id(id));
+      final doc = playroomscollection.findOne(where.id(play_room.roomid!));
 
       await playerscollection.update(where.id(p0!.Id), {
         "_id": p0.Id,
@@ -42,7 +41,7 @@ class PlayRoomService {
         "playedgames": p1.playedGames + 1,
         "wongames": (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames
       });
-      await playroomscollection.update(where.id(id), {
+      await playroomscollection.update(where.id(play_room.roomid!), {
         "createrid": p0.Id,
         "joinerid": p1.Id,
         "start": (await doc)!["start"],

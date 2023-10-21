@@ -34,6 +34,11 @@ class Play_room {
     }
   }
 
+  diconnect_players() async {
+    player0?.socket.close();
+    player1?.socket.close();
+  }
+
   listen_to_player0() {
     player0?.socket.listen(
       (event) async {
@@ -44,8 +49,7 @@ class Play_room {
 
           if (checkWin() == 'X') {
             declareWinner(hand!);
-            await PlayRoomService.getInstance()
-                .close_PlayRoom(play_room: this, id: roomid!);
+            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
             player0?.socket.close(null, "won");
           } else {
             hand = 1;
@@ -66,6 +70,10 @@ class Play_room {
 
             player1?.socket.close();
           }
+          if (checkWin() == null) {
+            hand = null;
+            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
+          }
           close_room();
         }
       },
@@ -82,8 +90,7 @@ class Play_room {
 
           if (checkWin() == 'O') {
             declareWinner(hand!);
-            await PlayRoomService.getInstance()
-                .close_PlayRoom(play_room: this, id: roomid!);
+            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
             player1?.socket.close(null, "won");
           } else {
             hand = 0;
@@ -103,6 +110,11 @@ class Play_room {
                 .change_token_status(player0!.token);
 
             player0?.socket.close();
+          }
+
+          if (checkWin() == null) {
+            hand = null;
+            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
           }
           close_room();
         }
