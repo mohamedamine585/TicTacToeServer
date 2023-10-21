@@ -97,13 +97,13 @@ test_find_owned(String host1, String host2) {
 
           test('Signup', () async {
             var response = await get(
-                Uri.parse('$host2/Signup/?playername=leo&password=kessi'));
+                Uri.parse('$host2/Signup/?playername=sar&password=sar'));
             expect(jsonDecode(response.body)["message"], "Player is signed up");
           });
 
           test('Signin', () async {
             var response = await get(
-                Uri.parse('$host2/Signin/?playername=leo&password=kessi'));
+                Uri.parse('$host2/Signin/?playername=sar&password=sar'));
             token0 = jsonDecode(response.body)["token"];
             expect(jsonDecode(response.body)["message"], "Player is signed in");
           });
@@ -130,13 +130,13 @@ test_find_owned(String host1, String host2) {
       var token1;
       test('Signup', () async {
         var response =
-            await get(Uri.parse('$host2/Signup/?playername=ron&password=ron'));
+            await get(Uri.parse('$host2/Signup/?playername=kar&password=kar'));
         expect(jsonDecode(response.body)["message"], "Player is signed up");
       });
 
       test('Signin', () async {
         var response =
-            await get(Uri.parse('$host2/Signin/?playername=ron&password=ron'));
+            await get(Uri.parse('$host2/Signin/?playername=kar&password=kar'));
         token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "Player is signed in");
       });
@@ -156,13 +156,13 @@ test_find_owned(String host1, String host2) {
       var token1;
       test('Signup', () async {
         var response =
-            await get(Uri.parse('$host2/Signup/?playername=kal&password=kal'));
+            await get(Uri.parse('$host2/Signup/?playername=far&password=far'));
         expect(jsonDecode(response.body)["message"], "Player is signed up");
       });
 
       test('Signin', () async {
         var response =
-            await get(Uri.parse('$host2/Signin/?playername=kal&password=kal'));
+            await get(Uri.parse('$host2/Signin/?playername=far&password=far'));
         token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "Player is signed in");
       });
@@ -176,6 +176,26 @@ test_find_owned(String host1, String host2) {
         }, onDone: () {
           player2.close();
         });
+      });
+    });
+    group("DELETE PLAYERS", () {
+      test('Delete  0 0 ', () async {
+        var response =
+            await get(Uri.parse('$host2/Delete/?playername=sar&password=sar'));
+        expect(jsonDecode(response.body)["res"], true);
+        expect(jsonDecode(response.body)["rest"], true);
+      });
+      test('Delete  1 0 ', () async {
+        var response =
+            await get(Uri.parse('$host2/Delete/?playername=kar&password=kar'));
+        expect(jsonDecode(response.body)["res"], true);
+        expect(jsonDecode(response.body)["rest"], true);
+      });
+      test('Delete  2 0 ', () async {
+        var response =
+            await get(Uri.parse('$host2/Delete/?playername=far&password=far'));
+        expect(jsonDecode(response.body)["res"], true);
+        expect(jsonDecode(response.body)["rest"], true);
       });
     });
   });

@@ -50,7 +50,7 @@ class Tokensservice {
   Future<bool?> delete_token({required ObjectId id}) async {
     try {
       final existing = await tokenscollection.findOne(where.eq("_id", id));
-      if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
+      if (existing != null && existing.isNotEmpty) {
         final res = await tokenscollection.deleteOne(where.eq("_id", id));
         return res.isSuccess;
       }
