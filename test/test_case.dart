@@ -5,11 +5,11 @@ import 'package:http/http.dart';
 import 'package:test/test.dart';
 
 test_authandgameserver(List<String> playernames, List<String> passwords,
-    String host1, String host2, int rooms) {
+    String host1, String host2, int players) {
   var message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
-      for (int i = 0; i < rooms; i++) {
+      for (int i = 0; i < players; i++) {
         group('********** Test case $i **************', () {
           group(' **************    Player ${i / 2} 0    *************** ', () {
             var token0;
@@ -74,7 +74,7 @@ test_authandgameserver(List<String> playernames, List<String> passwords,
     });
 
     group('******* Test Delete  *******', () {
-      for (int i = 0; i < rooms * 2 - 1; i++) {
+      for (int i = 0; i < players; i++) {
         test('Delete  ${i / 2} 0 ', () async {
           var response = await get(Uri.parse(
               '$host2/Delete/?playername=${playernames[i]}&password=${passwords[i]}'));
