@@ -3,7 +3,7 @@ name: Dart Test
 on:
   push:
     branches:
-      - feature  # Adjust the branch name as needed
+      - develop  # Adjust the branch name as needed
 
 jobs:
   test:
