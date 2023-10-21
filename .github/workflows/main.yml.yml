@@ -3,7 +3,7 @@ name: Dart Test
 on:
   push:
     branches:
-      - feature  # Adjust the branch name as needed
+      - develop  # Adjust the branch name as needed
 
 jobs:
   
@@ -67,4 +67,7 @@ jobs:
          git branch develop
          git checkout develop
          git git push --set-upstream origin develop
+      - name: Deploy
+        if: success()
+        run: ./deploy.sh
  
