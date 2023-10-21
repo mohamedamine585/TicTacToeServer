@@ -7,7 +7,6 @@ variables:
 
 build_docker_image:
   stage: build
-  image: docker:19.03.13
   script:
     - docker build -t tictactoeserver .
   only:
