@@ -1,7 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-
-import 'package:test/test.dart';
 
 import '../bin/utils.dart';
 import 'test_case.dart';
@@ -11,12 +8,7 @@ void main() {
   final host1 = 'ws://127.0.0.1:$port1';
   final port2 = '8081';
   final host2 = 'http://127.0.0.1:$port2';
-  late Process p;
 
-  String? rooms = "4";
-  String? prefix = "dssqd2547ds3d";
-  List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
-  List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   dbname = "TictactoeTest";
   test_find_owned(host1, host2);
 }

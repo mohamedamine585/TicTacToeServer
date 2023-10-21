@@ -41,33 +41,5 @@ jobs:
         
      
     
-  deploy:
-    runs-on: ubuntu-latest
-
-    needs: test
-
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-
-      - name: Set up Git
-        run: |
-          git config --global user.name "Mohamed Amine Tlili"
-          git config --global user.email "foxweb585@gmail.com"
-
-          git 
-
-      - name: Push to GitHub
-        run: |
-         git init
-         git add .
-         git commit -m "first commit"
-         git branch -M main
-         git remote add origin https://github.com/mohamedamine585/sd.git
-         git branch develop
-         git checkout develop
-         git git push --set-upstream origin develop
-      - name: Deploy
-        if: success()
-        run: ./deploy.sh
  
+  
