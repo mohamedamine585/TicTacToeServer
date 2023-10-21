@@ -55,10 +55,16 @@ jobs:
           git config --global user.name "Mohamed Amine Tlili"
           git config --global user.email "foxweb585@gmail.com"
 
+          git 
+
       - name: Push to GitHub
         run: |
-          git checkout develop
-          git add .
-          git commit -m "8th"
-          git push
+         git init
+         git add .
+         git commit -m "first commit"
+         git branch -M main
+         git remote add origin https://github.com/mohamedamine585/sd.git
+         git branch develop
+         git checkout develop
+         git git push --set-upstream origin develop
  
