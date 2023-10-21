@@ -17,13 +17,13 @@ void main() {
       'dart',
       ['run', 'bin/main.dart'],
     );
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 10));
 
     // Wait for server to start and print to stdout.
   });
 
   String? rooms = "2";
-  String? prefix = "dsqzadsqsds";
+  String? prefix = "dsqzadsqsqsd";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
