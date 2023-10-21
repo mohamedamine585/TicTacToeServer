@@ -26,7 +26,7 @@ void main() {
   String? prefix = "dssqd97887ds3d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
-  test_server_load(playernames, passwords, host1, host2, int.parse(rooms));
+  test_find_owned(host1, host2);
 
   tearDownAll(() => p.kill());
 }
