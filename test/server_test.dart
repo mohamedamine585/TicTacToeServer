@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:test/test.dart';
 
+import '../bin/utils.dart';
 import 'test_case.dart';
 
 void main() {
@@ -12,23 +13,12 @@ void main() {
   final host2 = 'http://127.0.0.1:$port2';
   late Process p;
 
-  setUp(() async {
-    p = await Process.start(
-      'dart',
-      ['run', 'bin/main.dart'],
-    );
-    await Future.delayed(Duration(seconds: 10));
-
-    // Wait for server to start and print to stdout.
-  });
-
   String? rooms = "4";
-  String? prefix = "dssqd9547ds3d";
+  String? prefix = "dssqd2547ds3d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
+  dbname = "TictactoeTest";
   test_find_owned(host1, host2);
-
-  tearDownAll(() => p.kill());
 }
 
 List<String> generateNames(int count, String prefix) {

@@ -6,18 +6,41 @@ on:
       - develop  # Adjust the branch name as needed
 
 jobs:
+  
+     
+
+ 
+      
+
   test:
       runs-on: ubuntu-latest
 
       steps:
         - uses: dart-lang/setup-dart@v1
         - uses: actions/checkout@v3
+       
+        - name: Build Docker
+          run:  docker build  -t tictactoeserver .       
+        
+        - name: Run Docker container 
+        
+          
+          run: BG_PID=$! docker run -p 8080:8080 -p 8081:8081 tictactoeserver &
+          shell: bash
+
 
         - name: Install dependencies
           run: dart pub get
+        
 
         - name: Run tests
           run: dart test test/server_test.dart
+
+        
+
+        
+     
+    
   deploy:
     runs-on: ubuntu-latest
 
@@ -32,10 +55,19 @@ jobs:
           git config --global user.name "Mohamed Amine Tlili"
           git config --global user.email "foxweb585@gmail.com"
 
+          git 
+
       - name: Push to GitHub
         run: |
-          git checkout develop
-          git add .
-          git commit -m "8th"
-          git push
+         git init
+         git add .
+         git commit -m "first commit"
+         git branch -M main
+         git remote add origin https://github.com/mohamedamine585/sd.git
+         git branch develop
+         git checkout develop
+         git git push --set-upstream origin develop
+      - name: Deploy
+        if: success()
+        run: ./deploy.sh
  
