@@ -18,5 +18,24 @@ jobs:
 
         - name: Run tests
           run: dart test test/server_test.dart
+  deploy:
+    runs-on: ubuntu-latest
 
-# Add more steps as needed, such as deployment steps
+    needs: test
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "Mohamed Amine Tlili"
+          git config --global user.email "foxweb585@gmail.com"
+
+      - name: Push to GitHub
+        run: |
+          git checkout develop
+          git add .
+          git commit -m "8th"
+          git push
+ 

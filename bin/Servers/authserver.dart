@@ -12,7 +12,7 @@ class AuthServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    server = await HttpServer.bind(InternetAddress("127.0.0.1"), 8081);
+    server = await HttpServer.bind("0.0.0.0", 8081);
     print(
         "Auth server is running on ${server.address.address} port ${server.port}");
   }

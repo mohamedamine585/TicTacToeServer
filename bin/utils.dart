@@ -19,7 +19,7 @@ init(String dbname) async {
   await dbs.init(dbname);
 }
 
-String dbname = "TictactoeTest";
+String dbname = "Tictactoe";
 runServer() async {
   await init(dbname);
   await GameServer.serve();

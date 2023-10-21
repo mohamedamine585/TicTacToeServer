@@ -23,7 +23,7 @@ void main() {
   });
 
   String? rooms = "4";
-  String? prefix = "dssqd97887ds3d";
+  String? prefix = "dssqd9547ds3d";
   List<String> playernames = generateNames(int.parse(rooms) * 2, prefix);
   List<String> passwords = generatePasswords(int.parse(rooms) * 2);
   test_find_owned(host1, host2);

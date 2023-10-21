@@ -16,7 +16,7 @@ class GameServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    server = await HttpServer.bind(InternetAddress("127.0.0.1"), 8080);
+    server = await HttpServer.bind("0.0.0.0", 8080);
     print(
         "Game server is running on ${server.address.address} port ${server.port}");
   }
@@ -26,6 +26,7 @@ class GameServer {
     server.listen((HttpRequest play_request) async {
       final playertoken = (await Tokensservice.getInstance()
           .fetch_token(token: play_request.headers.value("token") ?? ""));
+
       if (playertoken != null) {
         if (WebSocketTransformer.isUpgradeRequest(play_request)) {
           await Pairing(play_request, playertoken);
