@@ -23,12 +23,22 @@ class Play_room {
   Play_room(this.id, this.player0, this.player1);
   own_that_room(HttpRequest game_request, String ptoken) async {
     try {
-      player0 = Player_Token(
-          await WebSocketTransformer.upgrade(game_request), ptoken);
+      try {
+        player0 = Player_Token(
+            await WebSocketTransformer.upgrade(game_request), ptoken);
+      } catch (e) {
+        print("cannot upgrade player request !");
+      }
+
       hand = 0;
       opened = true;
-      player0?.socket.add(json.encode({"message": "Room owned"}));
-      listen_to_player0();
+      try {
+        player0?.socket.add(json.encode({"message": "Room owned"}));
+        listen_to_player0();
+      } catch (e) {
+        print("cannot open socket !");
+        close_room();
+      }
     } catch (e) {
       print(e);
     }
@@ -123,21 +133,29 @@ class Play_room {
   }
 
   join_room(HttpRequest player_req, String token) async {
-    player1 =
-        Player_Token(await WebSocketTransformer.upgrade(player_req), token);
-    player0?.socket.add(json.encode({
-      "message": "Opponent found !",
-      "Grid":
-          "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
-      "hand": "${hand}"
-    }));
+    try {
+      player1 =
+          Player_Token(await WebSocketTransformer.upgrade(player_req), token);
+    } catch (e) {
+      print("cannot upgrade request !");
+    }
+    try {
+      player0?.socket.add(json.encode({
+        "message": "Opponent found !",
+        "Grid":
+            "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
+        "hand": "${hand}"
+      }));
 
-    player1?.socket.add(json.encode({
-      "message": "Opponent found !",
-      "Grid":
-          "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
-      "hand": "${hand}"
-    }));
+      player1?.socket.add(json.encode({
+        "message": "Opponent found !",
+        "Grid":
+            "${Grid[0][0]},${Grid[1][0]},${Grid[2][0]},${Grid[0][1]},${Grid[1][1]},${Grid[1][2]},${Grid[0][2]},${Grid[1][2]},${Grid[2][2]},",
+        "hand": "${hand}"
+      }));
+    } catch (e) {
+      print("cannnot contact player socket");
+    }
 
     roomid = await PlayRoomService.getInstance().open_PlayRoom(play_room: this);
 
@@ -147,7 +165,11 @@ class Play_room {
   /// start a game in a room ***********
 
   Play() {
-    listen_to_player1();
+    try {
+      listen_to_player1();
+    } catch (e) {
+      print("error socket !");
+    }
   }
 
   close_room() {

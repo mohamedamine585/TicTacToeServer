@@ -1,9 +1,5 @@
-import 'dart:io';
 import 'dart:math';
 
-import 'package:test/test.dart';
-
-import '../bin/utils.dart';
 import 'test_case.dart';
 
 void main() {

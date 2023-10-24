@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../Modules/Player.dart';
@@ -19,6 +17,26 @@ class Tokensservice {
   }
   init() async {
     tokenscollection = DbCollection(db, "tokens");
+  }
+
+  Future<void> make_available_all_tokens() async {
+    try {
+      await tokenscollection.update(
+          where.eq("inuse", true), modify.set("inuse", false),
+          multiUpdate: true);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> make_available_token(String token) async {
+    try {
+      await tokenscollection.update(
+          where.eq("token", token), modify.set("inuse", false),
+          multiUpdate: true);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<String?> prepare_token({required Player player}) async {
