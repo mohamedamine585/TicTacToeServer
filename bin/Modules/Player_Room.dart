@@ -5,7 +5,6 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import '../Services/PlayRoomService.dart';
 import '../Services/Tokensservice.dart';
-import '../utils.dart';
 import 'Player_token.dart';
 
 class Play_room {
@@ -51,9 +50,6 @@ class Play_room {
   }
 
   listen_to_player0() {
-    if (player0 != null) {
-      Ptokens.add(player0!.token);
-    }
     player0?.socket.listen(
       (event) async {
         if (hand == 0) {
@@ -75,7 +71,6 @@ class Play_room {
       },
       onDone: () async {
         if (opened) {
-          Ptokens.remove(player0!.token);
           player0?.socket.close();
 
           await Tokensservice.getInstance().change_token_status(player0!.token);
@@ -96,9 +91,6 @@ class Play_room {
   }
 
   listen_to_player1() {
-    if (player1 != null) {
-      Ptokens.add(player1!.token);
-    }
     player1?.socket.listen(
       (event) async {
         if (hand == 1) {
@@ -120,11 +112,9 @@ class Play_room {
       },
       onDone: () async {
         if (opened) {
-          Ptokens.remove(player1!.token);
           player1?.socket.close();
 
           await Tokensservice.getInstance().change_token_status(player1!.token);
-
           if (player0 != null) {
             await Tokensservice.getInstance()
                 .change_token_status(player0!.token);
