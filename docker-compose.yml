@@ -1,0 +1,13 @@
+services:
+  server1:
+    build:
+      context: ./bin/Servers/Authserver
+      dockerfile: Dockerfile.auth
+
+
+  server2:
+    build:
+      context: ./bin/Servers/Gameserver
+      dockerfile: Dockerfile.game
+
+  

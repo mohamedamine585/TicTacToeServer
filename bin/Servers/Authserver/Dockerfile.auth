@@ -1,0 +1,11 @@
+FROM dart:stable AS build
+WORKDIR /app/bin/Servers/Authserver
+COPY ../../../. .
+
+COPY pubspec.* .
+RUN dart pub get
+
+VOLUME [ "../../../." ]
+
+EXPOSE 8081
+CMD ["dart","run", "launch.dart"]

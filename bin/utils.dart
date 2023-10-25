@@ -1,8 +1,8 @@
 import 'package:crypt/crypt.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-import 'Servers/authserver.dart';
-import 'Servers/game_server.dart';
+import 'Servers/Authserver/authserver.dart';
+import 'Servers/Gameserver/game_server.dart';
 import 'Services/DbService.dart';
 
 Db db = Db("");
@@ -25,3 +25,5 @@ runServer() async {
   await GameServer.serve();
   await AuthServer.DoJob();
 }
+
+List<String> Ptokens = [];

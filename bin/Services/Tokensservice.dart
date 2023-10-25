@@ -101,15 +101,18 @@ class Tokensservice {
     }
   }
 
-  Future<String?> fetch_token({required String token}) async {
+  Future<Set> fetch_token({required String token}) async {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
       if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
         await change_token_status(token);
-        return token;
+        return {token, false};
+      } else if (existing != null && existing.isNotEmpty && existing["inuse"]) {
+        return {token, true};
       }
     } catch (e) {
       print(e);
     }
+    return {"", null};
   }
 }

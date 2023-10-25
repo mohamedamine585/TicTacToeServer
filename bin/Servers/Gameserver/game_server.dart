@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../Modules/Player.dart';
-import '../Modules/Player_Room.dart';
-import '../Modules/Player_token.dart';
-import '../Services/Tokensservice.dart';
+import '../../Modules/Player.dart';
+import '../../Modules/Player_Room.dart';
+import '../../Modules/Player_token.dart';
+import '../../Services/Tokensservice.dart';
+import '../../utils.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
   static late HttpServer server;
-  static List<Player> players = [];
 
   /// ****     initialize server on localhost *****
 
@@ -30,15 +30,20 @@ class GameServer {
       // if this is the only game server ...
       await Tokensservice.getInstance().make_available_all_tokens();
       server.listen((HttpRequest play_request) async {
-        String? playertoken;
+        String playertoken = "";
+        bool? inuse;
+        Set set;
         try {
-          playertoken = (await Tokensservice.getInstance()
+          set = (await Tokensservice.getInstance()
               .fetch_token(token: play_request.headers.value("token") ?? ""));
+          playertoken = set.elementAt(0);
+          inuse = set.elementAt(1);
         } catch (e) {
           print("cannot fetch token !");
         }
 
-        if (playertoken != null) {
+        if ((playertoken != "" && !(inuse ?? true)) ||
+            ((inuse ?? false) && !Ptokens.contains(playertoken))) {
           try {
             if (WebSocketTransformer.isUpgradeRequest(play_request)) {
               await Pairing(play_request, playertoken);
