@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-import '../../Modules/Player.dart';
-import '../../Services/Tokensservice.dart';
-import '../../Services/Authservice.dart';
+import '../../app/Modules/Player.dart';
+import '../../app/Services/Tokensservice.dart';
+import '../../app/Services/Authservice.dart';
 
 class AuthServer {
   static late HttpServer server;

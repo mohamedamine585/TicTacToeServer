@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../Modules/Player.dart';
-import '../../Modules/Player_Room.dart';
-import '../../Modules/Player_token.dart';
-import '../../Services/Tokensservice.dart';
+import '../../app/Modules/Player.dart';
+import '../../app/Modules/Player_Room.dart';
+import '../../app/Modules/Player_token.dart';
+import '../../app/Services/Tokensservice.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
