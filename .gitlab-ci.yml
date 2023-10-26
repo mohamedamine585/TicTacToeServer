@@ -5,17 +5,28 @@ stages:
 variables:
   # Define variables as needed
 
-build_docker_image:
+build_gamedocker_image:
   stage: build
   script:
-    - docker build -t tictactoeserver .
+    - docker build -t gameserver -f Dockerfile.gameserver .
   only:
     - develop  # Adjust the branch name as needed
-
-run_docker_container:
+run_gamedocker_container:
   stage: test
   script:
-    - docker run -d -p 8080:8080 -p 8081:8081 tictactoeserver $
+    - docker run -d  8080:8080 gameserver $
+  only:
+    - develop  # Adjust the branch name as needed
+build_authdocker_image:
+  stage: build
+  script:
+    - docker build -t authserver -f Dockerfile.authserver .
+  only:
+    - develop 
+run_authdocker_container:
+  stage: test
+  script:
+    - docker run -d  8081:8081 authserver $
   only:
     - develop  # Adjust the branch name as needed
 

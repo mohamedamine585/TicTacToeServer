@@ -1,0 +1,15 @@
+# Use latest stable channel SDK.
+FROM dart:stable AS build
+
+# Resolve app dependencies.
+WORKDIR /app
+COPY . .
+ 
+RUN dart pub get
+
+# Copy app source code (except anything in .dockerignore) and AOT compile app.
+
+
+# Start server.
+EXPOSE 8080 
+CMD [ "dart", "run", "bin/launchgame.dart"]
