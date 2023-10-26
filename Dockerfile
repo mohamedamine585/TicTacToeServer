@@ -10,7 +10,6 @@ RUN dart pub get
 COPY . .
 
 
-
 # Start server.
 EXPOSE 8080 8081
 CMD ["dart", "run", "bin/main.dart"]

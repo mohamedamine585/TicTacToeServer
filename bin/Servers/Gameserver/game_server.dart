@@ -2,11 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../Modules/Player.dart';
-import '../Modules/Player_Room.dart';
-import '../Modules/Player_token.dart';
-import '../Services/PlayRoomService.dart';
-import '../Services/Tokensservice.dart';
+import '../../Modules/Player.dart';
+import '../../Modules/Player_Room.dart';
+import '../../Modules/Player_token.dart';
+import '../../Services/Tokensservice.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
@@ -47,13 +46,8 @@ class GameServer {
 
   static Pairing(HttpRequest preq, String ptoken) async {
     final available_room = look_for_available_play_room();
-    final closed_r = look_for_closed_room();
     if (available_room == null) {
-      if (closed_r == null) {
-        await create_room(preq, ptoken);
-      } else {
-        await closed_r.own_that_room(preq, ptoken);
-      }
+      await create_room(preq, ptoken);
     } else {
       await available_room.join_room(preq, ptoken);
     }

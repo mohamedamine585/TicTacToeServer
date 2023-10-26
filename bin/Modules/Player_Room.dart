@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
+import '../Servers/Gameserver/game_server.dart';
 import '../Services/PlayRoomService.dart';
 import '../Services/Tokensservice.dart';
 import 'Player_token.dart';
@@ -21,6 +22,8 @@ class Play_room {
   Player_Token? player0;
   Player_Token? player1;
   Play_room(this.id, this.player0, this.player1);
+
+  //   Deprecated ..........
   own_that_room(HttpRequest game_request, String ptoken) async {
     try {
       player0 = Player_Token(
@@ -159,6 +162,7 @@ class Play_room {
     ];
     player0 = null;
     player1 = null;
+    GameServer.delete_room(id);
   }
 
   declareWinner(int? hand) {
