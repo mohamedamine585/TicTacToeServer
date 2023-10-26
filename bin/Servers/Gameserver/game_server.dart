@@ -46,8 +46,13 @@ class GameServer {
 
   static Pairing(HttpRequest preq, String ptoken) async {
     final available_room = look_for_available_play_room();
+    final closed_r = look_for_closed_room();
     if (available_room == null) {
-      await create_room(preq, ptoken);
+      if (closed_r == null) {
+        await create_room(preq, ptoken);
+      } else {
+        await closed_r.own_that_room(preq, ptoken);
+      }
     } else {
       await available_room.join_room(preq, ptoken);
     }
