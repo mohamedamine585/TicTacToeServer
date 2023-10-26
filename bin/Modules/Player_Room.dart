@@ -53,86 +53,102 @@ class Play_room {
   }
 
   listen_to_player0() {
-    player0?.socket.listen(
-      (event) async {
-        if (hand == 0) {
-          event as String;
+    try {
+      player0?.socket.listen(
+        (event) async {
+          if (hand == 0) {
+            event as String;
 
-          Grid[int.parse(event[0])][int.parse(event[2])] = 'X';
+            Grid[int.parse(event[0])][int.parse(event[2])] = 'X';
 
-          if (checkWin() == 'X') {
-            declareWinner(hand!);
-            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
-            player0?.socket.close(null, "won");
-          } else {
-            hand = 1;
-            print("player1 turn");
+            if (checkWin() == 'X') {
+              declareWinner(hand!);
+              await PlayRoomService.getInstance()
+                  .close_PlayRoom(play_room: this);
+              player0?.socket.close(null, "won");
+            } else {
+              hand = 1;
+              print("player1 turn");
 
-            sendDataToboth(null);
+              sendDataToboth(null);
+            }
           }
-        }
-      },
-      onDone: () async {
-        if (opened) {
-          player0?.socket.close();
+        },
+        onDone: () async {
+          if (opened) {
+            player0?.socket.close();
 
-          await Tokensservice.getInstance().change_token_status(player0!.token);
-          if (player1 != null) {
             await Tokensservice.getInstance()
-                .change_token_status(player1!.token);
+                .change_token_status(player0!.token);
+            if (player1 != null) {
+              await Tokensservice.getInstance()
+                  .change_token_status(player1!.token);
 
-            player1?.socket.close();
+              player1?.socket.close();
+            }
+            if (checkWin() == null) {
+              hand = null;
+              await PlayRoomService.getInstance()
+                  .close_PlayRoom(play_room: this);
+            }
+            close_room();
           }
-          if (checkWin() == null) {
-            hand = null;
-            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
-          }
-          close_room();
-        }
-      },
-    );
+        },
+      );
+    } catch (e) {
+      close_room();
+      print("Cannot listen to player");
+    }
   }
 
   listen_to_player1() {
-    player1?.socket.listen(
-      (event) async {
-        if (hand == 1) {
-          event as String;
+    try {
+      player1?.socket.listen(
+        (event) async {
+          if (hand == 1) {
+            event as String;
 
-          Grid[int.parse(event[0])][int.parse(event[2])] = 'O';
+            Grid[int.parse(event[0])][int.parse(event[2])] = 'O';
 
-          if (checkWin() == 'O') {
-            declareWinner(hand!);
-            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
-            player1?.socket.close(null, "won");
-          } else {
-            hand = 0;
-            print("player0 turn");
+            if (checkWin() == 'O') {
+              declareWinner(hand!);
+              await PlayRoomService.getInstance()
+                  .close_PlayRoom(play_room: this);
+              player1?.socket.close(null, "won");
+            } else {
+              hand = 0;
+              print("player0 turn");
 
-            sendDataToboth(null);
+              sendDataToboth(null);
+            }
           }
-        }
-      },
-      onDone: () async {
-        if (opened) {
-          player1?.socket.close();
+        },
+        onDone: () async {
+          if (opened) {
+            player1?.socket.close();
 
-          await Tokensservice.getInstance().change_token_status(player1!.token);
-          if (player0 != null) {
             await Tokensservice.getInstance()
-                .change_token_status(player0!.token);
+                .change_token_status(player1!.token);
+            if (player0 != null) {
+              await Tokensservice.getInstance()
+                  .change_token_status(player0!.token);
 
-            player0?.socket.close();
-          }
+              player0?.socket.close();
+            }
 
-          if (checkWin() == null) {
-            hand = null;
-            await PlayRoomService.getInstance().close_PlayRoom(play_room: this);
+            if (checkWin() == null) {
+              hand = null;
+              await PlayRoomService.getInstance()
+                  .close_PlayRoom(play_room: this);
+            }
+            close_room();
           }
-          close_room();
-        }
-      },
-    );
+        },
+      );
+    } catch (e) {
+      close_room();
+      print("Cannot listen to player");
+    }
   }
 
   join_room(HttpRequest player_req, String token) async {
