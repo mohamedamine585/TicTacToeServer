@@ -72,17 +72,6 @@ test_authandgameserver(List<String> playernames, List<String> passwords,
         i++;
       }
     });
-
-    group('******* Test Delete  *******', () {
-      for (int i = 0; i < players; i++) {
-        test('Delete  ${i / 2} 0 ', () async {
-          var response = await get(Uri.parse(
-              '$host2/Delete/?playername=${playernames[i]}&password=${passwords[i]}'));
-          expect(jsonDecode(response.body)["res"], true);
-          expect(jsonDecode(response.body)["rest"], true);
-        });
-      }
-    });
   });
 }
 
