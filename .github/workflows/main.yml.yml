@@ -19,14 +19,24 @@ jobs:
         - uses: dart-lang/setup-dart@v1
         - uses: actions/checkout@v3
        
-        - name: Build Docker
-          run:  docker build  -t tictactoeserver .       
+        - name: Build auth Container 
+          run:  docker build  -t authserver -f Dockerfile.authserver .       
         
-        - name: Run Docker container 
+        - name: Run Docker auth container 
         
           
-          run: BG_PID=$! docker run -p 8080:8080 -p 8081:8081 tictactoeserver &
+          run: BG_PID0=$! docker run -p 8081:8081 authserver &
           shell: bash
+
+        - name: Build game Container
+          run:  docker build  -t gameserver -f Dockerfile.gameserver .       
+        
+        - name: Run Docker game container 
+        
+          
+          run: BG_PID1=$! docker run -p 8080:8080 gameserver &
+          shell: bash
+
 
 
         - name: Install dependencies
