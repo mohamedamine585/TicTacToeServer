@@ -1,5 +1,5 @@
-import '../bin/app/Servers/Gameserver/game_server.dart';
-import 'app/utils.dart';
+import 'Servers/Gameserver/game_server.dart';
+import 'utils.dart';
 
 void main() async {
   await init(dbname);

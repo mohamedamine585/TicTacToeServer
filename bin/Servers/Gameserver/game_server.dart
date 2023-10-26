@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../app/Modules/Player.dart';
-import '../../app/Modules/Player_Room.dart';
-import '../../app/Modules/Player_token.dart';
-import '../../app/Services/Tokensservice.dart';
+import '../../../bin/Modules/Player.dart';
+import '../../../bin/Modules/Player_Room.dart';
+import '../../../bin/Modules/Player_token.dart';
+import '../../../bin/Services/Tokensservice.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
@@ -22,6 +22,7 @@ class GameServer {
 
   static serve() async {
     await init();
+    await Tokensservice.getInstance().make_available_all_tokens();
     try {
       server.listen((HttpRequest play_request) async {
         final playertoken = (await Tokensservice.getInstance()

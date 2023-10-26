@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../../bin/app/Servers/Gameserver/game_server.dart';
+import '../Servers/Gameserver/game_server.dart';
 import '../Services/PlayRoomService.dart';
 import '../Services/Tokensservice.dart';
 import 'Player_token.dart';

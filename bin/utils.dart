@@ -1,9 +1,9 @@
 import 'package:crypt/crypt.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../app/Servers/Gameserver/game_server.dart';
+import 'Servers/Gameserver/game_server.dart';
 import 'Services/DbService.dart';
-import '../app/Servers/Authserver/authserver.dart';
+import 'Servers/Authserver/authserver.dart';
 
 Db db = Db("");
 DbCollection playerscollection = DbCollection(db, "");

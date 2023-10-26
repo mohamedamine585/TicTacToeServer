@@ -1,4 +1,4 @@
-import 'app/utils.dart';
+import 'utils.dart';
 
 void main() async {
   await runServer();
