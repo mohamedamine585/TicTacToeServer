@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../../../bin/Modules/Player.dart';
-import '../../../bin/Modules/Player_Room.dart';
-import '../../../bin/Modules/Player_token.dart';
-import '../../../bin/Services/Tokensservice.dart';
+import '../../../bin/Core/Modules/Player.dart';
+import '../../../bin/Core/Modules/Player_Room.dart';
+import '../../../bin/Data/Services/Tokensservice.dart';
+import 'Services.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
@@ -49,58 +49,4 @@ class GameServer {
   ///
   ///
   ///
-
-  static Pairing(HttpRequest preq, String ptoken) async {
-    final available_room = look_for_available_play_room();
-    if (available_room == null) {
-      await create_room(preq, ptoken);
-    } else {
-      await available_room.join_room(preq, ptoken);
-    }
-  }
-
-  static Play_room? look_for_closed_room() {
-    for (Play_room room in rooms) {
-      if (!room.opened) {
-        return room;
-      }
-    }
-  }
-
-  static Play_room? look_for_available_play_room() {
-    for (Play_room room in rooms) {
-      if (room.player0 != null && room.opened) {
-        return room;
-      }
-    }
-  }
-
-  static delete_room(int id) {
-    if (rooms.length > id) {
-      rooms.removeAt(id);
-    }
-  }
-
-  static create_room(HttpRequest game_request, String ptoken) async {
-    try {
-      final Socket_to_player = await WebSocketTransformer.upgrade(game_request);
-      Play_room play_room =
-          Play_room(rooms.length, Player_Token(Socket_to_player, ptoken), null);
-
-      rooms.add(play_room);
-
-      Socket_to_player.add(json.encode({"message": "Room created"}));
-      play_room.listen_to_player0();
-    } catch (e) {
-      print("cannot create room");
-    }
-  }
-
-  static Play_room? seek_player_room(WebSocket player_sock) {
-    for (Play_room room in rooms) {
-      if (room.player0 == player_sock || room.player1 == player_sock) {
-        return room;
-      }
-    }
-  }
 }

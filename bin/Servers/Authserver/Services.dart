@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../Services/Authservice.dart';
-import '../../Services/Tokensservice.dart';
+import '../../Data/Services/Authservice.dart';
+import '../../Data/Services/Tokensservice.dart';
 
 Signup(HttpResponse response, Map<String, String> queryparm) async {
   try {

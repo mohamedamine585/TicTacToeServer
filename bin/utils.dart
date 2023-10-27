@@ -20,7 +20,7 @@ init(String dbname) async {
 }
 
 String dbname = "TictactoeTest";
-runServer() async {
+runServers() async {
   await init(dbname);
   await GameServer.serve();
   await AuthServer.DoJob();

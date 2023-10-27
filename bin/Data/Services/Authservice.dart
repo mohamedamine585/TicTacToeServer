@@ -1,7 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../Modules/Player.dart';
-import '../utils.dart';
+import '../../Core/Modules/Player.dart';
+import '../../utils.dart';
 import 'Tokensservice.dart';
 
 class Authservice {

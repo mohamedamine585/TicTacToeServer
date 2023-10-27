@@ -3,9 +3,10 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../Servers/Gameserver/game_server.dart';
-import '../Services/PlayRoomService.dart';
-import '../Services/Tokensservice.dart';
+import '../../Servers/Gameserver/Services.dart';
+import '../../Servers/Gameserver/game_server.dart';
+import '../../Data/Services/PlayRoomService.dart';
+import '../../Data/Services/Tokensservice.dart';
 import 'Player_token.dart';
 
 class Play_room {
@@ -200,7 +201,7 @@ class Play_room {
     ];
     player0 = null;
     player1 = null;
-    GameServer.delete_room(id);
+    delete_room(id);
   }
 
   declareWinner(int? hand) {
