@@ -85,6 +85,21 @@ class Authservice {
     }
   }
 
+  Future<bool> change_password(
+      {required ObjectId id,
+      required String old_password,
+      required String newpassword}) async {
+    try {
+      final doc = await playerscollection.update(
+          where.eq("_id", id).eq("password", hashIT(old_password)),
+          modify.set("password", hashIT(newpassword)));
+      return doc.isNotEmpty;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
   Future<Map<String, bool>?> delete_user(
       {required String playername, required String password}) async {
     try {

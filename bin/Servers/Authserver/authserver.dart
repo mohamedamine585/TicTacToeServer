@@ -3,6 +3,7 @@ import 'dart:io';
 import '../../../bin/Modules/Player.dart';
 import '../../../bin/Services/Authservice.dart';
 import '../../../bin/Services/Tokensservice.dart';
+import 'Services.dart';
 
 class AuthServer {
   static late HttpServer server;
@@ -19,42 +20,20 @@ class AuthServer {
     await init();
     try {
       server.listen((HttpRequest authrequest) async {
-        Player? player;
         authrequest.response.headers.contentType = ContentType.json;
         authrequest.response.headers
             .add(HttpHeaders.contentTypeHeader, "application/json");
         Map<String, String> queryparm = authrequest.uri.queryParameters;
         if (authrequest.uri.path == '/Signup/') {
-          player = await Authservice.getInstance().Signup(
-              queryparm.entries.first.value,
-              queryparm.entries.elementAt(1).value);
-
-          if (player != null) {
-            authrequest.response
-                .write(json.encode({"message": "Player is signed up"}));
-          } else {
-            authrequest.response
-                .write(json.encode({"message": "Signing up failed"}));
-          }
+          await Signup(authrequest.response, queryparm);
         } else if (authrequest.uri.path == '/Signin/') {
-          player = await Authservice.getInstance().Signin(
-              queryparm.entries.first.value,
-              queryparm.entries.elementAt(1).value);
-          if (player != null) {
-            String? token =
-                await Tokensservice.getInstance().prepare_token(player: player);
-            authrequest.response.write(json
-                .encode({"message": "Player is signed in", "token": token}));
-          } else {
-            authrequest.response
-                .write(json.encode({"message": "Signing in failed"}));
-          }
+          await Signin(authrequest.response, queryparm);
         } else if (authrequest.uri.path == '/Delete/') {
-          final resp = await Authservice.getInstance().delete_user(
-              playername: queryparm.entries.first.value,
-              password: queryparm.entries.elementAt(1).value);
-          authrequest.response.write(json.encode(resp));
+          await Delete_player(authrequest.response, queryparm);
+        } else if (authrequest.uri.path == '/ChangePassword/') {
+          await Change_Password(authrequest.response, queryparm);
         }
+
         authrequest.response.close();
       });
     } catch (e) {
