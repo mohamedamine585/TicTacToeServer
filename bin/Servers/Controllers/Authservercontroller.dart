@@ -1,89 +1,102 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:mongo_dart/mongo_dart.dart';
-
 import '../../Core/Modules/Player.dart';
 import '../../Data/Services/Authservice.dart';
 import '../../Data/Services/Tokensservice.dart';
 
 class Authserver_Controller {
-  static Signup(HttpResponse response, Map<String, String> queryparm) async {
+  static Signup(HttpRequest request) async {
     try {
-      final player = await Authservice.getInstance().Signup(
-          queryparm.entries.first.value, queryparm.entries.elementAt(1).value);
+      var Jsonrequest = json.decode(await utf8.decodeStream(request));
+      final player = await Authservice.getInstance()
+          .Signup(Jsonrequest["playername"], Jsonrequest["password"]);
 
       if (player != null) {
-        response.write(json.encode({"message": "Player is signed up"}));
+        request.response.write(json.encode({"message": "Player is signed up"}));
       } else {
-        response.write(json.encode({"message": "Signing up failed"}));
+        request.response.write(json.encode({"message": "Signing up failed"}));
       }
     } catch (e) {
       print("cannot signup");
     }
   }
 
-  static Signin(HttpResponse response, Map<String, String> queryparm) async {
+  static Signin(HttpRequest request) async {
     try {
-      final player = await Authservice.getInstance().Signin(
-          queryparm.entries.first.value, queryparm.entries.elementAt(1).value);
+      var Jsonrequest = json.decode(await utf8.decodeStream(request));
+
+      final player = await Authservice.getInstance()
+          .Signin(Jsonrequest["playername"], Jsonrequest["password"]);
       if (player != null) {
         String? token =
             await Tokensservice.getInstance().prepare_token(player: player);
-        response.write(
+        request.response.write(
             json.encode({"message": "Player is signed in", "token": token}));
       } else {
-        response.write(json.encode({"message": "Signing in failed"}));
+        request.response.write(json.encode({"message": "Signing in failed"}));
       }
     } catch (e) {
       print("Cannot Sign in");
     }
   }
 
-  static Delete_player(
-      HttpResponse response, Map<String, String> queryparm) async {
+  static Delete_player(HttpRequest request) async {
     try {
+      var Jsonrequest = json.decode(await utf8.decodeStream(request));
+
       final resp = await Authservice.getInstance().delete_user(
-          playername: queryparm.entries.first.value,
-          password: queryparm.entries.elementAt(1).value);
-      response.write(json.encode(resp));
+          playername: Jsonrequest["playername"],
+          password: Jsonrequest["password"]);
+      if (resp?.isNotEmpty ?? false) {
+        request.response.write(json.encode({"message": "player deleted"}));
+      } else {
+        request.response
+            .write(json.encode({"message": "failed to delete player"}));
+      }
     } catch (e) {
       print("Cannot Delete player");
     }
   }
 
-  static Change_Password(
-      HttpResponse response, Map<String, String> queryparm) async {
+  static Change_Password(HttpRequest request) async {
     try {
+      var Jsonrequest = json.decode(await utf8.decodeStream(request));
+
       if (await Authservice.getInstance().change_password(
-          id: ObjectId.fromHexString(queryparm.entries.first.value),
-          old_password: queryparm.entries.elementAt(1).value,
-          newpassword: queryparm.entries.elementAt(2).value)) {
-        response.write(json.encode({"message": "password changed"}));
+          playername: Jsonrequest["playername"],
+          old_password: Jsonrequest["old_password"],
+          newpassword: Jsonrequest["new_password"])) {
+        request.response.write(json.encode({"message": "password changed"}));
       } else {
-        response.write(json.encode({"message": "failed to change password"}));
+        request.response
+            .write(json.encode({"message": "failed to change password"}));
       }
     } catch (e) {
       print("Cannot change password");
     }
   }
 
-  static Change_name(
-      HttpResponse response, Map<String, String> queryparm) async {
+  static Change_name(HttpRequest request) async {
     try {
+      var Jsonrequest = json.decode(await utf8.decodeStream(request));
+
       Player? player = await Authservice.getInstance()
-          .get_playerbyName(playername: queryparm.values.first);
+          .get_playerbyName(playername: Jsonrequest["playername"]);
       if (player != null) {
-        if (await Authservice.getInstance().change_Name(
-            id: player.Id,
-            old_name: player.playername,
-            new_name: queryparm.values.elementAt(1))) {
-          response.write(json.encode({
-            "message": "playername changed to ${queryparm.values.elementAt(1)}"
-          }));
+        if (await Authservice.getInstance().change_name(
+            playername: player.playername,
+            password: Jsonrequest["password"],
+            new_name: Jsonrequest["new_name"])) {
+          request.response.write(json.encode(
+              {"message": "playername changed to ${Jsonrequest["new_name"]}"}));
+        } else {
+          request.response
+              .write(json.encode({"message": "failed to change playername"}));
         }
       } else {
-        response.write(json.encode({"message": "failed to change playername"}));
+        request.response
+            .write(json.encode({"message": "failed to change playername"}));
       }
     } catch (e) {
       print("Cannot change name !");

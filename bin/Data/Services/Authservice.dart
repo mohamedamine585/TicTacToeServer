@@ -104,29 +104,38 @@ class Authservice {
   }
 
   Future<bool> change_password(
-      {required ObjectId id,
+      {required String playername,
       required String old_password,
       required String newpassword}) async {
     try {
-      final doc = await playerscollection.update(
-          where.eq("_id", id).eq("password", hashIT(old_password)),
-          modify.set("password", hashIT(newpassword)));
-      return doc.isNotEmpty;
+      final doc = await playerscollection.findOne(where
+          .eq("playername", playername)
+          .eq("password", hashIT(old_password)));
+      if (doc?.isNotEmpty ?? false) {
+        await playerscollection.updateOne(where.id(doc!["_id"]),
+            modify.set("password", hashIT(old_password)));
+      }
+
+      return doc?.isNotEmpty ?? false;
     } catch (e) {
       print(e);
     }
     return false;
   }
 
-  Future<bool> change_Name(
-      {required ObjectId id,
-      required String old_name,
+  Future<bool> change_name(
+      {required String playername,
+      required String password,
       required String new_name}) async {
     try {
-      final doc = await playerscollection.update(
-          where.eq("_id", id).eq("playername", old_name),
-          modify.set("playername", old_name));
-      return doc.isNotEmpty;
+      final doc = await playerscollection.findOne(
+          where.eq("playername", playername).eq("password", hashIT(password)));
+      if (doc?.isNotEmpty ?? false) {
+        await playerscollection.updateOne(
+            where.id(doc!["_id"]), modify.set("playername", playername));
+      }
+
+      return doc?.isNotEmpty ?? false;
     } catch (e) {
       print(e);
     }

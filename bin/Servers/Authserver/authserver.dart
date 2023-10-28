@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import '../../consts.dart';
 import '../Controllers/Authservercontroller.dart';
@@ -20,20 +21,51 @@ class AuthServer {
         authrequest.response.headers.contentType = ContentType.json;
         authrequest.response.headers
             .add(HttpHeaders.contentTypeHeader, "application/json");
-        Map<String, String> queryparm = authrequest.uri.queryParameters;
-        if (authrequest.uri.path == '/Signup/') {
-          await Authserver_Controller.Signup(authrequest.response, queryparm);
-        } else if (authrequest.uri.path == '/Signin/') {
-          await Authserver_Controller.Signin(authrequest.response, queryparm);
-        } else if (authrequest.uri.path == '/Delete/') {
-          await Authserver_Controller.Delete_player(
-              authrequest.response, queryparm);
-        } else if (authrequest.uri.path == '/ChangePassword/') {
-          await Authserver_Controller.Change_Password(
-              authrequest.response, queryparm);
-        }
+        switch (authrequest.method) {
+          case 'GET':
+            if (authrequest.uri.path == '/Signin/') {
+              await Authserver_Controller.Signin(authrequest);
+            } else {
+              authrequest.response.write(
+                  json.encode({"error": "no such path with method request"}));
+            }
+            authrequest.response.close();
 
-        authrequest.response.close();
+            break;
+          case 'POST':
+            if (authrequest.uri.path == '/Signup/') {
+              await Authserver_Controller.Signup(authrequest);
+            } else {
+              authrequest.response.write(
+                  json.encode({"error": "no such path with method request"}));
+            }
+            authrequest.response.close();
+
+            break;
+          case 'PUT':
+            if (authrequest.uri.path == '/ChangePassword/') {
+              await Authserver_Controller.Change_Password(authrequest);
+            } else if (authrequest.uri.path == '/ChangeName/') {
+              await Authserver_Controller.Change_name(authrequest);
+            } else {
+              authrequest.response.write(
+                  json.encode({"error": "no such path with method request"}));
+            }
+            authrequest.response.close();
+            break;
+          case 'DELETE':
+            if (authrequest.uri.path == '/Delete/') {
+              await Authserver_Controller.Delete_player(authrequest);
+            } else {
+              authrequest.response.write(
+                  json.encode({"error": "no such path with method request"}));
+            }
+            authrequest.response.close();
+            break;
+
+          default:
+            authrequest.response.close();
+        }
       });
     } catch (e) {
       // should close gameserver
