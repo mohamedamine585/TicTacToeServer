@@ -34,7 +34,7 @@ test_authandgameserver(
 
             test('Ask To Play 0', () async {
               WebSocket player0 = await WebSocket.connect(
-                  'http://$HOST_GAME:$PORT_GAME',
+                  'ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
