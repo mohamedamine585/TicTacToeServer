@@ -3,7 +3,7 @@ import 'dart:math';
 import 'test_case.dart';
 
 void main() {
-  String? prefix = Random(45).toString();
+  String? prefix = Random(DateTime.now().millisecondsSinceEpoch).toString();
   List<String> playernames = generateNames(10, prefix);
   List<String> passwords = generatePasswords(10);
   test_authandgameserver(playernames, passwords, 10);

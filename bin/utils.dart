@@ -20,5 +20,3 @@ runServers() async {
   await GameServer.serve();
   await AuthServer.DoJob();
 }
-
-const PORT_GAME = 8080;
