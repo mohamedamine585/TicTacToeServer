@@ -19,14 +19,14 @@ test_authandgameserver(
 
             test('Signup', () async {
               var response = await get(Uri.parse(
-                  '$HOST_AUTH:$PORT_AUTH/Signup/?playername=${playernames[i]}&password=${passwords[i]}'));
+                  'http://$HOST_AUTH:$PORT_AUTH/Signup/?playername=${playernames[i]}&password=${passwords[i]}'));
               expect(
                   jsonDecode(response.body)["message"], "Player is signed up");
             });
 
             test('Signin', () async {
               var response = await get(Uri.parse(
-                  '$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&password=${passwords[i]}'));
+                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&password=${passwords[i]}'));
               token0 = jsonDecode(response.body)["token"];
               expect(
                   jsonDecode(response.body)["message"], "Player is signed in");
@@ -34,7 +34,7 @@ test_authandgameserver(
 
             test('Ask To Play 0', () async {
               WebSocket player0 = await WebSocket.connect(
-                  '$HOST_GAME:$PORT_GAME',
+                  'http://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
@@ -47,14 +47,14 @@ test_authandgameserver(
             var token1;
             test('Signup', () async {
               var response = await get(Uri.parse(
-                  '$HOST_AUTH:$PORT_AUTH/Signup/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'));
+                  'http://$HOST_AUTH:$PORT_AUTH/Signup/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'));
               expect(
                   jsonDecode(response.body)["message"], "Player is signed up");
             });
 
             test('Signin', () async {
               var response = await get(Uri.parse(
-                  '$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'));
+                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'));
               token1 = jsonDecode(response.body)["token"];
               expect(
                   jsonDecode(response.body)["message"], "Player is signed in");
@@ -62,7 +62,7 @@ test_authandgameserver(
 
             test('Ask To Play 1', () async {
               WebSocket player1 = await WebSocket.connect(
-                  '$HOST_GAME:$PORT_GAME',
+                  'http://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token1});
               message0 = "Opponent found !";
               player1.listen((event) {
