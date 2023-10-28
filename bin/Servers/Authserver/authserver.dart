@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'Services.dart';
+import '../Controllers/Authservercontroller.dart';
 
 class AuthServer {
   static late HttpServer server;
@@ -21,13 +21,15 @@ class AuthServer {
             .add(HttpHeaders.contentTypeHeader, "application/json");
         Map<String, String> queryparm = authrequest.uri.queryParameters;
         if (authrequest.uri.path == '/Signup/') {
-          await Signup(authrequest.response, queryparm);
+          await Authserver_Controller.Signup(authrequest.response, queryparm);
         } else if (authrequest.uri.path == '/Signin/') {
-          await Signin(authrequest.response, queryparm);
+          await Authserver_Controller.Signin(authrequest.response, queryparm);
         } else if (authrequest.uri.path == '/Delete/') {
-          await Delete_player(authrequest.response, queryparm);
+          await Authserver_Controller.Delete_player(
+              authrequest.response, queryparm);
         } else if (authrequest.uri.path == '/ChangePassword/') {
-          await Change_Password(authrequest.response, queryparm);
+          await Authserver_Controller.Change_Password(
+              authrequest.response, queryparm);
         }
 
         authrequest.response.close();

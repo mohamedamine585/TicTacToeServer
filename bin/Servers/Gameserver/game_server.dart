@@ -5,7 +5,7 @@ import 'dart:io';
 import '../../../bin/Core/Modules/Player.dart';
 import '../../../bin/Core/Modules/Player_Room.dart';
 import '../../../bin/Data/Services/Tokensservice.dart';
-import 'Services.dart';
+import '../Controllers/Gameservercontroller.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
@@ -30,7 +30,7 @@ class GameServer {
 
         if (playertoken != null) {
           if (WebSocketTransformer.isUpgradeRequest(play_request)) {
-            await Pairing(play_request, playertoken);
+            await Gameserver_controller.Pairing(play_request, playertoken);
           } else {
             play_request.response.close();
           }
@@ -44,9 +44,4 @@ class GameServer {
       print("Cannot start server");
     }
   }
-
-  /// **********          Pairing a player to another or create a room for him *******
-  ///
-  ///
-  ///
 }
