@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
+import '../../Core/Modules/Player.dart';
 import '../../Data/Services/Authservice.dart';
 import '../../Data/Services/Tokensservice.dart';
 
@@ -64,6 +65,28 @@ class Authserver_Controller {
       }
     } catch (e) {
       print("Cannot change password");
+    }
+  }
+
+  static Change_name(
+      HttpResponse response, Map<String, String> queryparm) async {
+    try {
+      Player? player = await Authservice.getInstance()
+          .get_playerbyName(playername: queryparm.values.first);
+      if (player != null) {
+        if (await Authservice.getInstance().change_Name(
+            id: player.Id,
+            old_name: player.playername,
+            new_name: queryparm.values.elementAt(1))) {
+          response.write(json.encode({
+            "message": "playername changed to ${queryparm.values.elementAt(1)}"
+          }));
+        }
+      } else {
+        response.write(json.encode({"message": "failed to change playername"}));
+      }
+    } catch (e) {
+      print("Cannot change name !");
     }
   }
 }

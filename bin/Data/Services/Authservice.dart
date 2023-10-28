@@ -57,6 +57,23 @@ class Authservice {
     }
   }
 
+  Future<Player?> get_playerbyName({required String playername}) async {
+    try {
+      final existing =
+          await playerscollection.findOne(where.eq("playername", playername));
+      if (existing != null && existing.isNotEmpty) {
+        return Player(
+            existing["_id"],
+            existing["playername"],
+            existing["lastconnection"],
+            existing["playedgames"],
+            existing["wongames"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<Player?> Signin(String playername, String password) async {
     try {
       final existing = await playerscollection.findOne(
@@ -94,6 +111,21 @@ class Authservice {
       final doc = await playerscollection.update(
           where.eq("_id", id).eq("password", hashIT(old_password)),
           modify.set("password", hashIT(newpassword)));
+      return doc.isNotEmpty;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
+  Future<bool> change_Name(
+      {required ObjectId id,
+      required String old_name,
+      required String new_name}) async {
+    try {
+      final doc = await playerscollection.update(
+          where.eq("_id", id).eq("playername", old_name),
+          modify.set("playername", old_name));
       return doc.isNotEmpty;
     } catch (e) {
       print(e);
