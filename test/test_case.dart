@@ -62,7 +62,7 @@ test_authandgameserver(
 
             test('Ask To Play 1', () async {
               WebSocket player1 = await WebSocket.connect(
-                  'http://$HOST_GAME:$PORT_GAME',
+                  'ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token1});
               message0 = "Opponent found !";
               player1.listen((event) {
