@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../Core/Modules/Player_Room.dart';
+import '../../Data/Services/Tokensservice.dart';
+import '../../consts.dart';
 import '../repositories_impl/play_room_repo_impl.dart';
 import '../../Core/Modules/Player_token.dart';
 import '../Gameserver/game_server.dart';
@@ -58,6 +60,25 @@ class Gameserver_controller {
       if (room.player0 == player_sock || room.player1 == player_sock) {
         return room;
       }
+    }
+  }
+
+  static check_token(HttpRequest play_request) async {
+    try {
+      final playertoken = (await Tokensservice.getInstance()
+          .fetch_token(token: play_request.headers.value("token") ?? ""));
+      return playertoken;
+    } catch (e) {
+      print("Unable to check token");
+    }
+    return null;
+  }
+
+  static DealWithRequest(HttpRequest play_request, String playertoken) async {
+    if (WebSocketTransformer.isUpgradeRequest(play_request)) {
+      await Gameserver_controller.Pairing(play_request, playertoken);
+    } else {
+      play_request.response.close();
     }
   }
 }

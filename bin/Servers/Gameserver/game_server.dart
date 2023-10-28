@@ -26,15 +26,11 @@ class GameServer {
     await Tokensservice.getInstance().make_available_all_tokens();
     try {
       server.listen((HttpRequest play_request) async {
-        final playertoken = (await Tokensservice.getInstance()
-            .fetch_token(token: play_request.headers.value("token") ?? ""));
+        final playertoken =
+            await Gameserver_controller.check_token(play_request);
 
         if (playertoken != null) {
-          if (WebSocketTransformer.isUpgradeRequest(play_request)) {
-            await Gameserver_controller.Pairing(play_request, playertoken);
-          } else {
-            play_request.response.close();
-          }
+          Gameserver_controller.DealWithRequest(play_request, playertoken);
         } else {
           play_request.response
               .write(json.encode({"message": "Invalid token"}));
