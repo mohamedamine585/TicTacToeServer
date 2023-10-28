@@ -130,7 +130,9 @@ class Authservice {
     try {
       final doc = await playerscollection.findOne(
           where.eq("playername", playername).eq("password", hashIT(password)));
-      if (doc?.isNotEmpty ?? false) {
+      final docX =
+          await playerscollection.findOne(where.eq("playername", new_name));
+      if ((docX?.isEmpty ?? false) && (doc?.isNotEmpty ?? false)) {
         await playerscollection.updateOne(
             where.id(doc!["_id"]), modify.set("playername", playername));
       }

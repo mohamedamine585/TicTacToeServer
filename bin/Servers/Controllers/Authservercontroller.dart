@@ -9,6 +9,7 @@ class Authserver_Controller {
   static Signup(HttpRequest request) async {
     try {
       var Jsonrequest = json.decode(await utf8.decodeStream(request));
+
       final player = await Authservice.getInstance()
           .Signup(Jsonrequest["playername"], Jsonrequest["password"]);
 
