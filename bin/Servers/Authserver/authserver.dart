@@ -1,4 +1,5 @@
 import 'dart:io';
+import '../../consts.dart';
 import '../Controllers/Authservercontroller.dart';
 
 class AuthServer {
@@ -7,7 +8,7 @@ class AuthServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    server = await HttpServer.bind("0.0.0.0", 8081);
+    server = await HttpServer.bind(HOST_AUTH, PORT_AUTH);
     print(
         "Auth server is running on ${server.address.address} port ${server.port}");
   }

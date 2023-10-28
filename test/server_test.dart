@@ -3,15 +3,10 @@ import 'dart:math';
 import 'test_case.dart';
 
 void main() {
-  final port1 = '8080';
-  final host1 = 'ws://127.0.0.1:$port1';
-  final port2 = '8081';
-  final host2 = 'http://127.0.0.1:$port2';
-
   String? prefix = Random(45).toString();
   List<String> playernames = generateNames(10, prefix);
   List<String> passwords = generatePasswords(10);
-  test_authandgameserver(playernames, passwords, host1, host2, 10);
+  test_authandgameserver(playernames, passwords, 10);
 }
 
 List<String> generateNames(int count, String prefix) {

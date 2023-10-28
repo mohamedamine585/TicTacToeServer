@@ -5,6 +5,7 @@ import 'dart:io';
 import '../../../bin/Core/Modules/Player.dart';
 import '../../../bin/Core/Modules/Player_Room.dart';
 import '../../../bin/Data/Services/Tokensservice.dart';
+import '../../consts.dart';
 import '../Controllers/Gameservercontroller.dart';
 
 class GameServer {
@@ -15,7 +16,7 @@ class GameServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    server = await HttpServer.bind("0.0.0.0", 8080);
+    server = await HttpServer.bind(HOST_GAME, PORT_GAME);
     print(
         "Game server is running on ${server.address.address} port ${server.port}");
   }

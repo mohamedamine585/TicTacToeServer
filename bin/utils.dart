@@ -5,11 +5,6 @@ import 'Servers/Gameserver/game_server.dart';
 import 'Data/Services/DbService.dart';
 import 'Servers/Authserver/authserver.dart';
 
-Db db = Db("");
-DbCollection playerscollection = DbCollection(db, "");
-DbCollection tokenscollection = DbCollection(db, "");
-DbCollection playroomscollection = DbCollection(db, "");
-
 String hashIT(String psw) {
   return Crypt.sha256(psw, salt: "salt&&&").hash;
 }
@@ -25,3 +20,5 @@ runServers() async {
   await GameServer.serve();
   await AuthServer.DoJob();
 }
+
+const PORT_GAME = 8080;
