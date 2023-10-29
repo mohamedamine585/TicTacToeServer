@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
 import '../Data/Services/Tokensservice.dart';
-import '../Servers/Controllers/Gameservercontroller.dart';
 import '../consts.dart';
 
 class Tokenmiddleware {
