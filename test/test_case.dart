@@ -95,7 +95,7 @@ test_authandgameserver(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
               body: json.encode(
                   {"playername": playernames[i], "password": passwords[i]}));
-          expect(jsonDecode(response.body)["message"], "Player is signed in");
+          expect(jsonDecode(response.body)["message"], "Player deleted");
         });
       }
     });
