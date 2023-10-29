@@ -31,7 +31,7 @@ test_authandgameserver(
             test('Signin', () async {
               var response = await get(
                 Uri.parse(
-                    'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&password=${passwords[i]}'),
+                    'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&&password=${passwords[i]}'),
               );
               token0 = jsonDecode(response.body)["token"];
               expect(
@@ -65,7 +65,7 @@ test_authandgameserver(
             test('Signin', () async {
               var response = await get(
                 Uri.parse(
-                    'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'),
+                    'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i + 1]}&&password=${passwords[i + 1]}'),
               );
               token1 = jsonDecode(response.body)["token"];
               expect(

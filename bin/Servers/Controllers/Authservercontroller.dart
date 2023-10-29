@@ -30,8 +30,8 @@ class Authserver_Controller {
   static Signin(HttpRequest request) async {
     try {
       final player = await Authservice.getInstance().Signin(
-          request.uri.queryParameters.values.first,
-          request.uri.queryParameters.values.elementAt(1));
+          request.headers.value("playername")!,
+          request.headers.value("password")!);
       if (player != null) {
         String token = CreateJWToken(player.Id);
         await Tokensservice.getInstance()
