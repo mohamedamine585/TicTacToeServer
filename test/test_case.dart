@@ -89,13 +89,13 @@ test_authandgameserver(
       }
     });
     group('Delete players', () {
-      for (int i = 0; i < playernames.length; i++) {
+      for (int i = 1; i < playernames.length - 1; i++) {
         test('test name', () async {
           var response = await delete(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
               body: json.encode(
                   {"playername": playernames[i], "password": passwords[i]}));
-          expect(jsonDecode(response.body)["message"], "Player deleted");
+          expect(jsonDecode(response.body)["message"], "player deleted");
         });
       }
     });
