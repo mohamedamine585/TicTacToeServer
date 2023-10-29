@@ -88,5 +88,16 @@ test_authandgameserver(
         i++;
       }
     });
+    group('Delete players', () {
+      for (int i = 0; i < playernames.length; i++) {
+        test('test name', () async {
+          var response = await delete(
+              Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
+              body: json.encode(
+                  {"playername": playernames[i], "password": passwords[i]}));
+          expect(jsonDecode(response.body)["message"], "Player is signed in");
+        });
+      }
+    });
   });
 }
