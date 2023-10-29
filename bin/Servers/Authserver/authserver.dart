@@ -48,6 +48,10 @@ class AuthServer {
               await Authserver_Controller.Change_Password(authrequest);
             } else if (authrequest.uri.path == '/ChangeName/') {
               await Authserver_Controller.Change_name(authrequest);
+            } else if (authrequest.uri.path == '/Signout') {
+              ///
+              ///
+              ///
             } else {
               authrequest.response.write(
                   json.encode({"error": "no such path with method request"}));
