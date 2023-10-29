@@ -1,6 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../Core/Modules/Player.dart';
+import '../../Servers/Controllers/Authservercontroller.dart';
+import '../../Servers/Controllers/Gameservercontroller.dart';
 import '../../utils.dart';
 import '../../consts.dart';
 import 'Tokensservice.dart';
@@ -103,7 +105,7 @@ class Authservice {
     }
   }
 
-  Future<bool> change_password(
+  Future<String?> change_password(
       {required String playername,
       required String old_password,
       required String newpassword}) async {
@@ -112,15 +114,19 @@ class Authservice {
           .eq("playername", playername)
           .eq("password", hashIT(old_password)));
       if (doc?.isNotEmpty ?? false) {
-        await playerscollection.updateOne(where.id(doc!["_id"]),
-            modify.set("password", hashIT(old_password)));
-      }
+        String? new_token = await Tokensservice.getInstance().store_token(
+            token: Authserver_Controller.CreateJWToken(doc!["_id"]),
+            Id: doc["_id"]);
 
-      return doc?.isNotEmpty ?? false;
+        if (new_token != null) {
+          await playerscollection.updateOne(where.id(doc["_id"]),
+              modify.set("password", hashIT(newpassword)));
+          return new_token;
+        }
+      }
     } catch (e) {
       print(e);
     }
-    return false;
   }
 
   Future<bool> change_name(
@@ -130,16 +136,27 @@ class Authservice {
     try {
       final doc = await playerscollection.findOne(
           where.eq("playername", playername).eq("password", hashIT(password)));
+
       final docX =
           await playerscollection.findOne(where.eq("playername", new_name));
-      if ((docX?.isEmpty ?? false) && (doc?.isNotEmpty ?? false)) {
-        await playerscollection.updateOne(
-            where.id(doc!["_id"]), modify.set("playername", playername));
+      if ((docX?.isEmpty ?? true) && (doc?.isNotEmpty ?? false)) {
+        String? new_token = await Tokensservice.getInstance().store_token(
+            token: Authserver_Controller.CreateJWToken(doc!["_id"]),
+            Id: doc["_id"]);
+        if (new_token != null) {
+          final res = await playerscollection.update(
+              where.id(doc["_id"]), modify.set("playername", new_name));
+          return res.isNotEmpty;
+        } else {
+          print("Token in use");
+          throw Exception();
+        }
+      } else {
+        print("TNo player found");
+        throw Exception();
       }
-
-      return doc?.isNotEmpty ?? false;
     } catch (e) {
-      print(e);
+      print("Cannot change name");
     }
     return false;
   }

@@ -1,7 +1,11 @@
 import 'dart:io';
 
-class Player_Token {
+import 'package:mongo_dart/mongo_dart.dart';
+
+import 'Player.dart';
+
+class Player_Socket {
   WebSocket socket;
-  String token;
-  Player_Token(this.socket, this.token);
+  ObjectId Id;
+  Player_Socket(this.socket, this.Id);
 }

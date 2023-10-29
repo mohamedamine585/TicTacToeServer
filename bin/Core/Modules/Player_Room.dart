@@ -1,5 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
+import 'Player.dart';
 import 'Player_token.dart';
 
 class Play_room {
@@ -13,8 +14,8 @@ class Play_room {
   ];
 
   int? hand = 0;
-  Player_Token? player0;
-  Player_Token? player1;
+  Player_Socket? player0;
+  Player_Socket? player1;
   Play_room(this.id, this.player0, this.player1);
 }
 

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mongo_dart/mongo_dart.dart';
+
 import '../../Core/Modules/Player_Room.dart';
 import '../../Core/Modules/Player_token.dart';
 import '../../Core/Repositories/Playroom_repo.dart';
@@ -13,11 +15,13 @@ class Play_room_repo_impl implements Play_room_repository {
   @override
   Play_room play_room;
   Play_room_repo_impl(this.play_room);
-  own_that_room(HttpRequest game_request, String ptoken) async {
+
+  /// deprecated ...
+  own_that_room(HttpRequest game_request, ObjectId Id) async {
     try {
       try {
-        play_room.player0 = Player_Token(
-            await WebSocketTransformer.upgrade(game_request), ptoken);
+        play_room.player0 =
+            Player_Socket(await WebSocketTransformer.upgrade(game_request), Id);
       } catch (e) {
         print("cannot upgrade player request !");
       }
@@ -68,10 +72,10 @@ class Play_room_repo_impl implements Play_room_repository {
             play_room.player0?.socket.close();
 
             await Tokensservice.getInstance()
-                .change_token_status(play_room.player0!.token);
+                .change_token_status(play_room.player0!.Id);
             if (play_room.player1 != null) {
               await Tokensservice.getInstance()
-                  .change_token_status(play_room.player1!.token);
+                  .change_token_status(play_room.player1!.Id);
 
               play_room.player1?.socket.close();
             }
@@ -117,10 +121,10 @@ class Play_room_repo_impl implements Play_room_repository {
             play_room.player1?.socket.close();
 
             await Tokensservice.getInstance()
-                .change_token_status(play_room.player1!.token);
+                .change_token_status(play_room.player1!.Id);
             if (play_room.player0 != null) {
               await Tokensservice.getInstance()
-                  .change_token_status(play_room.player0!.token);
+                  .change_token_status(play_room.player0!.Id);
 
               play_room.player0?.socket.close();
             }
@@ -140,10 +144,10 @@ class Play_room_repo_impl implements Play_room_repository {
     }
   }
 
-  join_room(HttpRequest player_req, String token) async {
+  join_room(HttpRequest player_req, ObjectId id) async {
     try {
       play_room.player1 =
-          Player_Token(await WebSocketTransformer.upgrade(player_req), token);
+          Player_Socket(await WebSocketTransformer.upgrade(player_req), id);
     } catch (e) {
       print("cannot upgrade request !");
     }
@@ -168,13 +172,15 @@ class Play_room_repo_impl implements Play_room_repository {
     play_room.roomid =
         await PlayRoomService.getInstance().open_PlayRoom(play_room: play_room);
 
-    Play();
+    await Play();
   }
 
   /// start a game in a room ***********
 
-  Play() {
+  Play() async {
     try {
+      await Tokensservice.getInstance()
+          .change_token_status(play_room.player0!.Id);
       listen_to_player1();
     } catch (e) {
       print("error socket !");

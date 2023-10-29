@@ -40,6 +40,8 @@ class Tokensservice {
     }
   }
 
+  /// deprecated
+
   Future<String?> prepare_token({required Player player}) async {
     try {
       final existing =
@@ -59,6 +61,25 @@ class Tokensservice {
           "inuse": false
         });
         return "${hashIT(player.Id.toString())} ${hashIT(player.lastconnection.toString())}";
+      }
+      return null;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String?> store_token(
+      {required String token, required ObjectId Id}) async {
+    try {
+      final existing = await tokenscollection.findOne(where.eq("_id", Id));
+      if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
+        await tokenscollection
+            .update(where.id(Id), {"token": token, "inuse": false});
+        return token;
+      } else if (existing?.isEmpty ?? true) {
+        await tokenscollection
+            .insertOne({"_id": Id, "token": token, "inuse": false});
+        return token;
       }
       return null;
     } catch (e) {
@@ -90,12 +111,12 @@ class Tokensservice {
     }
   }
 
-  Future<String?> change_token_status(String token) async {
+  Future<String?> change_token_status(ObjectId id) async {
     try {
-      final doc = await tokenscollection.findOne(where.eq("token", token));
+      final doc = await tokenscollection.findOne(where.id(id));
       if (doc != null) {
-        await tokenscollection.update(where.id(doc["_id"]),
-            {"inuse": !doc["inuse"], "token": doc["token"]});
+        await tokenscollection.update(
+            where.id(doc["_id"]), modify.set("inuse", !(doc["inuse"])));
       }
     } catch (e) {
       print(e);
@@ -106,8 +127,19 @@ class Tokensservice {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
       if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
-        await change_token_status(token);
         return token;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String?> fetch_token_free_byId({required ObjectId id}) async {
+    try {
+      final existing = await tokenscollection.findOne(where.id(id));
+      if (existing != null && existing.isNotEmpty && !existing["inuse"]) {
+        await change_token_status(existing["_id"]);
+        return existing["_id"];
       }
     } catch (e) {
       print(e);

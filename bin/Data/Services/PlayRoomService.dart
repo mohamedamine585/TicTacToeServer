@@ -3,6 +3,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import '../../Core/Modules/Player_Room.dart';
 import '../../utils.dart';
 import '../../consts.dart';
+import 'Authservice.dart';
 import 'Tokensservice.dart';
 
 class PlayRoomService {
@@ -22,10 +23,10 @@ class PlayRoomService {
 
   Future<void> close_PlayRoom({required Play_room play_room}) async {
     try {
-      final p0 = await Tokensservice.getInstance()
-          .fetch_player_byToken(token: play_room.player0!.token);
-      final p1 = await Tokensservice.getInstance()
-          .fetch_player_byToken(token: play_room.player1!.token);
+      final p0 = await Authservice.getInstance()
+          .get_playerbyId(id: play_room.player0!.Id);
+      final p1 = await Authservice.getInstance()
+          .get_playerbyId(id: play_room.player1!.Id);
       final doc = playroomscollection.findOne(where.id(play_room.roomid!));
 
       await playerscollection.update(where.id(p0!.Id), {
@@ -56,13 +57,9 @@ class PlayRoomService {
 
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
     try {
-      final p0 = await Tokensservice.getInstance()
-          .fetch_player_byToken(token: play_room.player0!.token);
-      final p1 = await Tokensservice.getInstance()
-          .fetch_player_byToken(token: play_room.player1!.token);
       final doc = await playroomscollection.insertOne({
-        "createrid": p0?.Id,
-        "joinerid": p1?.Id,
+        "createrid": play_room.player0?.Id,
+        "joinerid": play_room.player1?.Id,
         "start": Timestamp(DateTime.now().second),
         "end": Timestamp(DateTime.now().second),
         "winner": -1

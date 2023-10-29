@@ -1,20 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mongo_dart/mongo_dart.dart';
+
+import '../../Core/Modules/Player.dart';
 import '../../Core/Modules/Player_Room.dart';
 import '../../Data/Services/Tokensservice.dart';
-import '../../consts.dart';
 import '../repositories_impl/play_room_repo_impl.dart';
 import '../../Core/Modules/Player_token.dart';
 import '../Gameserver/game_server.dart';
 
 class Gameserver_controller {
-  static Pairing(HttpRequest preq, String ptoken) async {
+  static Pairing(HttpRequest preq, ObjectId id) async {
     final available_room = look_for_available_play_room();
     if (available_room == null) {
-      await create_room(preq, ptoken);
+      await create_room(preq, id);
     } else {
-      await Play_room_repo_impl(available_room).join_room(preq, ptoken);
+      await Play_room_repo_impl(available_room).join_room(preq, id);
     }
   }
 
@@ -40,15 +42,17 @@ class Gameserver_controller {
     }
   }
 
-  static create_room(HttpRequest game_request, String ptoken) async {
+  static create_room(HttpRequest game_request, ObjectId id) async {
     try {
       final Socket_to_player = await WebSocketTransformer.upgrade(game_request);
-      Play_room play_room = Play_room(GameServer.rooms.length,
-          Player_Token(Socket_to_player, ptoken), null);
+      Play_room play_room = Play_room(
+          GameServer.rooms.length, Player_Socket(Socket_to_player, id), null);
 
       GameServer.rooms.add(play_room);
 
       Socket_to_player.add(json.encode({"message": "Room created"}));
+      await Tokensservice.getInstance()
+          .change_token_status(play_room.player0!.Id);
       Play_room_repo_impl(play_room).listen_to_player0();
     } catch (e) {
       print("cannot create room");
@@ -63,20 +67,9 @@ class Gameserver_controller {
     }
   }
 
-  static check_token(HttpRequest play_request) async {
-    try {
-      final playertoken = (await Tokensservice.getInstance()
-          .fetch_token(token: play_request.headers.value("token") ?? ""));
-      return playertoken;
-    } catch (e) {
-      print("Unable to check token");
-    }
-    return null;
-  }
-
-  static DealWithRequest(HttpRequest play_request, String playertoken) async {
+  static DealWithRequest(HttpRequest play_request, ObjectId id) async {
     if (WebSocketTransformer.isUpgradeRequest(play_request)) {
-      await Gameserver_controller.Pairing(play_request, playertoken);
+      await Gameserver_controller.Pairing(play_request, id);
     } else {
       play_request.response.close();
     }
