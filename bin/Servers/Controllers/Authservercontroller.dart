@@ -29,10 +29,9 @@ class Authserver_Controller {
 
   static Signin(HttpRequest request) async {
     try {
-      var Jsonrequest = json.decode(await utf8.decodeStream(request));
-
-      final player = await Authservice.getInstance()
-          .Signin(Jsonrequest["playername"], Jsonrequest["password"]);
+      final player = await Authservice.getInstance().Signin(
+          request.headers.value("playername")!,
+          request.headers.value("password")!);
       if (player != null) {
         String token = CreateJWToken(player.Id);
         await Tokensservice.getInstance()
