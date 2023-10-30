@@ -13,7 +13,7 @@ class Play_room {
     [null, null, null],
   ];
 
-  int? hand = 0;
+  int? hand;
   Player_Socket? player0;
   Player_Socket? player1;
   Play_room(this.id, this.player0, this.player1);

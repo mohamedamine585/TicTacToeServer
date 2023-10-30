@@ -1,8 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../Core/Modules/Player.dart';
-import '../../Servers/Controllers/Authservercontroller.dart';
-import '../../Servers/Controllers/Gameservercontroller.dart';
+import '../../Controllers/Authservercontroller.dart';
+import '../../Controllers/Gameservercontroller.dart';
 import '../../utils.dart';
 import '../../consts.dart';
 import 'Tokensservice.dart';
@@ -40,7 +40,7 @@ class Authservice {
         await Tokensservice.getInstance().prepare_token(player: player);
         return player;
       } else {
-        print("Player exists");
+        print("Player exists with that name");
       }
     } catch (e) {
       print(e);

@@ -27,29 +27,24 @@ class PlayRoomService {
           .get_playerbyId(id: play_room.player0!.Id);
       final p1 = await Authservice.getInstance()
           .get_playerbyId(id: play_room.player1!.Id);
-      final doc = playroomscollection.findOne(where.id(play_room.roomid!));
-
-      await playerscollection.update(where.id(p0!.Id), {
-        "_id": p0.Id,
-        "playername": p0.playername,
-        "lastconnection": p0.lastconnection,
-        "playedgames": p0.playedGames + 1,
-        "wongames": (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames
-      });
-      await playerscollection.update(where.id(p1!.Id), {
-        "_id": p1.Id,
-        "playername": p1.playername,
-        "lastconnection": p1.lastconnection,
-        "playedgames": p1.playedGames + 1,
-        "wongames": (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames
-      });
-      await playroomscollection.update(where.id(play_room.roomid!), {
-        "createrid": p0.Id,
-        "joinerid": p1.Id,
-        "start": (await doc)!["start"],
-        "winner": play_room.hand,
-        "end": Timestamp(DateTime.now().second),
-      });
+      if (play_room.hand != null) {
+        await playerscollection.update(
+            where.id(p0!.Id),
+            modify.set("playedgames", p0.playedGames + 1).set("wongames",
+                (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames));
+        await playerscollection.update(
+            where.id(p1!.Id),
+            modify.set("playedgames", p1.playedGames + 1).set("wongames",
+                (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames));
+        await playroomscollection.update(
+            where.id(play_room.roomid!),
+            modify
+                .set("end", Timestamp(DateTime.now().second))
+                .set("winner", play_room.hand));
+      } else {
+        await playroomscollection.update(where.id(play_room.roomid!),
+            modify.set("end", Timestamp(DateTime.now().second)));
+      }
     } catch (e) {
       print(e);
     }

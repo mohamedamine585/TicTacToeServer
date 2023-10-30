@@ -8,7 +8,7 @@ import '../../../bin/Core/Modules/Player.dart';
 import '../../../bin/Core/Modules/Player_Room.dart';
 import '../../../bin/Data/Services/Tokensservice.dart';
 import '../../consts.dart';
-import '../Controllers/Gameservercontroller.dart';
+import '../../Controllers/Gameservercontroller.dart';
 
 class GameServer {
   static var rooms = <Play_room>[];
@@ -25,20 +25,11 @@ class GameServer {
 
   static serve() async {
     await init();
-    await Tokensservice.getInstance().make_available_all_tokens();
+    await Gameserver_controller.init_tokens_state();
     try {
       server.listen((HttpRequest play_request) async {
         try {
-          final playerid = await Tokenmiddleware.Check_Token(
-              play_request.headers.value("token"));
-          if (playerid != null) {
-            Gameserver_controller.DealWithRequest(
-                play_request, ObjectId.parse(playerid));
-          } else {
-            play_request.response
-                .write(json.encode({"message": "Invalid token"}));
-            play_request.response.close();
-          }
+          await Gameserver_controller.DealWithRequest(play_request);
         } catch (e) {
           print("Error");
         }

@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../Core/Modules/Player.dart';
-import '../../Data/Services/Authservice.dart';
-import '../../Data/Services/Tokensservice.dart';
-import '../../consts.dart';
+import '../Core/Modules/Player.dart';
+import '../Data/Services/Authservice.dart';
+import '../Data/Services/Tokensservice.dart';
+import '../consts.dart';
 
 class Authserver_Controller {
   static Signup(HttpRequest request) async {

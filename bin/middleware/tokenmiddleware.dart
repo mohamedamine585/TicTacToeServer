@@ -4,7 +4,7 @@ import '../Data/Services/Tokensservice.dart';
 import '../consts.dart';
 
 class Tokenmiddleware {
-  static Check_Token(String? token) async {
+  static Future<String?> Check_Token(String? token) async {
     try {
       if (token == null) {
         print("Invalid token");
@@ -16,11 +16,7 @@ class Tokenmiddleware {
       if (jwt.payload == null) {
         throw Exception("No payload");
       }
-      String? fetched_token =
-          await Tokensservice.getInstance().fetch_token(token: token);
-      if (fetched_token != null) {
-        return jwt.payload["playerid"];
-      }
+      return jwt.payload["playerid"];
     } on JWTExpiredException {
       print('Jwt expired');
     } on JWTException catch (e) {
