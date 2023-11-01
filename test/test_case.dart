@@ -11,7 +11,7 @@ test_authandgameserver(
   var message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
-      for (int i = 0; i < players - 2; i++) {
+      for (int i = 0; i < players - 1; i++) {
         group('********** Test case $i **************', () {
           WebSocket player0, player1;
           group(' **************    Player ${i / 2} 0    *************** ', () {
