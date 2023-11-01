@@ -138,15 +138,7 @@ test_update(List<String> playernames, List<String> passwords) {
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}K8M");
       });
-      test('First Ask To Play ', () async {
-        try {
-          player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token0});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, true);
-          Future.delayed(Duration(seconds: 5));
-        }
-      });
+
       test('Update Password', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
@@ -166,7 +158,7 @@ test_update(List<String> playernames, List<String> passwords) {
         token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "Player is signed in");
       });
-      test('Second Ask To Play ', () async {
+      test('First Ask To Play ', () async {
         try {
           player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token0});
