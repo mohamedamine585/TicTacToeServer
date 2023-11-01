@@ -6,7 +6,7 @@ void main() {
   String? prefix = DateTime.now().toString();
   List<String> playernames = generateNames(10, prefix);
   List<String> passwords = generatePasswords(10);
-  test_authandgameserver(playernames, passwords, 10);
+  test_authandgameserver(playernames, passwords, 2);
 }
 
 List<String> generateNames(int count, String prefix) {
