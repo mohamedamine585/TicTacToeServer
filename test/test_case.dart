@@ -44,6 +44,9 @@ test_authandgameserver(
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
+                if (message0 == "Opponent found !") {
+                  player0.close();
+                }
               }, onDone: () {
                 player0.close();
               });
@@ -78,9 +81,6 @@ test_authandgameserver(
               message0 = "Opponent found !";
               player1.listen((event) {
                 expect(jsonDecode(event)["message"], "Opponent found !");
-                Future.delayed(Duration(seconds: 5), () {
-                  player1.close();
-                });
               }, onDone: () {
                 player1.close();
               });
@@ -107,7 +107,6 @@ test_authandgameserver(
       WebSocket player0;
       group(' **************    Player    *************** ', () {
         var token0;
-        message0 = "Room created";
 
         test('Signup', () async {
           var response = await post(
@@ -132,10 +131,8 @@ test_authandgameserver(
           player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token0});
           player0.listen((event) {
-            expect(jsonDecode(event)["message"], message0);
-            if (message0 == "Room created") {
-              player0.close();
-            }
+            expect(jsonDecode(event)["message"], "Room created");
+            player0.close();
           }, onDone: () {
             player0.close();
           });
@@ -150,7 +147,7 @@ test_authandgameserver(
                   }));
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"],
-              "playername changed to Kasif");
+              "playername changed to ${playernames[1]}K8M");
         });
 
         test('Second Ask To Play ', () async {
@@ -174,10 +171,8 @@ test_authandgameserver(
               'ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token0});
           player0.listen((event) {
-            expect(jsonDecode(event)["message"], message0);
-            if (message0 == "Room created") {
-              player0.close();
-            }
+            expect(jsonDecode(event)["message"], "Room created");
+            player0.close();
           }, onDone: () {
             player0.close();
           });
