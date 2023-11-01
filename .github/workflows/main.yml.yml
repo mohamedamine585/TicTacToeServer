@@ -45,7 +45,17 @@ jobs:
 
           
         - name: Run tests 
-          run: dart test test/server_test.dart
+          run: |
+            if [dart test test/server_test.dart]; then
+              echo "Tests passed. Pushing to develop..."
+              git push origin feature:develop
+              else
+            echo "Tests failed. Pushing to feature..."
+            git push origin feature
+            fi
+            
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
  
 
         
