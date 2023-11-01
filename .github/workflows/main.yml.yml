@@ -45,13 +45,8 @@ jobs:
 
           
         - name: Run tests 
-          run: |
-            dart test test/server_test.dart
-            if [$? -eq 0]; then
-              echo "Tests passed. Pushing to develop..."
-              git push origin develop
-            
-            fi
+          run: dart test test/server_test.dart
+          
             
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
