@@ -111,14 +111,17 @@ test_authandgameserver(
         test('Signup', () async {
           var response = await post(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
-              body: json.encode({"playername": "kasif", "password": "kasif"}));
+              body: json.encode({
+                "playername": "${playernames[1]}",
+                "password": "${passwords[1]}"
+              }));
           expect(jsonDecode(response.body)["message"], "Player is signed up");
         });
 
         test('First Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=kasif'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}&password=${passwords[1]}'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -137,13 +140,13 @@ test_authandgameserver(
             player0.close();
           });
           test('Update Name', () async {
-            var response = await put(
-                Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
-                body: json.encode({
-                  "playername": "kasif",
-                  "password": "kasif",
-                  "new_name": "Kasif"
-                }));
+            var response =
+                await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
+                    body: json.encode({
+                      "playername": "${playernames[1]}",
+                      "password": "${passwords[1]}",
+                      "new_name": "${playernames[1]}M"
+                    }));
             token0 = jsonDecode(response.body)["token"];
             expect(jsonDecode(response.body)["message"],
                 "playername changed to Kasif");
@@ -159,7 +162,7 @@ test_authandgameserver(
           test('Second Signin', () async {
             var response = await get(
               Uri.parse(
-                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=Kasif&password=kasif'),
+                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}'),
             );
             token0 = jsonDecode(response.body)["token"];
             expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -185,18 +188,10 @@ test_authandgameserver(
       group(' **************    Player    *************** ', () {
         var token0;
         message0 = "Room created";
-
-        test('Signup', () async {
-          var response = await post(
-              Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
-              body: json.encode({"playername": "kasif", "password": "kasif"}));
-          expect(jsonDecode(response.body)["message"], "Player is signed up");
-        });
-
         test('First Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=kasif'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -218,9 +213,9 @@ test_authandgameserver(
           var response = await put(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
               body: json.encode({
-                "playername": "kasif",
-                "password": "kasif",
-                "new_password": "Kasif"
+                "playername": "${playernames[1]}M",
+                "password": "${passwords[1]}",
+                "new_password": "${passwords[1]}M"
               }));
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "password changed");
@@ -236,7 +231,7 @@ test_authandgameserver(
         test('Second Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=Kasif'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}M'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
