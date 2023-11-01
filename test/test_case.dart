@@ -44,9 +44,6 @@ test_authandgameserver(
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
-                if (message0 == "Opponent found !") {
-                  player0.close();
-                }
               }, onDone: () {
                 player0.close();
               });
