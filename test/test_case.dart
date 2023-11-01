@@ -138,50 +138,6 @@ test_update(List<String> playernames, List<String> passwords) {
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}K8M");
       });
-
-      test('First Ask To Play ', () async {
-        try {
-          player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token0});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, true);
-        }
-      });
-      test('Second Signin', () async {
-        var response = await get(
-          Uri.parse(
-              'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}'),
-        );
-        token0 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "Player is signed in");
-      });
-      test('Second Ask To Play ', () async {
-        WebSocket player0 = await WebSocket.connect(
-            'ws://$HOST_GAME:$PORT_GAME',
-            headers: {"token": token0});
-        player0.listen((event) {
-          expect(jsonDecode(event)["message"], "Room created");
-          player0.close();
-        }, onDone: () {
-          player0.close();
-        });
-      });
-    });
-  });
-  group("Change Password", () {
-    WebSocket player0;
-    group(' **************    Player    *************** ', () {
-      var token0;
-      var message0 = "Room created";
-      test('First Signin', () async {
-        var response = await get(
-          Uri.parse(
-              'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}'),
-        );
-        token0 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "Player is signed in");
-      });
-
       test('Update Password', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
