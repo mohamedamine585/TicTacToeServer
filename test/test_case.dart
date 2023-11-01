@@ -13,7 +13,7 @@ test_authandgameserver(
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
         group('********** Test case $i **************', () {
-          late WebSocket player0, player1;
+          WebSocket player0, player1;
           group(' **************    Player ${i / 2} 0    *************** ', () {
             var token0;
             message0 = "Room created";
@@ -78,13 +78,14 @@ test_authandgameserver(
               message0 = "Opponent found !";
               player1.listen((event) {
                 expect(jsonDecode(event)["message"], "Opponent found !");
+                Future.delayed(Duration(seconds: 5), () {
+                  player1.close();
+                });
               }, onDone: () {
                 player1.close();
               });
             });
           });
-          player0.close();
-          player1.close();
         });
 
         i++;
