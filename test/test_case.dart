@@ -144,6 +144,7 @@ test_update(List<String> playernames, List<String> passwords) {
               headers: {"token": token0});
         } catch (e) {
           expect(e.toString().isNotEmpty, true);
+          Future.delayed(Duration(seconds: 5));
         }
       });
       test('Update Password', () async {
