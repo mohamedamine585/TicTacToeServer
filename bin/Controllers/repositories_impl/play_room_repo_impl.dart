@@ -1,6 +1,6 @@
 import '../../Core/Modules/Player_Room.dart';
 import '../../Core/Repositories/Playroom_repo.dart';
-import '../../Data/Services/PlayRoomService.dart';
+import '../../Services/PlayRoomService.dart';
 
 class Play_room_repo_impl implements Play_room_repository {
   @override
@@ -14,7 +14,6 @@ class Play_room_repo_impl implements Play_room_repository {
     if (play_room.player1 != null) {
       await PlayRoomService.getInstance().close_PlayRoom(play_room: play_room);
     }
-    play_room.opened = true;
     play_room.player0 = null;
     play_room.player1 = null;
   }

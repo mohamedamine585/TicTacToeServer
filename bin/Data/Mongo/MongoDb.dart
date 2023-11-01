@@ -1,9 +1,9 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../consts.dart';
-import 'Authservice.dart';
-import 'PlayRoomService.dart';
-import 'Tokensservice.dart';
+import '../../Services/Authservice.dart';
+import '../../Services/PlayRoomService.dart';
+import '../../Services/Tokensservice.dart';
 
 class Dbservice {
   static Dbservice _instance = Dbservice.getInstance();

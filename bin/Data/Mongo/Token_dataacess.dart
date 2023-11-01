@@ -1,21 +1,11 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../Core/Modules/Player.dart';
-import '../../utils.dart';
+import '../../Services/Authservice.dart';
 import '../../consts.dart';
-import 'Authservice.dart';
+import '../../utils.dart';
 
-class Tokensservice {
-  static Tokensservice _instance = Tokensservice.getInstance();
-
-  // Private constructor to prevent external instantiation
-  Tokensservice._();
-
-  factory Tokensservice.getInstance() {
-    _instance = Tokensservice._();
-
-    return _instance;
-  }
+class Token_dataAcess {
   init() async {
     tokenscollection = DbCollection(db, "tokens");
   }

@@ -1,4 +1,5 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import '../consts.dart';
 
@@ -24,5 +25,20 @@ class Tokenmiddleware {
       print("Cannot check Token"); // ex: invalid signature
     }
     return null;
+  }
+
+  static String? CreateJWToken(ObjectId Playerid) {
+    try {
+      final jwt = JWT(
+        {
+          'playerid': Playerid,
+        },
+        issuer: 'https://github.com/jonasroussel/dart_jsonwebtoken',
+      );
+
+      return jwt.sign(SecretKey(SECRET_SAUCE));
+    } catch (e) {
+      print("Problem to create jwt token");
+    }
   }
 }

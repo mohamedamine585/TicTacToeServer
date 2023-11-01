@@ -44,6 +44,9 @@ test_authandgameserver(
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
+                if (message0 == "Opponent found !") {
+                  player0.close();
+                }
               }, onDone: () {
                 player0.close();
               });
@@ -79,6 +82,7 @@ test_authandgameserver(
               message0 = "Opponent found !";
               player1.listen((event) {
                 expect(jsonDecode(event)["message"], "Opponent found !");
+                player1.close();
               }, onDone: () {
                 player1.close();
               });
@@ -98,6 +102,159 @@ test_authandgameserver(
           expect(jsonDecode(response.body)["message"], "player deleted");
         });
       }
+    });
+    group("Change Name", () {
+      group(' **************    Player    *************** ', () {
+        var token0;
+        message0 = "Room created";
+
+        test('Signup', () async {
+          var response = await post(
+              Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
+              body: json.encode({"playername": "kasif", "password": "kasif"}));
+          expect(jsonDecode(response.body)["message"], "Player is signed up");
+        });
+
+        test('First Signin', () async {
+          var response = await get(
+            Uri.parse(
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=kasif'),
+          );
+          token0 = jsonDecode(response.body)["token"];
+          expect(jsonDecode(response.body)["message"], "Player is signed in");
+        });
+
+        test('First Ask To Play ', () async {
+          WebSocket player0 = await WebSocket.connect(
+              'ws://$HOST_GAME:$PORT_GAME',
+              headers: {"token": token0});
+          player0.listen((event) {
+            expect(jsonDecode(event)["message"], message0);
+            if (message0 == "Room created") {
+              player0.close();
+            }
+          }, onDone: () {
+            player0.close();
+          });
+          test('Update Name', () async {
+            var response = await put(
+                Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
+                body: json.encode({
+                  "playername": "kasif",
+                  "password": "kasif",
+                  "new_name": "Kasif"
+                }));
+            token0 = jsonDecode(response.body)["token"];
+            expect(jsonDecode(response.body)["message"],
+                "playername changed to Kasif");
+          });
+          test('Second Ask To Play ', () async {
+            try {
+              player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
+                  headers: {"token": token0});
+            } catch (e) {
+              expect(e.toString().isNotEmpty, true);
+            }
+          });
+          test('Second Signin', () async {
+            var response = await get(
+              Uri.parse(
+                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=Kasif&password=kasif'),
+            );
+            token0 = jsonDecode(response.body)["token"];
+            expect(jsonDecode(response.body)["message"], "Player is signed in");
+          });
+          test('Third Ask To Play ', () async {
+            WebSocket player0 = await WebSocket.connect(
+                'ws://$HOST_GAME:$PORT_GAME',
+                headers: {"token": token0});
+            player0.listen((event) {
+              expect(jsonDecode(event)["message"], message0);
+              if (message0 == "Room created") {
+                player0.close();
+              }
+            }, onDone: () {
+              player0.close();
+            });
+          });
+        });
+      });
+    });
+    group("Change Password", () {
+      group(' **************    Player    *************** ', () {
+        var token0;
+        message0 = "Room created";
+
+        test('Signup', () async {
+          var response = await post(
+              Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
+              body: json.encode({"playername": "kasif", "password": "kasif"}));
+          expect(jsonDecode(response.body)["message"], "Player is signed up");
+        });
+
+        test('First Signin', () async {
+          var response = await get(
+            Uri.parse(
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=kasif'),
+          );
+          token0 = jsonDecode(response.body)["token"];
+          expect(jsonDecode(response.body)["message"], "Player is signed in");
+        });
+
+        test('First Ask To Play ', () async {
+          WebSocket player0 = await WebSocket.connect(
+              'ws://$HOST_GAME:$PORT_GAME',
+              headers: {"token": token0});
+          player0.listen((event) {
+            expect(jsonDecode(event)["message"], message0);
+            if (message0 == "Room created") {
+              player0.close();
+            }
+          }, onDone: () {
+            player0.close();
+          });
+          test('Update Name', () async {
+            var response = await put(
+                Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
+                body: json.encode({
+                  "playername": "kasif",
+                  "password": "kasif",
+                  "new_password": "Kasif"
+                }));
+            token0 = jsonDecode(response.body)["token"];
+            expect(jsonDecode(response.body)["message"], "password changed");
+          });
+          test('Second Ask To Play ', () async {
+            try {
+              player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
+                  headers: {"token": token0});
+            } catch (e) {
+              expect(e.toString().isNotEmpty, true);
+            }
+          });
+          test('Second Signin', () async {
+            var response = await get(
+              Uri.parse(
+                  'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=kasif&password=Kasif'),
+            );
+            token0 = jsonDecode(response.body)["token"];
+            expect(jsonDecode(response.body)["message"], "Player is signed in");
+          });
+          test('Third Ask To Play ', () async {
+            WebSocket player0 = await WebSocket.connect(
+                'ws://$HOST_GAME:$PORT_GAME',
+                headers: {"token": token0});
+            player0.listen((event) {
+              expect(jsonDecode(event)["message"], message0);
+              if (message0 == "Room created") {
+                player0.close();
+              }
+            }, onDone: () {
+              player0.close();
+            });
+          });
+        });
+      });
     });
   });
 }

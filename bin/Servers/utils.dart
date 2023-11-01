@@ -2,7 +2,7 @@ import '../Core/Modules/Player_Room.dart';
 
 String? checkWin(Play_room play_room) {
   bool checkRowColDiagonal(String a, String b, String c) {
-    return a == b && b == c && a != ".";
+    return a == b && b == c && a != "null";
   }
 
   // Check rows

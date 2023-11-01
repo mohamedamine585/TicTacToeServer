@@ -1,24 +1,11 @@
 import 'package:mongo_dart/mongo_dart.dart';
-
 import '../../Core/Modules/Player.dart';
-import '../../Controllers/Authservercontroller.dart';
-import '../../Controllers/Gameservercontroller.dart';
-import '../../utils.dart';
+import '../../Services/Tokensservice.dart';
 import '../../consts.dart';
-import 'Tokensservice.dart';
+import '../../middleware/tokenmiddleware.dart';
+import '../../utils.dart';
 
-class Authservice {
-  static Authservice _instance = Authservice.getInstance();
-
-  // Private constructor to prevent external instantiation
-  Authservice._();
-
-  factory Authservice.getInstance() {
-    _instance = Authservice._();
-
-    return _instance;
-  }
-
+class Auth_dataAcess {
   init() async {
     playerscollection = DbCollection(db, "players");
   }
@@ -115,8 +102,7 @@ class Authservice {
           .eq("password", hashIT(old_password)));
       if (doc?.isNotEmpty ?? false) {
         String? new_token = await Tokensservice.getInstance().store_token(
-            token: Authserver_Controller.CreateJWToken(doc!["_id"]),
-            Id: doc["_id"]);
+            token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
 
         if (new_token != null) {
           await playerscollection.updateOne(where.id(doc["_id"]),
@@ -141,8 +127,7 @@ class Authservice {
           await playerscollection.findOne(where.eq("playername", new_name));
       if ((docX?.isEmpty ?? true) && (doc?.isNotEmpty ?? false)) {
         String? new_token = await Tokensservice.getInstance().store_token(
-            token: Authserver_Controller.CreateJWToken(doc!["_id"]),
-            Id: doc["_id"]);
+            token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
         if (new_token != null) {
           final res = await playerscollection.update(
               where.id(doc["_id"]), modify.set("playername", new_name));

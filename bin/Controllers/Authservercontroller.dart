@@ -1,13 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:mongo_dart/mongo_dart.dart';
-
 import '../Core/Modules/Player.dart';
-import '../Data/Services/Authservice.dart';
-import '../Data/Services/Tokensservice.dart';
-import '../consts.dart';
+import '../Services/Authservice.dart';
+import '../Services/Tokensservice.dart';
+import '../middleware/tokenmiddleware.dart';
 
 class Authserver_Controller {
   static Signup(HttpRequest request) async {
@@ -33,7 +30,7 @@ class Authserver_Controller {
           request.uri.queryParameters["playername"]!,
           request.uri.queryParameters["password"]!);
       if (player != null) {
-        String token = CreateJWToken(player.Id);
+        String token = Tokenmiddleware.CreateJWToken(player.Id)!;
         await Tokensservice.getInstance()
             .store_token(token: token, Id: player.Id);
 
@@ -106,8 +103,8 @@ class Authserver_Controller {
             playername: player.playername,
             password: Jsonrequest["password"],
             new_name: Jsonrequest["new_name"])) {
-          String? new_token = await Tokensservice.getInstance()
-              .store_token(token: CreateJWToken(player.Id), Id: player.Id);
+          String? new_token = await Tokensservice.getInstance().store_token(
+              token: Tokenmiddleware.CreateJWToken(player.Id)!, Id: player.Id);
           if (new_token != null) {
             request.response.write(json.encode({
               "message": "playername changed to ${Jsonrequest["new_name"]}",
@@ -127,21 +124,6 @@ class Authserver_Controller {
       }
     } catch (e) {
       print("Cannot change name !");
-    }
-  }
-
-  static CreateJWToken(ObjectId Playerid) {
-    try {
-      final jwt = JWT(
-        {
-          'playerid': Playerid,
-        },
-        issuer: 'https://github.com/jonasroussel/dart_jsonwebtoken',
-      );
-
-      return jwt.sign(SecretKey(SECRET_SAUCE));
-    } catch (e) {
-      print("Problem to create jwt token");
     }
   }
 }

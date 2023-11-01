@@ -1,22 +1,10 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../Core/Modules/Player_Room.dart';
-import '../../utils.dart';
+import '../../Services/Authservice.dart';
 import '../../consts.dart';
-import 'Authservice.dart';
-import 'Tokensservice.dart';
 
-class PlayRoomService {
-  static PlayRoomService _instance = PlayRoomService.getInstance();
-
-  // Private constructor to prevent external instantiation
-  PlayRoomService._();
-
-  factory PlayRoomService.getInstance() {
-    _instance = PlayRoomService._();
-
-    return _instance;
-  }
+class Playroom_dataAcess {
   init() async {
     playroomscollection = DbCollection(db, "playrooms");
   }
@@ -40,7 +28,7 @@ class PlayRoomService {
             where.id(play_room.roomid!),
             modify
                 .set("end", Timestamp(DateTime.now().second))
-                .set("winner", play_room.hand));
+                .set("winner", (play_room.hand == null) ? -1 : play_room.hand));
       } else {
         await playroomscollection.update(where.id(play_room.roomid!),
             modify.set("end", Timestamp(DateTime.now().second)));
