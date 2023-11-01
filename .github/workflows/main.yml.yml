@@ -3,7 +3,7 @@ name: Dart Test
 on:
   push:
     branches:
-      - develop  # Adjust the branch name as needed
+      - feature 
 
 jobs:
   
@@ -48,10 +48,8 @@ jobs:
           run: |
             if [dart test test/server_test.dart]; then
               echo "Tests passed. Pushing to develop..."
-              git push origin feature:develop
-              else
-            echo "Tests failed. Pushing to feature..."
-            git push origin feature
+              git push origin develop
+            
             fi
             
           env:
