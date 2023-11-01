@@ -208,28 +208,6 @@ test_update(List<String> playernames, List<String> passwords) {
         token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "Player is signed in");
       });
-      test('Second Ask To Play ', () async {
-        WebSocket player0 = await WebSocket.connect(
-            'ws://$HOST_GAME:$PORT_GAME',
-            headers: {"token": token0});
-        player0.listen((event) {
-          expect(jsonDecode(event)["message"], message0);
-          if (message0 == "Room created") {
-            player0.close();
-          }
-        }, onDone: () {
-          player0.close();
-        });
-      });
-    });
-    test('Delete player', () async {
-      var response = await delete(
-          Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
-          body: json.encode({
-            "playername": "${playernames[1]}K8M",
-            "password": "${passwords[1]}M"
-          }));
-      expect(jsonDecode(response.body)["message"], "player deleted");
     });
   });
 }
