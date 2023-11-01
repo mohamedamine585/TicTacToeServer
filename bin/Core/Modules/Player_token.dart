@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-import 'Player.dart';
-
 class Player_Socket {
   WebSocket socket;
   ObjectId Id;

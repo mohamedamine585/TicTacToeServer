@@ -13,6 +13,7 @@ test_authandgameserver(
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
         group('********** Test case $i **************', () {
+          late WebSocket player0, player1;
           group(' **************    Player ${i / 2} 0    *************** ', () {
             var token0;
             message0 = "Room created";
@@ -39,14 +40,10 @@ test_authandgameserver(
             });
 
             test('Ask To Play 0', () async {
-              WebSocket player0 = await WebSocket.connect(
-                  'ws://$HOST_GAME:$PORT_GAME',
+              player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token0});
               player0.listen((event) {
                 expect(jsonDecode(event)["message"], message0);
-                if (message0 == "Opponent found !") {
-                  player0.close();
-                }
               }, onDone: () {
                 player0.close();
               });
@@ -76,25 +73,26 @@ test_authandgameserver(
             });
 
             test('Ask To Play 1', () async {
-              WebSocket player1 = await WebSocket.connect(
-                  'ws://$HOST_GAME:$PORT_GAME',
+              player1 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token1});
               message0 = "Opponent found !";
               player1.listen((event) {
                 expect(jsonDecode(event)["message"], "Opponent found !");
-                player1.close();
               }, onDone: () {
                 player1.close();
               });
             });
           });
+          player0.close();
+          player1.close();
         });
+
         i++;
       }
     });
     group('Delete players', () {
       for (int i = 1; i < playernames.length - 1; i++) {
-        test('test name', () async {
+        test('delete player', () async {
           var response = await delete(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
               body: json.encode(
@@ -103,6 +101,7 @@ test_authandgameserver(
         });
       }
     });
+
     group("Change Name", () {
       WebSocket player0;
       group(' **************    Player    *************** ', () {
@@ -113,7 +112,7 @@ test_authandgameserver(
           var response = await post(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
               body: json.encode({
-                "playername": "${playernames[1]}",
+                "playername": "${playernames[1]}K8",
                 "password": "${passwords[1]}"
               }));
           expect(jsonDecode(response.body)["message"], "Player is signed up");
@@ -122,7 +121,7 @@ test_authandgameserver(
         test('First Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}&password=${passwords[1]}'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8&password=${passwords[1]}'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -144,9 +143,9 @@ test_authandgameserver(
           var response =
               await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
                   body: json.encode({
-                    "playername": "${playernames[1]}",
+                    "playername": "${playernames[1]}K8",
                     "password": "${passwords[1]}",
-                    "new_name": "${playernames[1]}M"
+                    "new_name": "${playernames[1]}K8M"
                   }));
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"],
@@ -164,7 +163,7 @@ test_authandgameserver(
         test('Second Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -192,7 +191,7 @@ test_authandgameserver(
         test('First Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -214,7 +213,7 @@ test_authandgameserver(
           var response = await put(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
               body: json.encode({
-                "playername": "${playernames[1]}M",
+                "playername": "${playernames[1]}K8M",
                 "password": "${passwords[1]}",
                 "new_password": "${passwords[1]}M"
               }));
@@ -232,7 +231,7 @@ test_authandgameserver(
         test('Second Signin', () async {
           var response = await get(
             Uri.parse(
-                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}M&password=${passwords[1]}M'),
+                'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}M'),
           );
           token0 = jsonDecode(response.body)["token"];
           expect(jsonDecode(response.body)["message"], "Player is signed in");
@@ -250,6 +249,15 @@ test_authandgameserver(
             player0.close();
           });
         });
+      });
+      test('delete player', () async {
+        var response = await delete(
+            Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
+            body: json.encode({
+              "playername": "${playernames[1]}K8M",
+              "password": "${passwords[1]}M"
+            }));
+        expect(jsonDecode(response.body)["message"], "player deleted");
       });
     });
   });
