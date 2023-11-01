@@ -250,7 +250,7 @@ test_authandgameserver(
           });
         });
       });
-      test('delete player', () async {
+      test('Delete player', () async {
         var response = await delete(
             Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
             body: json.encode({
