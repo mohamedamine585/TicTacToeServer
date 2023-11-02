@@ -1,7 +1,7 @@
 import 'package:crypt/crypt.dart';
-import 'Servers/Gameserver/game_server.dart';
-import 'Data/Mongo/MongoDb.dart';
-import 'Servers/Authserver/authserver.dart';
+import '../Servers/Gameserver/game_server.dart';
+import '../Data/Mongo/MongoDb.dart';
+import '../Servers/Authserver/authserver.dart';
 
 String hashIT(String psw) {
   return Crypt.sha256(psw, salt: "salt&&&").hash;

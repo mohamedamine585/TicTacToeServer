@@ -3,7 +3,7 @@ import 'dart:io';
 
 import '../../../bin/Core/Modules/Player.dart';
 import '../../../bin/Core/Modules/Player_Room.dart';
-import '../../consts.dart';
+import '../../utils/consts.dart';
 import '../../Controllers/Gameservercontroller.dart';
 
 class GameServer {

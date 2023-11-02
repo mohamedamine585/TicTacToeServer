@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 
 import 'package:test/test.dart';
 
-import '../bin/consts.dart';
+import '../bin/utils/consts.dart';
 
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {

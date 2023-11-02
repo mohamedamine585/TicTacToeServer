@@ -1,5 +1,5 @@
 import '../../Core/Modules/Player_Room.dart';
-import '../../Core/Repositories/Playroom_repo.dart';
+import '../../Core/Interface/Playroom_repo.dart';
 import '../../Services/PlayRoomService.dart';
 
 class Play_room_repo_impl implements Play_room_repository {

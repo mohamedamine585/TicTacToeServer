@@ -1,5 +1,5 @@
 import 'Servers/Authserver/authserver.dart';
-import 'utils.dart';
+import 'utils/utils.dart';
 
 void main() async {
   await init(dbname);

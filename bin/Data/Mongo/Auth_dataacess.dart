@@ -1,11 +1,12 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import '../../Core/Modules/Player.dart';
 import '../../Services/Tokensservice.dart';
-import '../../consts.dart';
+import '../../utils/consts.dart';
 import '../../middleware/tokenmiddleware.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
+import '../Interface/Auth.dataacess.dart';
 
-class Auth_dataAcess {
+class Mongo_Auth_dataAcess implements Auth_dataAcess {
   init() async {
     playerscollection = DbCollection(db, "players");
   }

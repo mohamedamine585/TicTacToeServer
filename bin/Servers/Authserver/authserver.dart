@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import '../../consts.dart';
+import '../../utils/consts.dart';
 import '../../Controllers/Authservercontroller.dart';
 
 class AuthServer {
