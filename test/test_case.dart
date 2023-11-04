@@ -9,6 +9,7 @@ import '../bin/utils/consts.dart';
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {
   var message0;
+  List<String> tokens = [];
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
@@ -35,6 +36,7 @@ test_authandgameserver(
                     'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&password=${passwords[i]}'),
               );
               token0 = jsonDecode(response.body)["token"];
+              tokens.add(token0);
               expect(
                   jsonDecode(response.body)["message"], "Player is signed in");
             });
@@ -68,6 +70,7 @@ test_authandgameserver(
                     'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i + 1]}&password=${passwords[i + 1]}'),
               );
               token1 = jsonDecode(response.body)["token"];
+              tokens.add(token1);
               expect(
                   jsonDecode(response.body)["message"], "Player is signed in");
             });
@@ -93,6 +96,7 @@ test_authandgameserver(
         test('delete player', () async {
           var response = await delete(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
+              headers: {"token": tokens[i]},
               body: json.encode(
                   {"playername": playernames[i], "password": passwords[i]}));
           expect(jsonDecode(response.body)["message"], "player deleted");
@@ -133,6 +137,7 @@ test_authandgameserver(
                   "password": "${passwords[1]}",
                   "new_name": "${playernames[1]}K8M"
                 }));
+        token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}K8M");
       });
