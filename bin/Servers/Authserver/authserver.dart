@@ -39,7 +39,7 @@ class AuthServer {
             if (authrequest.uri.path == '/Signup/') {
               if ((await Requestmiddleware.check_request_bodyFormat(
                   request: authrequest, Jsonrequest: body))) {
-                await Authserver_Controller.Signup(authrequest);
+                await Authserver_Controller.Signup(authrequest, body);
               } else {
                 authrequest.response
                     .write(json.encode({"error": "Cannot check request body"}));

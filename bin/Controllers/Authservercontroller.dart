@@ -7,12 +7,10 @@ import '../Services/Tokensservice.dart';
 import '../middleware/tokenmiddleware.dart';
 
 class Authserver_Controller {
-  static Signup(HttpRequest request) async {
+  static Signup(HttpRequest request, dynamic body) async {
     try {
-      var Jsonrequest = json.decode(await utf8.decodeStream(request));
-
       final player = await Authservice.getInstance()
-          .Signup(Jsonrequest["playername"], Jsonrequest["password"]);
+          .Signup(body["playername"], body["password"]);
 
       if (player != null) {
         request.response.write(json.encode({"message": "Player is signed up"}));

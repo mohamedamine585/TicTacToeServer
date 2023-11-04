@@ -30,7 +30,7 @@ class Requestmiddleware {
 
         case "POST":
           switch (request.uri.path) {
-            case "/ChangeName/":
+            case "/Signup/":
               if ((Jsonrequest["playername"] != null) &&
                   (Jsonrequest["password"] != null)) {
                 return true;
