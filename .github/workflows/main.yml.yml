@@ -22,19 +22,14 @@ jobs:
         - name: Build auth Container 
           run:  docker build  -t authserver -f Dockerfile.authserver .       
         
-        - name: Run Docker auth container 
-        
-          
-          run: BG_PID0=$! docker run -p 8081:8081 authserver &
-          shell: bash
-
+      
         - name: Build game Container
           run:  docker build  -t gameserver -f Dockerfile.gameserver .       
         
-        - name: Run Docker game container 
+        - name: Run both containers
         
           
-          run: BG_PID1=$! docker run -p 8080:8080 gameserver &
+          run: docker-compose up &
           shell: bash
 
 
