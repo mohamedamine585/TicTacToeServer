@@ -4,9 +4,9 @@ import 'test_case.dart';
 
 void main() {
   String? prefix = DateTime.now().toString();
-  List<String> playernames = generateNames(10, prefix);
-  List<String> passwords = generatePasswords(10);
-  test_authandgameserver(playernames, passwords, 10);
+  List<String> playernames = generateNames(1000, prefix);
+  List<String> passwords = generatePasswords(1000);
+  test_authandgameserver(playernames, passwords, 1000);
 }
 
 List<String> generateNames(int count, String prefix) {
