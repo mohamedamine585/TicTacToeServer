@@ -1,10 +1,10 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../consts.dart';
+import '../utils/consts.dart';
 
 class Tokenmiddleware {
-  static Future<String?> Check_Token(String? token) async {
+  static String? Check_Token(String? token) {
     try {
       if (token == null) {
         print("Invalid token");

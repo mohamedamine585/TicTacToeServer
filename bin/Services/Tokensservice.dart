@@ -54,6 +54,10 @@ class Tokensservice {
     return await TokenDataservice.fetch_token(token: token);
   }
 
+  Future<String?> fetch_nonfree_token({required String token}) async {
+    return await TokenDataservice.fetch_nonfree_token(token: token);
+  }
+
   Future<String?> fetch_token_free_byId({required ObjectId id}) async {
     return await TokenDataservice.fetch_token_free_byId(id: id);
   }

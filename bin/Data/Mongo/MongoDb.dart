@@ -1,11 +1,12 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../consts.dart';
+import '../utils.dart';
 import '../../Services/Authservice.dart';
 import '../../Services/PlayRoomService.dart';
 import '../../Services/Tokensservice.dart';
+import '../Interface/Db.dart';
 
-class Dbservice {
+class Dbservice implements DB {
   static Dbservice _instance = Dbservice.getInstance();
 
   // Private constructor to prevent external instantiation
