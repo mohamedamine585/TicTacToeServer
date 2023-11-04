@@ -239,11 +239,11 @@ test_gameserverload(
             });
 
             test('Signin', () async {
+              print("object");
               var response = await get(
                 Uri.parse(
                     'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[i]}&password=${passwords[i]}'),
               );
-              print("object");
               token0 = jsonDecode(response.body)["token"];
               tokens.add(token0);
               expect(
