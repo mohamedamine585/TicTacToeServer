@@ -3,10 +3,11 @@ import 'dart:math';
 import 'test_case.dart';
 
 void main() {
+  int playersnb = 10000;
   String? prefix = DateTime.now().toString();
-  List<String> playernames = generateNames(100, prefix);
-  List<String> passwords = generatePasswords(100);
-  test_gameserverload(playernames, passwords, 100);
+  List<String> playernames = generateNames(playersnb, prefix);
+  List<String> passwords = generatePasswords(playersnb);
+  test_gameserverload(playernames, passwords, playersnb);
 }
 
 List<String> generateNames(int count, String prefix) {
