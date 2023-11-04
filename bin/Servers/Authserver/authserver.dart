@@ -22,7 +22,6 @@ class AuthServer {
         authrequest.response.headers.contentType = ContentType.json;
         authrequest.response.headers
             .add(HttpHeaders.contentTypeHeader, "application/json");
-        var body = json.decode(await utf8.decodeStream(authrequest));
         switch (authrequest.method) {
           case 'GET':
             if (authrequest.uri.path == '/Signin/') {
@@ -36,6 +35,8 @@ class AuthServer {
 
             break;
           case 'POST':
+            var body = json.decode(await utf8.decodeStream(authrequest));
+
             if (authrequest.uri.path == '/Signup/') {
               if ((await Requestmiddleware.check_request_bodyFormat(
                   request: authrequest, Jsonrequest: body))) {
@@ -52,6 +53,8 @@ class AuthServer {
 
             break;
           case 'PUT':
+            var body = json.decode(await utf8.decodeStream(authrequest));
+
             if ((await Requestmiddleware.check_request_token(
                 request: authrequest))) {
               if ((await Requestmiddleware.check_request_bodyFormat(
