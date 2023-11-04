@@ -8,17 +8,16 @@ import '../bin/utils/consts.dart';
 
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {
-  var message0;
   List<String> tokens = [];
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
         group('********** Test case $i **************', () {
           WebSocket player0, player1;
+          var token0;
+          var step = 0;
+          var message0 = "Room created";
           group(' **************    Player ${i / 2} 0    *************** ', () {
-            var token0;
-            message0 = "Room created";
-
             test('Signup', () async {
               var response = await post(
                   Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
@@ -45,7 +44,31 @@ test_authandgameserver(
               player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token0});
               player0.listen((event) {
-                expect(jsonDecode(event)["message"], message0);
+                if (jsonDecode(event)["hand"] == null) {
+                  expect(jsonDecode(event)["message"], message0);
+                  message0 = "";
+                }
+                if (jsonDecode(event)["hand"] == 0) {
+                  switch (step) {
+                    case 0:
+                      player0.add("0 0");
+                      step++;
+                      break;
+                    case 1:
+                      player0.add("1 0");
+                      step++;
+                      break;
+                    case 2:
+                      player0.add("2 0");
+                      step++;
+                      break;
+                    default:
+                  }
+                  if (step == 3) {
+                    expect(
+                        jsonDecode(event)["message"], "Player 0 is The Winner");
+                  }
+                }
               }, onDone: () {
                 player0.close();
               });
@@ -80,7 +103,16 @@ test_authandgameserver(
                   headers: {"token": token1});
               message0 = "Opponent found !";
               player1.listen((event) {
-                expect(jsonDecode(event)["message"], "Opponent found !");
+                if (message0 == "Opponent found !") {
+                  expect(jsonDecode(event)["message"], "Opponent found !");
+                }
+                if (step == 3) {
+                  expect(
+                      jsonDecode(event)["message"], "Player 0 is The Winner");
+                }
+                if (jsonDecode(event)["hand"] == 1) {
+                  player1.add("1 1");
+                }
               }, onDone: () {
                 player1.close();
               });
