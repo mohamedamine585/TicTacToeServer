@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import '../../utils/consts.dart';
 import '../../Controllers/Authservercontroller.dart';
+import '../../middleware/requestmiddleware.dart';
 
 class AuthServer {
   static late HttpServer server;
@@ -43,26 +44,36 @@ class AuthServer {
 
             break;
           case 'PUT':
-            if (authrequest.uri.path == '/ChangePassword/') {
-              await Authserver_Controller.Change_Password(authrequest);
-            } else if (authrequest.uri.path == '/ChangeName/') {
-              await Authserver_Controller.Change_name(authrequest);
-            } else if (authrequest.uri.path == '/Signout') {
-              ///
-              ///
-              ///
+            if ((await Requestmiddleware.check_request(request: authrequest))) {
+              if (authrequest.uri.path == '/ChangePassword/') {
+                await Authserver_Controller.Change_Password(authrequest);
+              } else if (authrequest.uri.path == '/ChangeName/') {
+                await Authserver_Controller.Change_name(authrequest);
+              } else if (authrequest.uri.path == '/Signout') {
+                ///
+                ///
+                ///
+              } else {
+                authrequest.response.write(
+                    json.encode({"error": "no such path with method request"}));
+              }
             } else {
-              authrequest.response.write(
-                  json.encode({"error": "no such path with method request"}));
+              authrequest.response
+                  .write(json.encode({"error": "Invalid token"}));
             }
             authrequest.response.close();
             break;
           case 'DELETE':
-            if (authrequest.uri.path == '/Delete/') {
-              await Authserver_Controller.Delete_player(authrequest);
+            if ((await Requestmiddleware.check_request(request: authrequest))) {
+              if (authrequest.uri.path == '/Delete/') {
+                await Authserver_Controller.Delete_player(authrequest);
+              } else {
+                authrequest.response.write(
+                    json.encode({"error": "no such path with method request"}));
+              }
             } else {
-              authrequest.response.write(
-                  json.encode({"error": "no such path with method request"}));
+              authrequest.response
+                  .write(json.encode({"error": "Invalid token"}));
             }
             authrequest.response.close();
             break;

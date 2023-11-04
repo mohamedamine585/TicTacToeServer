@@ -100,8 +100,8 @@ test_authandgameserver(
       }
     });
   });
+
   group("Change Name", () {
-    WebSocket player0;
     group(' **************    Player    *************** ', () {
       var token0;
 
@@ -127,6 +127,7 @@ test_authandgameserver(
       test('Update Name', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
+                headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}K8",
                   "password": "${passwords[1]}",
@@ -139,6 +140,7 @@ test_authandgameserver(
       test('Update Password', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
+                headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}K8M",
                   "password": "${passwords[1]}",
@@ -157,7 +159,8 @@ test_authandgameserver(
       });
       test('First Ask To Play ', () async {
         try {
-          player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
+          WebSocket player0 = await WebSocket.connect(
+              'ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token0});
         } catch (e) {
           expect(e.toString().isNotEmpty, false);

@@ -2,7 +2,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 
 import '../../Core/Modules/Player.dart';
 import '../../Services/Authservice.dart';
-import '../../utils/consts.dart';
+import '../utils.dart';
 import '../../utils/utils.dart';
 import '../Interface/Token.dataacess.dart';
 
@@ -108,6 +108,17 @@ class Mongo_Token_dataAcess implements Token_dataacess {
       if (doc != null) {
         await tokenscollection.update(
             where.id(doc["_id"]), modify.set("inuse", !(doc["inuse"])));
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<String?> fetch_nonfree_token({required String token}) async {
+    try {
+      final existing = await tokenscollection.findOne(where.eq("token", token));
+      if (existing != null && existing.isNotEmpty) {
+        return token;
       }
     } catch (e) {
       print(e);
