@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart';
+import 'package:mongo_dart/mongo_dart.dart';
 
 import 'package:test/test.dart';
 
@@ -212,6 +213,7 @@ test_gameserverload(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
   var message0;
+  DateTime start, finish;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
@@ -222,14 +224,18 @@ test_gameserverload(
           message0 = "Room created";
           group(' **************    Player ${i / 2} 0    *************** ', () {
             test('Signup', () async {
+              start = DateTime.now();
               var response = await post(
                   Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
                   body: json.encode({
                     "playername": playernames[i],
                     "password": passwords[i]
                   }));
+              finish = DateTime.now();
+
               expect(
                   jsonDecode(response.body)["message"], "Player is signed up");
+              expect(finish.difference(start) < Duration(seconds: 5), true);
             });
 
             test('Signin', () async {
@@ -244,8 +250,11 @@ test_gameserverload(
             });
 
             test('Ask To Play 0', () async {
+              start = DateTime.now();
               player0 = await WebSocket.connect('ws://$HOST_GAME:$PORT_GAME',
                   headers: {"token": token0});
+              finish = DateTime.now();
+              expect(finish.difference(start) < Duration(seconds: 5), true);
               player0.listen((event) {
                 if (jsonDecode(event)["hand"] == null) {
                   expect(jsonDecode(event)["message"], message0);
@@ -342,6 +351,7 @@ test_gameserverload(
       });
 
       test('Update Name', () async {
+        start = DateTime.now();
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
                 headers: {"token": token0},
@@ -350,7 +360,9 @@ test_gameserverload(
                   "password": "${passwords[1]}",
                   "new_name": "${playernames[1]}K8M"
                 }));
+        finish = DateTime.now();
         token1 = jsonDecode(response.body)["token"];
+        expect(finish.difference(start) < Duration(seconds: 5), true);
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}K8M");
       });
