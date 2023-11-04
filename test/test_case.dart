@@ -96,7 +96,7 @@ test_authandgameserver(
         test('delete player', () async {
           var response = await delete(
               Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Delete/'),
-              headers: {"token": tokens[i]},
+              headers: {"token": tokens[i - 1]},
               body: json.encode(
                   {"playername": playernames[i], "password": passwords[i]}));
           expect(jsonDecode(response.body)["message"], "player deleted");
