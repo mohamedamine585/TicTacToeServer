@@ -22,6 +22,7 @@ class AuthServer {
         authrequest.response.headers.contentType = ContentType.json;
         authrequest.response.headers
             .add(HttpHeaders.contentTypeHeader, "application/json");
+        var body = json.decode(await utf8.decodeStream(authrequest));
         switch (authrequest.method) {
           case 'GET':
             if (authrequest.uri.path == '/Signin/') {
@@ -35,7 +36,10 @@ class AuthServer {
             break;
           case 'POST':
             if (authrequest.uri.path == '/Signup/') {
-              await Authserver_Controller.Signup(authrequest);
+              if ((await Requestmiddleware.check_request_bodyFormat(
+                  request: authrequest, Jsonrequest: body))) {
+                await Authserver_Controller.Signup(authrequest);
+              }
             } else {
               authrequest.response.write(
                   json.encode({"error": "no such path with method request"}));
@@ -44,11 +48,14 @@ class AuthServer {
 
             break;
           case 'PUT':
-            if ((await Requestmiddleware.check_request(request: authrequest))) {
+            if ((await Requestmiddleware.check_request_token(
+                    request: authrequest) &&
+                (await Requestmiddleware.check_request_bodyFormat(
+                    request: authrequest, Jsonrequest: body)))) {
               if (authrequest.uri.path == '/ChangePassword/') {
-                await Authserver_Controller.Change_Password(authrequest);
+                await Authserver_Controller.Change_Password(authrequest, body);
               } else if (authrequest.uri.path == '/ChangeName/') {
-                await Authserver_Controller.Change_name(authrequest);
+                await Authserver_Controller.Change_name(authrequest, body);
               } else if (authrequest.uri.path == '/Signout') {
                 ///
                 ///
@@ -64,7 +71,8 @@ class AuthServer {
             authrequest.response.close();
             break;
           case 'DELETE':
-            if ((await Requestmiddleware.check_request(request: authrequest))) {
+            if ((await Requestmiddleware.check_request_token(
+                request: authrequest))) {
               if (authrequest.uri.path == '/Delete/') {
                 await Authserver_Controller.Delete_player(authrequest);
               } else {
