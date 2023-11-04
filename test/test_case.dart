@@ -169,7 +169,7 @@ test_authandgameserver(
               'ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token1});
         } catch (e) {
-          expect(e.toString().isNotEmpty, true);
+          expect(e.toString().isNotEmpty, false);
         }
       });
     });
