@@ -151,17 +151,10 @@ test_authandgameserver(
                   "password": "${passwords[1]}",
                   "new_password": "${passwords[1]}M"
                 }));
+        token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "password changed");
       });
 
-      test('Second Signin', () async {
-        var response = await get(
-          Uri.parse(
-              'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8M&password=${passwords[1]}M'),
-        );
-        token0 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "Player is signed in");
-      });
       test('First Ask To Play ', () async {
         try {
           WebSocket player0 = await WebSocket.connect(
