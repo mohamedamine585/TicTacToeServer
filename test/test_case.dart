@@ -107,7 +107,7 @@ test_authandgameserver(
 
   group("Change Name", () {
     group(' **************    Player    *************** ', () {
-      var token0;
+      var token0, token1;
 
       test('Signup', () async {
         var response = await post(
@@ -137,31 +137,39 @@ test_authandgameserver(
                   "password": "${passwords[1]}",
                   "new_name": "${playernames[1]}K8M"
                 }));
-        token0 = jsonDecode(response.body)["token"];
+        token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}K8M");
       });
-
-      test('Update Password', () async {
-        var response =
-            await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
-                headers: {"token": token0},
-                body: json.encode({
-                  "playername": "${playernames[1]}K8M",
-                  "password": "${passwords[1]}",
-                  "new_password": "${passwords[1]}M"
-                }));
-        token0 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "password changed");
-      });
-
       test('First Ask To Play ', () async {
         try {
           WebSocket player0 = await WebSocket.connect(
               'ws://$HOST_GAME:$PORT_GAME',
               headers: {"token": token0});
         } catch (e) {
-          expect(e.toString().isNotEmpty, false);
+          expect(e.toString().isNotEmpty, true);
+        }
+      });
+
+      test('Update Password', () async {
+        var response =
+            await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
+                headers: {"token": token1},
+                body: json.encode({
+                  "playername": "${playernames[1]}K8M",
+                  "password": "${passwords[1]}",
+                  "new_password": "${passwords[1]}M"
+                }));
+        token1 = jsonDecode(response.body)["token"];
+        expect(jsonDecode(response.body)["message"], "password changed");
+      });
+      test('First Ask To Play ', () async {
+        try {
+          WebSocket player0 = await WebSocket.connect(
+              'ws://$HOST_GAME:$PORT_GAME',
+              headers: {"token": token1});
+        } catch (e) {
+          expect(e.toString().isNotEmpty, true);
         }
       });
     });
