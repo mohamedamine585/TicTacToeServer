@@ -163,7 +163,7 @@ test_authandgameserver(
         token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "password changed");
       });
-      test('First Ask To Play ', () async {
+      test('Second Ask To Play ', () async {
         try {
           WebSocket player0 = await WebSocket.connect(
               'ws://$HOST_GAME:$PORT_GAME',
