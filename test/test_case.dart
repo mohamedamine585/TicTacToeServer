@@ -47,7 +47,6 @@ test_authandgameserver(
               player0.listen((event) {
                 if (jsonDecode(event)["hand"] == null) {
                   expect(jsonDecode(event)["message"], message0);
-                  message0 = "";
                 }
                 if (jsonDecode(event)["hand"] == 0) {
                   switch (step) {
