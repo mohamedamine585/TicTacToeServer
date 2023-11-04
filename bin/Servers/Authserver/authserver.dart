@@ -31,6 +31,7 @@ class AuthServer {
               authrequest.response.write(
                   json.encode({"error": "no such path with method request"}));
             }
+
             authrequest.response.close();
 
             break;
@@ -39,6 +40,9 @@ class AuthServer {
               if ((await Requestmiddleware.check_request_bodyFormat(
                   request: authrequest, Jsonrequest: body))) {
                 await Authserver_Controller.Signup(authrequest);
+              } else {
+                authrequest.response
+                    .write(json.encode({"error": "Cannot check request body"}));
               }
             } else {
               authrequest.response.write(
@@ -49,20 +53,25 @@ class AuthServer {
             break;
           case 'PUT':
             if ((await Requestmiddleware.check_request_token(
-                    request: authrequest) &&
-                (await Requestmiddleware.check_request_bodyFormat(
-                    request: authrequest, Jsonrequest: body)))) {
-              if (authrequest.uri.path == '/ChangePassword/') {
-                await Authserver_Controller.Change_Password(authrequest, body);
-              } else if (authrequest.uri.path == '/ChangeName/') {
-                await Authserver_Controller.Change_name(authrequest, body);
-              } else if (authrequest.uri.path == '/Signout') {
-                ///
-                ///
-                ///
+                request: authrequest))) {
+              if ((await Requestmiddleware.check_request_bodyFormat(
+                  request: authrequest, Jsonrequest: body))) {
+                if (authrequest.uri.path == '/ChangePassword/') {
+                  await Authserver_Controller.Change_Password(
+                      authrequest, body);
+                } else if (authrequest.uri.path == '/ChangeName/') {
+                  await Authserver_Controller.Change_name(authrequest, body);
+                } else if (authrequest.uri.path == '/Signout') {
+                  ///
+                  ///
+                  ///
+                } else {
+                  authrequest.response.write(json
+                      .encode({"error": "no such path with method request"}));
+                }
               } else {
-                authrequest.response.write(
-                    json.encode({"error": "no such path with method request"}));
+                authrequest.response
+                    .write(json.encode({"error": "Cannot check request body"}));
               }
             } else {
               authrequest.response
@@ -70,6 +79,7 @@ class AuthServer {
             }
             authrequest.response.close();
             break;
+
           case 'DELETE':
             if ((await Requestmiddleware.check_request_token(
                 request: authrequest))) {
