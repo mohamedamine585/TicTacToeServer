@@ -9,6 +9,7 @@ import '../bin/utils/consts.dart';
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
+  var message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
@@ -16,7 +17,7 @@ test_authandgameserver(
           WebSocket player0, player1;
           var token0;
           var step = 0;
-          var message0 = "Room created";
+          message0 = "Room created";
           group(' **************    Player ${i / 2} 0    *************** ', () {
             test('Signup', () async {
               var response = await post(
