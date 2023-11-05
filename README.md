@@ -1,7 +1,7 @@
-A server app built using [Shelf](https://pub.dev/packages/shelf),
+A double servers app built using [dart:io] package (https://pub.dev/packages/io),
 configured to enable running with [Docker](https://www.docker.com/).
 
-This sample code handles HTTP GET requests to `/` and `/echo/<message>`
+This sample code handles HTTP POST,GET,PUT,DELETE requests to the authserver and a websocket to the gameserver.
 
 # Running the sample
 
@@ -12,15 +12,30 @@ like this:
 
 ```
 $ dart run bin/main.dart
-Server listening on port 8080
+Game server is running on 0.0.0.0 port 8080
+Auth server is running on 0.0.0.0 port 8081
 ```
 
-And then from a second terminal:
+Sign up:
 ```
-$ curl http://0.0.0.0:8080
-Hello, World!
-$ curl http://0.0.0.0:8080/echo/I_love_Dart
-I_love_Dart
+POST http://0.0.0.0:8081/Signup with body : {"palyername" : "<your name>" , "password" : "<your password>"}
+response:
+player is signed in
+
+```
+Sign up:
+```
+
+$ curl http://0.0.0.0:8081/Signin/palyername=<yourname>&password=<your password>
+response:
+player is signed in
+```
+Change Name:
+```
+
+$ curl http://0.0.0.0:8081/ChangeName with body : {"palyername" : "<your name>" , "password" : "<your password>","new_name":"<your new name>"}
+response :
+playername changed to <your new name>
 ```
 
 ## Running with Docker
@@ -40,10 +55,4 @@ $ curl http://0.0.0.0:8080
 Hello, World!
 $ curl http://0.0.0.0:8080/echo/I_love_Dart
 I_love_Dart
-```
-
-You should see the logging printed in the first terminal:
-```
-2021-05-06T15:47:04.620417  0:00:00.000158 GET     [200] /
-2021-05-06T15:47:08.392928  0:00:00.001216 GET     [200] /echo/I_love_Dart
 ```
