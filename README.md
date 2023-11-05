@@ -26,14 +26,14 @@ player is signed in
 Sign up:
 ```
 
-$ curl http://0.0.0.0:8081/Signin/palyername=<yourname>&password=<your password>
+$ GET http://0.0.0.0:8081/Signin/palyername=<yourname>&password=<your password>
 response:
 player is signed in
 ```
 Change Name:
 ```
 
-$ curl http://0.0.0.0:8081/ChangeName with body : {"palyername" : "<your name>" , "password" : "<your password>","new_name":"<your new name>"}
+$ PUT http://0.0.0.0:8081/ChangeName with body : {"palyername" : "<your name>" , "password" : "<your password>","new_name":"<your new name>"}
 response :
 playername changed to <your new name>
 ```
