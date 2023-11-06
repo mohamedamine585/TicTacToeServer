@@ -25,7 +25,13 @@ class AuthServer {
         switch (authrequest.method) {
           case 'GET':
             if (authrequest.uri.path == '/Signin/') {
-              await Authserver_Controller.Signin(authrequest);
+              if (await Requestmiddleware.check_signinRequest(
+                  request: authrequest)) {
+                await Authserver_Controller.Signin(authrequest);
+              } else {
+                authrequest.response.write(
+                    json.encode({"error": "Invalid request parameters"}));
+              }
             } else {
               authrequest.response.write(
                   json.encode({"error": "no such path with method request"}));

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import '../Services/Tokensservice.dart';
@@ -43,6 +42,17 @@ class Requestmiddleware {
       }
     } catch (e) {
       print("Cannot check Body format !");
+    }
+    return false;
+  }
+
+  static Future<bool> check_signinRequest(
+      {required HttpRequest request}) async {
+    try {
+      return request.headers.value("playername") != null &&
+          request.headers.value("password") != null;
+    } catch (e) {
+      print("Cannot check sign in params");
     }
     return false;
   }
