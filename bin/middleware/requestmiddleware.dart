@@ -49,9 +49,8 @@ class Requestmiddleware {
   static Future<bool> check_signinRequest(
       {required HttpRequest request}) async {
     try {
-      return request.uri.queryParameters.keys.first == "playername" &&
-          request.uri.queryParameters.keys.elementAt(1) == "password" &&
-          request.uri.queryParameters.keys.elementAt(2) == "";
+      return request.uri.queryParameters["playername"] != null &&
+          request.uri.queryParameters["password"] != null;
     } catch (e) {
       print("Cannot check sign in params");
     }
