@@ -50,9 +50,7 @@ class Requestmiddleware {
       {required HttpRequest request}) async {
     try {
       return request.uri.queryParameters["playername"] != null &&
-          request.uri.queryParameters["password"] != null &&
-          request.uri.queryParameters.values.elementAt(2) !=
-              null; // this is madness
+          request.uri.queryParameters["password"] != null ;
     } catch (e) {
       print("Cannot check sign in params");
     }
