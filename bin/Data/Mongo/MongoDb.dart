@@ -18,6 +18,7 @@ class Dbservice implements DB {
     return _instance;
   }
 
+  @override
   Future<void> init(String dbname) async {
     db = await Db.create(
         "mongodb+srv://mohamedamine:medaminetlili123@cluster0.qf8cb49.mongodb.net/$dbname");

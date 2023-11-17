@@ -40,5 +40,6 @@ class Tokenmiddleware {
     } catch (e) {
       print("Problem to create jwt token");
     }
+    return null;
   }
 }

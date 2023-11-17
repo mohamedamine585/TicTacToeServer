@@ -23,9 +23,9 @@ class GameServer {
     await init();
     await Gameserver_controller.init_tokens_state();
     try {
-      server.listen((HttpRequest play_request) async {
+      server.listen((HttpRequest playRequest) async {
         try {
-          await Gameserver_controller.DealWithRequest(play_request);
+          await Gameserver_controller.DealWithRequest(playRequest);
         } catch (e) {
           print("Error");
         }

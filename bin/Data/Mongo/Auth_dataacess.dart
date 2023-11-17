@@ -7,17 +7,19 @@ import '../../utils/utils.dart';
 import '../Interface/Auth.dataacess.dart';
 
 class Mongo_Auth_dataAcess implements Auth_dataAcess {
+  @override
   init() async {
     playerscollection = DbCollection(db, "players");
   }
 
+  @override
   Future<Player?> Signup(String playername, String password) async {
     try {
       final existing =
           await playerscollection.findOne(where.eq("playername", playername));
       if (existing?.isEmpty ?? true) {
         WriteResult result = await playerscollection.insertOne({
-          "playername": "${playername}",
+          "playername": playername,
           "password": hashIT(password),
           "lastconnection": Timestamp(DateTime.now().second),
           "playedgames": 0,
@@ -33,8 +35,10 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<Player?> get_playerbyId({required ObjectId id}) async {
     try {
       final existing = await playerscollection.findOne(where.id(id));
@@ -45,8 +49,10 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<Player?> get_playerbyName({required String playername}) async {
     try {
       final existing =
@@ -62,8 +68,10 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<Player?> Signin(String playername, String password) async {
     try {
       final existing = await playerscollection.findOne(
@@ -91,8 +99,10 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> change_password(
       {required String playername,
       required String old_password,
@@ -102,20 +112,22 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
           .eq("playername", playername)
           .eq("password", hashIT(old_password)));
       if (doc?.isNotEmpty ?? false) {
-        String? new_token = await Tokensservice.getInstance().store_token(
+        String? newToken = await Tokensservice.getInstance().store_token(
             token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
 
-        if (new_token != null) {
+        if (newToken != null) {
           await playerscollection.updateOne(where.id(doc["_id"]),
               modify.set("password", hashIT(newpassword)));
-          return new_token;
+          return newToken;
         }
       }
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<bool> change_name(
       {required String playername,
       required String password,
@@ -127,9 +139,9 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
       final docX =
           await playerscollection.findOne(where.eq("playername", new_name));
       if ((docX?.isEmpty ?? true) && (doc?.isNotEmpty ?? false)) {
-        String? new_token = await Tokensservice.getInstance().store_token(
+        String? newToken = await Tokensservice.getInstance().store_token(
             token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
-        if (new_token != null) {
+        if (newToken != null) {
           final res = await playerscollection.update(
               where.id(doc["_id"]), modify.set("playername", new_name));
           return res.isNotEmpty;
@@ -147,6 +159,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     return false;
   }
 
+  @override
   Future<Map<String, bool>?> delete_user(
       {required String playername, required String password}) async {
     try {
@@ -163,5 +176,6 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 }

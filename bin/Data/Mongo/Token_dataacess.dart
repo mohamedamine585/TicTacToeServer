@@ -7,10 +7,12 @@ import '../../utils/utils.dart';
 import '../Interface/Token.dataacess.dart';
 
 class Mongo_Token_dataAcess implements Token_dataacess {
+  @override
   init() async {
     tokenscollection = DbCollection(db, "tokens");
   }
 
+  @override
   Future<void> make_available_all_tokens() async {
     try {
       await tokenscollection.update(
@@ -21,6 +23,7 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     }
   }
 
+  @override
   Future<void> make_available_token(String token) async {
     try {
       await tokenscollection.update(
@@ -33,6 +36,7 @@ class Mongo_Token_dataAcess implements Token_dataacess {
 
   /// deprecated
 
+  @override
   Future<String?> prepare_token({required Player player}) async {
     try {
       final existing =
@@ -57,8 +61,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> store_token(
       {required String token, required ObjectId Id}) async {
     try {
@@ -76,8 +82,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<bool?> delete_token({required ObjectId id}) async {
     try {
       final existing = await tokenscollection.findOne(where.eq("_id", id));
@@ -88,6 +96,7 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<Player?> fetch_player_byToken({required String token}) async {
@@ -100,8 +109,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> change_token_status(ObjectId id) async {
     try {
       final doc = await tokenscollection.findOne(where.id(id));
@@ -112,8 +123,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> fetch_nonfree_token({required String token}) async {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
@@ -123,8 +136,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> fetch_token({required String token}) async {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
@@ -134,8 +149,10 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
+  @override
   Future<String?> fetch_token_free_byId({required ObjectId id}) async {
     try {
       final existing = await tokenscollection.findOne(where.id(id));
@@ -146,5 +163,6 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 }

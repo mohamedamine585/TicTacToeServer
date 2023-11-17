@@ -1,6 +1,5 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import 'Player.dart';
 import 'Player_token.dart';
 
 class Play_room {

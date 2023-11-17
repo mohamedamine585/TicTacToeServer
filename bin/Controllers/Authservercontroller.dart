@@ -68,14 +68,14 @@ class Authserver_Controller {
       Player? player = await Authservice.getInstance()
           .get_playerbyName(playername: Jsonrequest["playername"]);
       if (player != null) {
-        String? new_token = await Authservice.getInstance().change_password(
+        String? newToken = await Authservice.getInstance().change_password(
             playername: Jsonrequest["playername"],
             old_password: Jsonrequest["password"],
             newpassword: Jsonrequest["new_password"]);
 
-        if (new_token != null) {
+        if (newToken != null) {
           request.response.write(
-              json.encode({"message": "password changed", "token": new_token}));
+              json.encode({"message": "password changed", "token": newToken}));
         } else {
           request.response
               .write(json.encode({"message": "failed to change password"}));
@@ -98,12 +98,12 @@ class Authserver_Controller {
             playername: player.playername,
             password: Jsonrequest["password"],
             new_name: Jsonrequest["new_name"])) {
-          String? new_token = await Tokensservice.getInstance().store_token(
+          String? newToken = await Tokensservice.getInstance().store_token(
               token: Tokenmiddleware.CreateJWToken(player.Id)!, Id: player.Id);
-          if (new_token != null) {
+          if (newToken != null) {
             request.response.write(json.encode({
               "message": "playername changed to ${Jsonrequest["new_name"]}",
-              "token": new_token
+              "token": newToken
             }));
           } else {
             request.response
