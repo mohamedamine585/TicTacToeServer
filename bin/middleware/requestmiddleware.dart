@@ -46,11 +46,10 @@ class Requestmiddleware {
     return false;
   }
 
-  static Future<bool> check_signinRequest(
-      {required HttpRequest request}) async {
+  static bool check_signinRequest({required HttpRequest request}) {
     try {
       return request.uri.queryParameters["playername"] != null &&
-          request.uri.queryParameters["password"] != null ;
+          request.uri.queryParameters["password"] != null;
     } catch (e) {
       print("Cannot check sign in params");
     }

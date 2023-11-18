@@ -4,6 +4,7 @@ import 'dart:io';
 import '../Core/Modules/Player.dart';
 import '../Services/Authservice.dart';
 import '../Services/Tokensservice.dart';
+import '../middleware/requestmiddleware.dart';
 import '../middleware/tokenmiddleware.dart';
 
 class Authserver_Controller {
@@ -24,18 +25,22 @@ class Authserver_Controller {
 
   static Signin(HttpRequest request) async {
     try {
-      final player = await Authservice.getInstance().Signin(
-          request.uri.queryParameters["playername"]!,
-          request.uri.queryParameters["password"]!);
-      if (player != null) {
-        String token = Tokenmiddleware.CreateJWToken(player.Id)!;
-        await Tokensservice.getInstance()
-            .store_token(token: token, Id: player.Id);
+      if (Requestmiddleware.check_signinRequest(request: request)) {
+        final player = await Authservice.getInstance().Signin(
+            request.uri.queryParameters["playername"]!,
+            request.uri.queryParameters["password"]!);
+        if (player != null) {
+          String token = Tokenmiddleware.CreateJWToken(player.Id)!;
+          await Tokensservice.getInstance()
+              .store_token(token: token, Id: player.Id);
 
-        request.response.write(
-            json.encode({"message": "Player is signed in", "token": token}));
+          request.response.write(
+              json.encode({"message": "Player is signed in", "token": token}));
+        } else {
+          request.response.write(json.encode({"message": "Signing in failed"}));
+        }
       } else {
-        request.response.write(json.encode({"message": "Signing in failed"}));
+        throw Exception();
       }
     } catch (e) {
       print("Cannot Sign in");
