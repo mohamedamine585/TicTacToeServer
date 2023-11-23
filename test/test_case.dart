@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 
 import 'package:test/test.dart';
 
-import '../bin/utils/consts.dart';
+import '../lib/utils/consts.dart';
 
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
-  var message0;
+  String message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
@@ -147,7 +146,7 @@ test_authandgameserver(
             Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
             body: json.encode({
               "playername": "${playernames[1]}K8",
-              "password": "${passwords[1]}"
+              "password": passwords[1]
             }));
         expect(jsonDecode(response.body)["message"], "Player is signed up");
       });
@@ -167,7 +166,7 @@ test_authandgameserver(
                 headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}K8",
-                  "password": "${passwords[1]}",
+                  "password": passwords[1],
                   "new_name": "${playernames[1]}K8M"
                 }));
         token1 = jsonDecode(response.body)["token"];
@@ -190,7 +189,7 @@ test_authandgameserver(
                 headers: {"token": token1},
                 body: json.encode({
                   "playername": "${playernames[1]}K8M",
-                  "password": "${passwords[1]}",
+                  "password": passwords[1],
                   "new_password": "${passwords[1]}M"
                 }));
         token1 = jsonDecode(response.body)["token"];
@@ -212,7 +211,7 @@ test_authandgameserver(
 test_gameserverload(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
-  var message0;
+  String message0;
   DateTime start, finish;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
@@ -337,7 +336,7 @@ test_gameserverload(
             Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
             body: json.encode({
               "playername": "${playernames[1]}K8",
-              "password": "${passwords[1]}"
+              "password": passwords[1]
             }));
         expect(jsonDecode(response.body)["message"], "Player is signed up");
       });
@@ -358,7 +357,7 @@ test_gameserverload(
                 headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}K8",
-                  "password": "${passwords[1]}",
+                  "password": passwords[1],
                   "new_name": "${playernames[1]}K8M"
                 }));
         finish = DateTime.now();
@@ -383,7 +382,7 @@ test_gameserverload(
                 headers: {"token": token1},
                 body: json.encode({
                   "playername": "${playernames[1]}K8M",
-                  "password": "${passwords[1]}",
+                  "password": passwords[1],
                   "new_password": "${passwords[1]}M"
                 }));
         token1 = jsonDecode(response.body)["token"];
