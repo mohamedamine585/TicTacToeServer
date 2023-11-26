@@ -1,20 +1,18 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/Repositories/Token.dataacess.dart';
+import 'package:tic_tac_toe_server/Data/Mongo/Token_dataacess.dart';
 
 import '../Core/Modules/Player.dart';
 
 import 'utils.dart';
 
 class Tokensservice {
-  static Tokensservice _instance = Tokensservice.getInstance();
+  Token_Repository TokenDataservice;
 
   // Private constructor to prevent external instantiation
-  Tokensservice._();
+  Tokensservice._(this.TokenDataservice);
+  static Tokensservice instance = Tokensservice._(Mongo_Token_dataAcess());
 
-  factory Tokensservice.getInstance() {
-    _instance = Tokensservice._();
-
-    return _instance;
-  }
   init() async {
     await TokenDataservice.init();
   }

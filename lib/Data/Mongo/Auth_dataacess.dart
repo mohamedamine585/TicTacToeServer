@@ -4,9 +4,9 @@ import '../../../Services/Tokensservice.dart';
 import '../utils.dart';
 import '../../middleware/tokenmiddleware.dart';
 import '../../../utils/utils.dart';
-import '../Interface/Auth.dataacess.dart';
+import '../../Repositories/Auth.dataacess.dart';
 
-class Mongo_Auth_dataAcess implements Auth_dataAcess {
+class Mongo_Auth_dataAcess implements Auth_Repository {
   @override
   init() async {
     playerscollection = DbCollection(db, "players");
@@ -27,7 +27,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
         });
         final player = Player(
             result.id, playername, Timestamp(DateTime.now().second), 0, 0);
-        await Tokensservice.getInstance().prepare_token(player: player);
+        await Tokensservice.instance.prepare_token(player: player);
         return player;
       } else {
         print("Player exists with that name");
@@ -93,7 +93,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
             Timestamp(DateTime.now().second),
             existing["playedgames"],
             existing["wongames"]);
-        await Tokensservice.getInstance().prepare_token(player: player);
+        await Tokensservice.instance.prepare_token(player: player);
         return player;
       }
     } catch (e) {
@@ -112,7 +112,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
           .eq("playername", playername)
           .eq("password", hashIT(old_password)));
       if (doc?.isNotEmpty ?? false) {
-        String? newToken = await Tokensservice.getInstance().store_token(
+        String? newToken = await Tokensservice.instance.store_token(
             token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
 
         if (newToken != null) {
@@ -139,7 +139,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
       final docX =
           await playerscollection.findOne(where.eq("playername", new_name));
       if ((docX?.isEmpty ?? true) && (doc?.isNotEmpty ?? false)) {
-        String? newToken = await Tokensservice.getInstance().store_token(
+        String? newToken = await Tokensservice.instance.store_token(
             token: Tokenmiddleware.CreateJWToken(doc!["_id"])!, Id: doc["_id"]);
         if (newToken != null) {
           final res = await playerscollection.update(
@@ -168,7 +168,7 @@ class Mongo_Auth_dataAcess implements Auth_dataAcess {
       if (existing == null || existing.isEmpty) {
       } else {
         final rest =
-            await Tokensservice.getInstance().delete_token(id: existing["_id"]);
+            await Tokensservice.instance.delete_token(id: existing["_id"]);
         final res =
             await playerscollection.deleteOne(where.id(existing["_id"]));
         return {"rest": rest ?? false, "res": res.isSuccess};

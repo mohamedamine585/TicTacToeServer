@@ -1,9 +1,9 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../../Core/Modules/Player_Room.dart';
-import '../Mongo/Playrooms_dataacess.dart';
+import '../../Core/Modules/Player_Room.dart';
+import '../Data/Mongo/Playrooms_dataacess.dart';
 
-abstract class Mongo_Playroom_Dataaccess implements Playroom_dataAcess {
+abstract class Playroom_Repository {
   @override
   init();
   @override

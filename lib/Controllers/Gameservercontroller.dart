@@ -10,12 +10,11 @@ import '../../Services/PlayRoomService.dart';
 import '../../Services/Tokensservice.dart';
 import '../Servers/Gameserver/game_server.dart';
 import '../../middleware/tokenmiddleware.dart';
-import 'repositories_impl/play_room_repo_impl.dart';
 import '../../Core/Modules/Player_token.dart';
 
 class Gameserver_controller {
   static init_tokens_state() async {
-    await Tokensservice.getInstance().make_available_all_tokens();
+    await Tokensservice.instance.make_available_all_tokens();
   }
 
   static Pairing(HttpRequest preq, ObjectId id) async {
@@ -48,12 +47,10 @@ class Gameserver_controller {
   static delete_room(Play_room playRoom) async {
     try {
       if (playRoom.opened) {
-        await Tokensservice.getInstance()
-            .change_token_status(playRoom.player0!.Id);
-        await Tokensservice.getInstance()
-            .change_token_status(playRoom.player1!.Id);
+        await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
+        await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
       }
-      await Play_room_repo_impl(playRoom).close_room();
+      await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
 
       for (int ids = playRoom.id + 1; ids < GameServer.rooms.length; ids++) {
         GameServer.rooms[ids].id = ids--;
@@ -66,8 +63,7 @@ class Gameserver_controller {
 
   Play(Play_room playRoom) async {
     try {
-      await Tokensservice.getInstance()
-          .change_token_status(playRoom.player0!.Id);
+      await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
     } catch (e) {
       print("error socket !");
     }
@@ -82,8 +78,7 @@ class Gameserver_controller {
       GameServer.rooms.add(playRoom);
 
       socketToPlayer.add(json.encode({"message": "Room created"}));
-      await Tokensservice.getInstance()
-          .change_token_status(playRoom.player0!.Id);
+      await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
     } catch (e) {
       print("cannot create room");
     }
@@ -159,10 +154,10 @@ class Gameserver_controller {
         if (playRoom.opened) {
           playRoom.opened = false;
 
-          await Tokensservice.getInstance()
+          await Tokensservice.instance
               .change_token_status(playRoom.player0!.Id);
           if (playRoom.player1 != null) {
-            await Tokensservice.getInstance()
+            await Tokensservice.instance
                 .change_token_status(playRoom.player1!.Id);
             playRoom.player0?.socket.close();
             await playRoom.player1?.socket.close();
@@ -231,10 +226,10 @@ class Gameserver_controller {
             playRoom.opened = false;
             playRoom.player1?.socket.close();
 
-            await Tokensservice.getInstance()
+            await Tokensservice.instance
                 .change_token_status(playRoom.player1!.Id);
             if (playRoom.player0 != null) {
-              await Tokensservice.getInstance()
+              await Tokensservice.instance
                   .change_token_status(playRoom.player0!.Id);
 
               playRoom.player0?.socket.close();
@@ -259,8 +254,8 @@ class Gameserver_controller {
       print("cannot upgrade request !");
     }
     try {
-      playRoom.roomid = await PlayRoomService.getInstance()
-          .open_PlayRoom(play_room: playRoom);
+      playRoom.roomid =
+          await PlayRoomService.instance.open_PlayRoom(play_room: playRoom);
       playRoom.player0?.socket.add(json.encode({
         "message": "Opponent found !",
         "Grid": [

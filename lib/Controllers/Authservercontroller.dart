@@ -9,7 +9,7 @@ import '../../middleware/tokenmiddleware.dart';
 class Authserver_Controller {
   static Signup(HttpRequest request, dynamic body) async {
     try {
-      final player = await Authservice.getInstance()
+      final player = await Authservice.instance
           .Signup(body["playername"], body["password"]);
 
       if (player != null) {
@@ -24,13 +24,12 @@ class Authserver_Controller {
 
   static Signin(HttpRequest request) async {
     try {
-      final player = await Authservice.getInstance().Signin(
+      final player = await Authservice.instance.Signin(
           request.uri.queryParameters["playername"]!,
           request.uri.queryParameters["password"]!);
       if (player != null) {
         String token = Tokenmiddleware.CreateJWToken(player.Id)!;
-        await Tokensservice.getInstance()
-            .store_token(token: token, Id: player.Id);
+        await Tokensservice.instance.store_token(token: token, Id: player.Id);
 
         request.response.write(
             json.encode({"message": "Player is signed in", "token": token}));
@@ -45,13 +44,13 @@ class Authserver_Controller {
   static Delete_player(HttpRequest request) async {
     try {
       var Jsonrequest = json.decode(await utf8.decodeStream(request));
-      Player? player = await Authservice.getInstance()
+      Player? player = await Authservice.instance
           .get_playerbyName(playername: Jsonrequest["playername"]);
 
-      final resp = await Authservice.getInstance().delete_user(
+      final resp = await Authservice.instance.delete_user(
           playername: Jsonrequest["playername"],
           password: Jsonrequest["password"]);
-      await Tokensservice.getInstance().delete_token(id: player!.Id);
+      await Tokensservice.instance.delete_token(id: player!.Id);
       if (resp?.isNotEmpty ?? false) {
         request.response.write(json.encode({"message": "player deleted"}));
       } else {
@@ -65,10 +64,10 @@ class Authserver_Controller {
 
   static Change_Password(HttpRequest request, dynamic Jsonrequest) async {
     try {
-      Player? player = await Authservice.getInstance()
+      Player? player = await Authservice.instance
           .get_playerbyName(playername: Jsonrequest["playername"]);
       if (player != null) {
-        String? newToken = await Authservice.getInstance().change_password(
+        String? newToken = await Authservice.instance.change_password(
             playername: Jsonrequest["playername"],
             old_password: Jsonrequest["password"],
             newpassword: Jsonrequest["new_password"]);
@@ -91,14 +90,14 @@ class Authserver_Controller {
 
   static Change_name(HttpRequest request, dynamic Jsonrequest) async {
     try {
-      Player? player = await Authservice.getInstance()
+      Player? player = await Authservice.instance
           .get_playerbyName(playername: Jsonrequest["playername"]);
       if (player != null) {
-        if (await Authservice.getInstance().change_name(
+        if (await Authservice.instance.change_name(
             playername: player.playername,
             password: Jsonrequest["password"],
             new_name: Jsonrequest["new_name"])) {
-          String? newToken = await Tokensservice.getInstance().store_token(
+          String? newToken = await Tokensservice.instance.store_token(
               token: Tokenmiddleware.CreateJWToken(player.Id)!, Id: player.Id);
           if (newToken != null) {
             request.response.write(json.encode({

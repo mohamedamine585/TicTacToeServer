@@ -4,9 +4,9 @@ import '../../Core/Modules/Player.dart';
 import '../../../Services/Authservice.dart';
 import '../utils.dart';
 import '../../../utils/utils.dart';
-import '../Interface/Token.dataacess.dart';
+import '../../Repositories/Token.dataacess.dart';
 
-class Mongo_Token_dataAcess implements Token_dataacess {
+class Mongo_Token_dataAcess implements Token_Repository {
   @override
   init() async {
     tokenscollection = DbCollection(db, "tokens");
@@ -103,8 +103,7 @@ class Mongo_Token_dataAcess implements Token_dataacess {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
       if (existing != null && existing.isNotEmpty) {
-        return await Authservice.getInstance()
-            .get_playerbyId(id: existing["_id"]);
+        return await Authservice.instance.get_playerbyId(id: existing["_id"]);
       }
     } catch (e) {
       print(e);

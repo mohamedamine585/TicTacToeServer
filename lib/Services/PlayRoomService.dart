@@ -1,20 +1,18 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/Repositories/Playroom.dataacess.dart';
+import 'package:tic_tac_toe_server/Data/Mongo/Playrooms_dataacess.dart';
 
 import '../Core/Modules/Player_Room.dart';
 
 import 'utils.dart';
 
 class PlayRoomService {
-  static PlayRoomService _instance = PlayRoomService.getInstance();
-
+  Playroom_Repository PlayroomDataservice;
   // Private constructor to prevent external instantiation
-  PlayRoomService._();
+  PlayRoomService._(this.PlayroomDataservice);
+  static PlayRoomService instance =
+      PlayRoomService._(Mongo_Playroom_dataAcess());
 
-  factory PlayRoomService.getInstance() {
-    _instance = PlayRoomService._();
-
-    return _instance;
-  }
   init() async {
     await PlayroomDataservice.init();
   }

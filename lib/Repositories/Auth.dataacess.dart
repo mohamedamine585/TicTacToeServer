@@ -1,8 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../Core/Modules/Player.dart';
+import '../Core/Modules/Player.dart';
 
-abstract class Auth_dataAcess {
+abstract class Auth_Repository {
   init();
   Future<Player?> Signup(String playername, String password);
   Future<Player?> get_playerbyId({required ObjectId id});

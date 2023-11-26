@@ -1,20 +1,17 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/Repositories/Auth.dataacess.dart';
+import 'package:tic_tac_toe_server/Data/Mongo/Auth_dataacess.dart';
 
 import '../Core/Modules/Player.dart';
 
 import 'utils.dart';
 
 class Authservice {
-  static Authservice _instance = Authservice.getInstance();
+  Auth_Repository AuthDataservice;
 
   // Private constructor to prevent external instantiation
-  Authservice._();
-
-  factory Authservice.getInstance() {
-    _instance = Authservice._();
-
-    return _instance;
-  }
+  Authservice._(this.AuthDataservice);
+  static Authservice instance = Authservice._(Mongo_Auth_dataAcess());
 
   init() async {
     await AuthDataservice.init();

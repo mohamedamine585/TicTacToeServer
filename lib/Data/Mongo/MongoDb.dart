@@ -4,9 +4,9 @@ import '../utils.dart';
 import '../../../Services/Authservice.dart';
 import '../../../Services/PlayRoomService.dart';
 import '../../../Services/Tokensservice.dart';
-import '../Interface/Db.dart';
+import '../../Repositories/Db.dart';
 
-class Dbservice implements DB {
+class Dbservice implements DB_Repository {
   static Dbservice _instance = Dbservice.getInstance();
 
   // Private constructor to prevent external instantiation
@@ -23,9 +23,9 @@ class Dbservice implements DB {
     db = await Db.create(
         "mongodb+srv://mohamedamine:medaminetlili123@cluster0.qf8cb49.mongodb.net/$dbname");
     await db.open();
-    Authservice.getInstance().init();
-    Tokensservice.getInstance().init();
-    PlayRoomService.getInstance().init();
+    Authservice.instance.init();
+    Tokensservice.instance.init();
+    PlayRoomService.instance.init();
     print(db.databaseName);
   }
 }

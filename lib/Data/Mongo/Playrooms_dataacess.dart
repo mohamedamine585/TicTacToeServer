@@ -1,20 +1,23 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/Repositories/Auth.dataacess.dart';
+import 'package:tic_tac_toe_server/Repositories/Playroom.dataacess.dart';
+import 'package:tic_tac_toe_server/Data/Mongo/Auth_dataacess.dart';
 
 import '../../Core/Modules/Player_Room.dart';
 import '../../../Services/Authservice.dart';
 import '../utils.dart';
 
-class Playroom_dataAcess {
+class Mongo_Playroom_dataAcess implements Playroom_Repository {
   init() async {
     playroomscollection = DbCollection(db, "playrooms");
   }
 
   Future<void> close_PlayRoom({required Play_room play_room}) async {
     try {
-      final p0 = await Authservice.getInstance()
-          .get_playerbyId(id: play_room.player0!.Id);
-      final p1 = await Authservice.getInstance()
-          .get_playerbyId(id: play_room.player1!.Id);
+      final p0 =
+          await Authservice.instance.get_playerbyId(id: play_room.player0!.Id);
+      final p1 =
+          await Authservice.instance.get_playerbyId(id: play_room.player1!.Id);
       if (play_room.hand != null) {
         await playerscollection.update(
             where.id(p0!.Id),
