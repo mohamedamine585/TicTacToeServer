@@ -24,6 +24,7 @@ class Gameserver_controller {
     } else {
       await join_room(preq, id, availableRoom);
       listen_to_player1(availableRoom);
+      listen_to_player0(availableRoom);
     }
   }
 
@@ -38,7 +39,7 @@ class Gameserver_controller {
 
   static Play_room? look_for_available_play_room() {
     for (Play_room room in GameServer.rooms) {
-      if (room.player0 != null && room.opened) {
+      if (room.player0 != null) {
         return room;
       }
     }
@@ -84,7 +85,6 @@ class Gameserver_controller {
       socketToPlayer.add(json.encode({"message": "Room created"}));
       await Tokensservice.getInstance()
           .change_token_status(playRoom.player0!.Id);
-      listen_to_player0(playRoom);
     } catch (e) {
       print("cannot create room");
     }
@@ -139,8 +139,8 @@ class Gameserver_controller {
             playRoom.Grid[x0][x1] = 'X';
 
             if (checkWin(play_room: playRoom) == 'X') {
-              sendDataToboth("Player ${playRoom.hand} is The Winner", playRoom);
-
+              sendDataTo("You won", playRoom, playRoom.player0!.socket);
+              sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
               playRoom.player0?.socket.close(null, "won");
             } else {
               playRoom.hand = 1;
@@ -192,6 +192,9 @@ class Gameserver_controller {
             try {
               x0 = int.parse(event[0]);
               x1 = int.parse(event[2]);
+              if (x1 < 0 || x0 > 2 || x1 > 2 || x0 < 0) {
+                canplay = 1;
+              }
             } catch (e) {
               canplay = 1;
             }
@@ -199,8 +202,8 @@ class Gameserver_controller {
               playRoom.Grid[x0][x1] = 'O';
 
               if (checkWin(play_room: playRoom) == 'O') {
-                sendDataToboth(
-                    "Player ${playRoom.hand} is The Winner", playRoom);
+                sendDataTo("You won", playRoom, playRoom.player1!.socket);
+                sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
                 playRoom.player1?.socket.close(null, "won");
               } else {
                 playRoom.hand = 0;
@@ -258,14 +261,14 @@ class Gameserver_controller {
       playRoom.player0?.socket.add(json.encode({
         "message": "Opponent found !",
         "playroom.Grid":
-            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
         "play_room.hand": "${playRoom.hand}"
       }));
 
       playRoom.player1?.socket.add(json.encode({
         "message": "Opponent found !",
         "playroom.Grid":
-            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
         "play_room.hand": "${playRoom.hand}"
       }));
     } catch (e) {
@@ -279,14 +282,14 @@ class Gameserver_controller {
         playRoom.player0?.socket.add(json.encode({
           "message": message,
           "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
           "hand": "${playRoom.hand}"
         }));
 
         playRoom.player1?.socket.add(json.encode({
           "message": message,
           "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
           "hand": "${playRoom.hand}"
         }));
       }
@@ -294,16 +297,27 @@ class Gameserver_controller {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
           "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
           "hand": "${playRoom.hand}"
         }));
 
         playRoom.player1?.socket.add(json.encode({
           "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[1][2]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
           "hand": "${playRoom.hand}",
         }));
       }
+    }
+  }
+
+  static sendDataTo(
+      String? message, Play_room playRoom, WebSocket playersocket) {
+    if (message != null) {
+      playersocket.add(json.encode({
+        "message": message,
+        "Grid":
+            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},"
+      }));
     }
   }
 }
