@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
@@ -23,8 +24,6 @@ class Gameserver_controller {
       await create_room(preq, id);
     } else {
       await join_room(preq, id, availableRoom);
-      listen_to_player1(availableRoom);
-      listen_to_player0(availableRoom);
     }
   }
 
@@ -39,7 +38,7 @@ class Gameserver_controller {
 
   static Play_room? look_for_available_play_room() {
     for (Play_room room in GameServer.rooms) {
-      if (room.player0 != null) {
+      if (!room.opened) {
         return room;
       }
     }
@@ -54,7 +53,7 @@ class Gameserver_controller {
         await Tokensservice.getInstance()
             .change_token_status(playRoom.player1!.Id);
       }
-      Play_room_repo_impl(playRoom).close_room();
+      await Play_room_repo_impl(playRoom).close_room();
 
       for (int ids = playRoom.id + 1; ids < GameServer.rooms.length; ids++) {
         GameServer.rooms[ids].id = ids--;
@@ -122,20 +121,18 @@ class Gameserver_controller {
   }
 
   static listen_to_player0(Play_room playRoom) {
-    int x0 = 0, x1 = 0, Canplay = 0;
+    int x0 = 0, x1 = 0;
     try {
       playRoom.player0?.socket.listen((event) async {
-        Canplay = 0;
-        if (playRoom.hand == 0) {
-          event as String;
-          try {
+        try {
+          if (playRoom.hand == 0) {
+            event as String;
+            if (event.length > 3) {
+              throw Exception();
+            }
             x0 = int.parse(event[0]);
             x1 = int.parse(event[2]);
-          } catch (e) {
-            Canplay = 1;
-          }
 
-          if (Canplay == 0) {
             playRoom.Grid[x0][x1] = 'X';
 
             if (checkWin(play_room: playRoom) == 'X') {
@@ -148,28 +145,33 @@ class Gameserver_controller {
 
               sendDataToboth(null, playRoom);
             }
-          } else {
-            sendDataToboth("Player 1 is The Winner", playRoom);
-
-            playRoom.player0?.socket.close(null, "won");
           }
+        } catch (e) {
+          if (playRoom.player1 != null && playRoom.player0 != null) {
+            sendDataTo("You won", playRoom, playRoom.player1!.socket);
+            sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
+          }
+
+          playRoom.hand = 1;
+          playRoom.player0?.socket.close();
         }
       }, onDone: () async {
         if (playRoom.opened) {
           playRoom.opened = false;
-          playRoom.player0?.socket.close();
-          playRoom.hand = 1;
+
           await Tokensservice.getInstance()
               .change_token_status(playRoom.player0!.Id);
           if (playRoom.player1 != null) {
             await Tokensservice.getInstance()
                 .change_token_status(playRoom.player1!.Id);
-
+            playRoom.player0?.socket.close();
             await playRoom.player1?.socket.close();
 
             delete_room(playRoom);
           }
         }
+      }, onError: (e) {
+        playRoom.player0?.socket.close();
       });
     } catch (e) {
       if (playRoom.player1 != null) {
@@ -181,24 +183,20 @@ class Gameserver_controller {
   }
 
   static listen_to_player1(Play_room playRoom) {
-    int x0 = 0, x1 = 0, canplay = 0;
+    int x0 = 0, x1 = 0;
     try {
       playRoom.player1?.socket.listen(
         (event) async {
-          canplay = 0;
           if (playRoom.hand == 1) {
             event as String;
+            if (event.length > 3) {
+              throw Exception();
+            }
 
             try {
               x0 = int.parse(event[0]);
               x1 = int.parse(event[2]);
-              if (x1 < 0 || x0 > 2 || x1 > 2 || x0 < 0) {
-                canplay = 1;
-              }
-            } catch (e) {
-              canplay = 1;
-            }
-            if (canplay == 0) {
+
               playRoom.Grid[x0][x1] = 'O';
 
               if (checkWin(play_room: playRoom) == 'O') {
@@ -211,9 +209,15 @@ class Gameserver_controller {
 
                 sendDataToboth(null, playRoom);
               }
-            } else {
-              sendDataToboth("Player 0 is The Winner", playRoom);
-              playRoom.player1?.socket.close(null, "won");
+            } catch (e) {
+              if (playRoom.player0 != null && playRoom.player1 != null) {
+                sendDataTo("You won", playRoom, playRoom.player0!.socket);
+                sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
+              }
+
+              playRoom.hand = 0;
+
+              playRoom.player1?.socket.close();
             }
           }
         },
@@ -226,7 +230,6 @@ class Gameserver_controller {
           if (playRoom.opened) {
             playRoom.opened = false;
             playRoom.player1?.socket.close();
-            playRoom.hand = 0;
 
             await Tokensservice.getInstance()
                 .change_token_status(playRoom.player1!.Id);
@@ -260,17 +263,38 @@ class Gameserver_controller {
           .open_PlayRoom(play_room: playRoom);
       playRoom.player0?.socket.add(json.encode({
         "message": "Opponent found !",
-        "playroom.Grid":
-            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
-        "play_room.hand": "${playRoom.hand}"
+        "Grid": [
+          playRoom.Grid[0][0] ?? '',
+          playRoom.Grid[0][1] ?? '',
+          playRoom.Grid[0][2] ?? '',
+          playRoom.Grid[1][0] ?? '',
+          playRoom.Grid[1][1] ?? '',
+          playRoom.Grid[1][2] ?? '',
+          playRoom.Grid[2][0] ?? '',
+          playRoom.Grid[2][1] ?? '',
+          playRoom.Grid[2][2] ?? ''
+        ],
+        "hand": "${playRoom.hand}"
       }));
 
       playRoom.player1?.socket.add(json.encode({
         "message": "Opponent found !",
-        "playroom.Grid":
-            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
-        "play_room.hand": "${playRoom.hand}"
+        "Grid": [
+          playRoom.Grid[0][0] ?? '',
+          playRoom.Grid[0][1] ?? '',
+          playRoom.Grid[0][2] ?? '',
+          playRoom.Grid[1][0] ?? '',
+          playRoom.Grid[1][1] ?? '',
+          playRoom.Grid[1][2] ?? '',
+          playRoom.Grid[2][0] ?? '',
+          playRoom.Grid[2][1] ?? '',
+          playRoom.Grid[2][2] ?? ''
+        ],
+        "hand": "${playRoom.hand}"
       }));
+      playRoom.opened = true;
+      listen_to_player1(playRoom);
+      listen_to_player0(playRoom);
     } catch (e) {
       print("cannnot contact player socket");
     }
@@ -281,29 +305,65 @@ class Gameserver_controller {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
           "message": message,
-          "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+          "Grid": [
+            playRoom.Grid[0][0] ?? '',
+            playRoom.Grid[0][1] ?? '',
+            playRoom.Grid[0][2] ?? '',
+            playRoom.Grid[1][0] ?? '',
+            playRoom.Grid[1][1] ?? '',
+            playRoom.Grid[1][2] ?? '',
+            playRoom.Grid[2][0] ?? '',
+            playRoom.Grid[2][1] ?? '',
+            playRoom.Grid[2][2] ?? ''
+          ],
           "hand": "${playRoom.hand}"
         }));
 
         playRoom.player1?.socket.add(json.encode({
           "message": message,
-          "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+          "Grid": [
+            playRoom.Grid[0][0] ?? '',
+            playRoom.Grid[0][1] ?? '',
+            playRoom.Grid[0][2] ?? '',
+            playRoom.Grid[1][0] ?? '',
+            playRoom.Grid[1][1] ?? '',
+            playRoom.Grid[1][2] ?? '',
+            playRoom.Grid[2][0] ?? '',
+            playRoom.Grid[2][1] ?? '',
+            playRoom.Grid[2][2] ?? ''
+          ],
           "hand": "${playRoom.hand}"
         }));
       }
     } else {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
-          "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+          "Grid": [
+            playRoom.Grid[0][0] ?? '',
+            playRoom.Grid[0][1] ?? '',
+            playRoom.Grid[0][2] ?? '',
+            playRoom.Grid[1][0] ?? '',
+            playRoom.Grid[1][1] ?? '',
+            playRoom.Grid[1][2] ?? '',
+            playRoom.Grid[2][0] ?? '',
+            playRoom.Grid[2][1] ?? '',
+            playRoom.Grid[2][2] ?? ''
+          ],
           "hand": "${playRoom.hand}"
         }));
 
         playRoom.player1?.socket.add(json.encode({
-          "Grid":
-              "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},",
+          "Grid": [
+            playRoom.Grid[0][0] ?? '',
+            playRoom.Grid[0][1] ?? '',
+            playRoom.Grid[0][2] ?? '',
+            playRoom.Grid[1][0] ?? '',
+            playRoom.Grid[1][1] ?? '',
+            playRoom.Grid[1][2] ?? '',
+            playRoom.Grid[2][0] ?? '',
+            playRoom.Grid[2][1] ?? '',
+            playRoom.Grid[2][2] ?? ''
+          ],
           "hand": "${playRoom.hand}",
         }));
       }
@@ -315,8 +375,17 @@ class Gameserver_controller {
     if (message != null) {
       playersocket.add(json.encode({
         "message": message,
-        "Grid":
-            "${playRoom.Grid[0][0]},${playRoom.Grid[1][0]},${playRoom.Grid[2][0]},${playRoom.Grid[0][1]},${playRoom.Grid[1][1]},${playRoom.Grid[2][1]},${playRoom.Grid[0][2]},${playRoom.Grid[1][2]},${playRoom.Grid[2][2]},"
+        "Grid": [
+          playRoom.Grid[0][0] ?? '',
+          playRoom.Grid[0][1] ?? '',
+          playRoom.Grid[0][2] ?? '',
+          playRoom.Grid[1][0] ?? '',
+          playRoom.Grid[1][1] ?? '',
+          playRoom.Grid[1][2] ?? '',
+          playRoom.Grid[2][0] ?? '',
+          playRoom.Grid[2][1] ?? '',
+          playRoom.Grid[2][2] ?? ''
+        ],
       }));
     }
   }

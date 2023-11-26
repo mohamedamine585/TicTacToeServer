@@ -3,7 +3,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'Player_token.dart';
 
 class Play_room {
-  bool opened = true;
+  bool opened = false;
   int id;
   ObjectId? roomid;
   List<List<String?>> Grid = [
