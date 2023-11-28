@@ -11,7 +11,7 @@ class Tokensservice {
 
   // Private constructor to prevent external instantiation
   Tokensservice._(this.TokenDataservice);
-  static Tokensservice instance = Tokensservice._(Mongo_Token_dataAcess());
+  static Tokensservice instance = Tokensservice._(Mongo_Token_Repository());
 
   init() async {
     await TokenDataservice.init();

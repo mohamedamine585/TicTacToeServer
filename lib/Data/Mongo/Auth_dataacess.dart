@@ -6,7 +6,7 @@ import '../../middleware/tokenmiddleware.dart';
 import '../../../utils/utils.dart';
 import '../../Repositories/Auth.dataacess.dart';
 
-class Mongo_Auth_dataAcess implements Auth_Repository {
+class Mongo_Auth_Repository implements Auth_Repository {
   @override
   init() async {
     playerscollection = DbCollection(db, "players");

@@ -6,7 +6,7 @@ import '../utils.dart';
 import '../../../utils/utils.dart';
 import '../../Repositories/Token.dataacess.dart';
 
-class Mongo_Token_dataAcess implements Token_Repository {
+class Mongo_Token_Repository implements Token_Repository {
   @override
   init() async {
     tokenscollection = DbCollection(db, "tokens");

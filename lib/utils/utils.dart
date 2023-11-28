@@ -8,7 +8,7 @@ String hashIT(String psw) {
 }
 
 init(String dbname) async {
-  final dbs = Dbservice.getInstance();
+  final dbs = DbRepository.instance;
   await dbs.init(dbname);
 }
 

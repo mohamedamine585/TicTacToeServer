@@ -11,7 +11,7 @@ class Authservice {
 
   // Private constructor to prevent external instantiation
   Authservice._(this.AuthDataservice);
-  static Authservice instance = Authservice._(Mongo_Auth_dataAcess());
+  static Authservice instance = Authservice._(Mongo_Auth_Repository());
 
   init() async {
     await AuthDataservice.init();

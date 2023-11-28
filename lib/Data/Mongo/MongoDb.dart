@@ -6,16 +6,16 @@ import '../../../Services/PlayRoomService.dart';
 import '../../../Services/Tokensservice.dart';
 import '../../Repositories/Db.dart';
 
-class Dbservice implements DB_Repository {
-  static Dbservice _instance = Dbservice.getInstance();
+class DbRepository implements DB_Repository {
+  static DbRepository instance = DbRepository.getInstance();
 
   // Private constructor to prevent external instantiation
-  Dbservice._();
+  DbRepository._();
 
-  factory Dbservice.getInstance() {
-    _instance = Dbservice._();
+  factory DbRepository.getInstance() {
+    instance = DbRepository._();
 
-    return _instance;
+    return instance;
   }
 
   @override

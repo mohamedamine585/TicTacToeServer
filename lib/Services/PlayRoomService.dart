@@ -9,7 +9,7 @@ class PlayRoomService {
   // Private constructor to prevent external instantiation
   PlayRoomService._(this.PlayroomDataservice);
   static PlayRoomService instance =
-      PlayRoomService._(Mongo_Playroom_dataAcess());
+      PlayRoomService._(Mongo_Playroom_Repository());
 
   init() async {
     await PlayroomDataservice.init();

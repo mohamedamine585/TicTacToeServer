@@ -7,7 +7,7 @@ import '../../Core/Modules/Player_Room.dart';
 import '../../../Services/Authservice.dart';
 import '../utils.dart';
 
-class Mongo_Playroom_dataAcess implements Playroom_Repository {
+class Mongo_Playroom_Repository implements Playroom_Repository {
   init() async {
     playroomscollection = DbCollection(db, "playrooms");
   }
