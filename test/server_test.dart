@@ -8,7 +8,7 @@ void main() {
   List<String> playernames = generateNames(playersnb, prefix);
   List<String> passwords = generatePasswords(playersnb);
 
-  test_gameserverload(playernames, passwords, playersnb);
+  test_authandgameserver(playernames, passwords, playersnb);
 }
 
 List<String> generateNames(int count, String prefix) {
