@@ -27,17 +27,15 @@ jobs:
           run:  docker build  -t gameserver -f Dockerfile.gameserver .   
         
         - name : install jemeter
-          run:  wget -q "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.zip"
+          run:  wget -q "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.zip" -P /tmp
 
         - name : install jemeter
-          run: unzip -q "/apache-jmeter-5.4.1.zip"
+          run: unzip -q "/tmp/apache-jmeter-5.4.1.zip" -d /opt
         - name : install jemeter
           run:  export PATH=$PATH:/opt/apache-jmeter-5.4.1/bin
     
         - name : install jemeter
-          run:   export PATH=$PATH:$PWD/apache-jmeter-5.4.1/bin
-        - name : install jemeter
-          run: echo "export PATH=$PATH:$PWD/apache-jmeter-5.4.1/bin" >> $GITHUB_ENV
+          run: echo "export PATH" 
 
         - name: Run both containers
         
