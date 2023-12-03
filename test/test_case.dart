@@ -139,7 +139,7 @@ test_authandgameserver(
 
   group("Change Name", () {
     group(' **************    Player    *************** ', () {
-      var token0, token1;
+      var token0;
 
       test('Signup', () async {
         var response = await post(
@@ -165,11 +165,11 @@ test_authandgameserver(
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
                 headers: {"token": token0},
                 body: json.encode({
-                  "playername": "${playernames[1]}",
+                  "playername": playernames[1],
                   "password": passwords[1],
                   "new_name": "${playernames[1]}new"
                 }));
-        token1 = jsonDecode(response.body)["token"];
+        token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"],
             "playername changed to ${playernames[1]}new");
       });
@@ -177,13 +177,12 @@ test_authandgameserver(
       test('Update Password', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
-                headers: {"token": token1},
+                headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}new",
                   "password": passwords[1],
                   "new_password": "${passwords[1]}new"
                 }));
-        token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "password changed");
       });
     });
