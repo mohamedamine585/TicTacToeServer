@@ -161,6 +161,7 @@ test_authandgameserver(
       });
 
       test('Update Name', () async {
+        print(playernames[1]);
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
                 headers: {"token": token0},
