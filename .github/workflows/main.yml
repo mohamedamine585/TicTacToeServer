@@ -49,9 +49,8 @@ jobs:
         
 
         - name:  jemeter testing 
-          run: jmeter -n -t ./testplan.jmx -l results.jtl
-        - name:  show testing results
-          run: cat results.jtl
+          run: jmeter 
+   
 
 
         - name: Run tests 
