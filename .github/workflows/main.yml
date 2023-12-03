@@ -35,7 +35,7 @@ jobs:
           run:  export PATH=$PATH:/opt/apache-jmeter-5.4.1/bin
     
         - name : install jemeter
-          run: echo "export PATH" 
+          run: echo $PATH
 
         - name: Run both containers
         
