@@ -33,9 +33,12 @@ jobs:
           run: unzip -q "/tmp/apache-jmeter-5.4.1.zip" -d /opt
         - name : install jemeter
           run:  export PATH=$PATH:/opt/apache-jmeter-5.4.1/bin
+    
+        - name : install jemeter
+          run:   export PATH=$PATH:$PWD/apache-jmeter-5.4.1/bin
+        - name : install jemeter
+          run: echo "export PATH=$PATH:$PWD/apache-jmeter-5.4.1/bin" >> $GITHUB_ENV
 
-        
-        
         - name: Run both containers
         
           
@@ -49,8 +52,9 @@ jobs:
         
 
         - name:  jemeter testing 
-          run: jmeter 
-   
+          run: jmeter -n -t ./testplan.jmx -l results.jtl
+        - name:  show testing results
+          run: cat results.jtl
 
 
         - name: Run tests 
