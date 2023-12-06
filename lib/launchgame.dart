@@ -3,5 +3,5 @@ import 'utils/utils.dart';
 
 void main() async {
   await init(dbname);
-  await GameServer.serve();
+  // await GameServer.serve();
 }
