@@ -13,4 +13,4 @@ RUN dart pub get
 
 # Start server.
 EXPOSE 8081
-CMD [ "dart", "run", "bin/launchauth.dart"]
+CMD [ "dart", "run", "lib/launchauth.dart"]

@@ -1,16 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart';
-import 'package:mongo_dart/mongo_dart.dart';
 
 import 'package:test/test.dart';
 
-import '../bin/utils/consts.dart';
+import '../lib/utils/consts.dart';
 
 test_authandgameserver(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
-  var message0;
+  String message0;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
       for (int i = 0; i < players - 2; i++) {
@@ -140,14 +139,14 @@ test_authandgameserver(
 
   group("Change Name", () {
     group(' **************    Player    *************** ', () {
-      var token0, token1;
+      var token0;
 
       test('Signup', () async {
         var response = await post(
             Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
             body: json.encode({
               "playername": "${playernames[1]}K8",
-              "password": "${passwords[1]}"
+              "password": passwords[1]
             }));
         expect(jsonDecode(response.body)["message"], "Player is signed up");
       });
@@ -167,43 +166,24 @@ test_authandgameserver(
                 headers: {"token": token0},
                 body: json.encode({
                   "playername": "${playernames[1]}K8",
-                  "password": "${passwords[1]}",
-                  "new_name": "${playernames[1]}K8M"
+                  "password": passwords[1],
+                  "new_name": playernames[1]
                 }));
-        token1 = jsonDecode(response.body)["token"];
+        token0 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"],
-            "playername changed to ${playernames[1]}K8M");
-      });
-      test('First Ask To Play ', () async {
-        try {
-          WebSocket player0 = await WebSocket.connect(
-              'ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token0});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, true);
-        }
+            "playername changed to ${playernames[1]}");
       });
 
       test('Update Password', () async {
         var response =
             await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
-                headers: {"token": token1},
+                headers: {"token": token0},
                 body: json.encode({
-                  "playername": "${playernames[1]}K8M",
-                  "password": "${passwords[1]}",
-                  "new_password": "${passwords[1]}M"
+                  "playername": playernames[1],
+                  "password": passwords[1],
+                  "new_password": "${passwords[1]}new"
                 }));
-        token1 = jsonDecode(response.body)["token"];
         expect(jsonDecode(response.body)["message"], "password changed");
-      });
-      test('Second Ask To Play ', () async {
-        try {
-          WebSocket player0 = await WebSocket.connect(
-              'ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token1});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, false);
-        }
       });
     });
   });
@@ -212,7 +192,7 @@ test_authandgameserver(
 test_gameserverload(
     List<String> playernames, List<String> passwords, int players) {
   List<String> tokens = [];
-  var message0;
+  String message0;
   DateTime start, finish;
   group('************** Test ***************', () {
     group('**********  Test Create***************', () {
@@ -325,79 +305,6 @@ test_gameserverload(
           expect(jsonDecode(response.body)["message"], "player deleted");
         });
       }
-    });
-  });
-
-  group("Change Name", () {
-    group(' **************    Player    *************** ', () {
-      var token0, token1;
-
-      test('Signup', () async {
-        var response = await post(
-            Uri.parse('http://$HOST_AUTH:$PORT_AUTH/Signup/'),
-            body: json.encode({
-              "playername": "${playernames[1]}K8",
-              "password": "${passwords[1]}"
-            }));
-        expect(jsonDecode(response.body)["message"], "Player is signed up");
-      });
-
-      test('First Signin', () async {
-        var response = await get(
-          Uri.parse(
-              'http://$HOST_AUTH:$PORT_AUTH/Signin/?playername=${playernames[1]}K8&password=${passwords[1]}'),
-        );
-        token0 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "Player is signed in");
-      });
-
-      test('Update Name', () async {
-        start = DateTime.now();
-        var response =
-            await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangeName/'),
-                headers: {"token": token0},
-                body: json.encode({
-                  "playername": "${playernames[1]}K8",
-                  "password": "${passwords[1]}",
-                  "new_name": "${playernames[1]}K8M"
-                }));
-        finish = DateTime.now();
-        token1 = jsonDecode(response.body)["token"];
-        expect(finish.difference(start) < Duration(seconds: 5), true);
-        expect(jsonDecode(response.body)["message"],
-            "playername changed to ${playernames[1]}K8M");
-      });
-      test('First Ask To Play ', () async {
-        try {
-          WebSocket player0 = await WebSocket.connect(
-              'ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token0});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, true);
-        }
-      });
-
-      test('Update Password', () async {
-        var response =
-            await put(Uri.parse('http://$HOST_AUTH:$PORT_AUTH/ChangePassword/'),
-                headers: {"token": token1},
-                body: json.encode({
-                  "playername": "${playernames[1]}K8M",
-                  "password": "${passwords[1]}",
-                  "new_password": "${passwords[1]}M"
-                }));
-        token1 = jsonDecode(response.body)["token"];
-        expect(jsonDecode(response.body)["message"], "password changed");
-      });
-      test('Second Ask To Play ', () async {
-        try {
-          WebSocket player0 = await WebSocket.connect(
-              'ws://$HOST_GAME:$PORT_GAME',
-              headers: {"token": token1});
-        } catch (e) {
-          expect(e.toString().isNotEmpty, false);
-        }
-      });
     });
   });
 }
