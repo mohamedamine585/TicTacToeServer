@@ -12,7 +12,7 @@ class AuthServer {
   static Future<void> init() async {
     server = await HttpServer.bind(HOST_AUTH, PORT_AUTH);
     print(
-        "Auth server is running on ${server.address.address} port ${server.port}");
+        " Auth server is running on  ${server.address.address} port ${server.port}");
   }
 
   static DoJob() async {
