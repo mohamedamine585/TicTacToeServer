@@ -1,5 +1,5 @@
 {
-  "name": "@tictactoegame-1/admin",
+  "name": "@tictactoegame/admin",
   "private": true,
   "dependencies": {
     "@apollo/client": "3.6.9",
