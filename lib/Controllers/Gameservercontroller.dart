@@ -54,7 +54,9 @@ class Gameserver_controller {
       for (int ids = playRoom.id + 1; ids < GameServer.rooms.length; ids++) {
         GameServer.rooms[ids].id = ids--;
       }
+      print(GameServer.rooms);
       GameServer.rooms.remove(playRoom);
+      print(GameServer.rooms);
     } catch (e) {
       print(e);
     }
@@ -157,7 +159,9 @@ class Gameserver_controller {
           if (playRoom.player1 != null) {
             await Tokensservice.instance
                 .change_token_status(playRoom.player1!.Id);
-            playRoom.player0?.socket.close();
+            print(playRoom.player0?.Id);
+
+            await playRoom.player0?.socket.close();
             await playRoom.player1?.socket.close();
 
             delete_room(playRoom);

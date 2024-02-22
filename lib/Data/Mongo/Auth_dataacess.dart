@@ -43,8 +43,14 @@ class Mongo_Auth_Repository implements Auth_Repository {
     try {
       final existing = await playerscollection.findOne(where.id(id));
       if (existing != null && existing.isNotEmpty) {
-        return Player(id, existing["playername"], existing["lastconnection"],
-            existing["playedgames"], existing["wongames"]);
+        return Player(
+            id,
+            existing["email"],
+            (existing["lastconnection"] != null)
+                ? existing["lastconnection"]
+                : Timestamp(),
+            (existing["playedgames"] != null) ? existing["playedgames"] : 0,
+            (existing["wongames"] != null) ? existing["wongames"] : 0);
       }
     } catch (e) {
       print(e);

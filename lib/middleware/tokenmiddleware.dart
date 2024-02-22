@@ -10,9 +10,9 @@ class Tokenmiddleware {
         print("Invalid token");
         throw Exception("Invalid token");
       }
+
       // Verify a token (SecretKey for HMAC & PublicKey for all the others)
       final jwt = JWT.verify(token, SecretKey(SECRET_SAUCE));
-
       if (jwt.payload == null) {
         throw Exception("No payload");
       }
