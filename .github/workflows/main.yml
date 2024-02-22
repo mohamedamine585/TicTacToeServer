@@ -46,9 +46,9 @@ jobs:
           run: dart pub get
         
 
-        - name:  jemeter testing 
+        - name:  load testing 
           run: /opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./jmetertestplan.jmx -l results.jtl
-        - name:  show testing results
+        - name:  show load testing results
           run: cat results.jtl
 
 

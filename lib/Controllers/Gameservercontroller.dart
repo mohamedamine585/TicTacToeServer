@@ -75,8 +75,7 @@ class Gameserver_controller {
           GameServer.rooms.length, Player_Socket(socketToPlayer, id), null, 0);
 
       GameServer.rooms.add(playRoom);
-
-      socketToPlayer.add(json.encode({"message": "Room created"}));
+      sendDataTo("Room created", playRoom, socketToPlayer);
       await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
     } catch (e) {
       print("cannot create room");
