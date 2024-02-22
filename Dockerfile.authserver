@@ -4,13 +4,14 @@ FROM dart:stable AS build
 # Resolve app dependencies.
 WORKDIR /app
 COPY . .
-RUN dart pub cache clean
  
 RUN dart pub get
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
-
-
+RUN dart compile exe lib/main.dart -o bin/authserver
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/bin/authserver /app/bin/
 # Start server.
 EXPOSE 8081
-CMD [ "dart", "run", "lib/launchauth.dart"]
+CMD [ "/app/bin/authserver"]
