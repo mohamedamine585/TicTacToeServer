@@ -49,14 +49,15 @@ class Gameserver_controller {
         await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
         await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
       }
-      await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
+
+      if (playRoom.player0 != null && playRoom.player1 != null) {
+        await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
+      }
 
       for (int ids = playRoom.id + 1; ids < GameServer.rooms.length; ids++) {
         GameServer.rooms[ids].id = ids--;
       }
-      print(GameServer.rooms);
       GameServer.rooms.remove(playRoom);
-      print(GameServer.rooms);
     } catch (e) {
       print(e);
     }
@@ -79,6 +80,7 @@ class Gameserver_controller {
       GameServer.rooms.add(playRoom);
       sendDataTo("Room created", playRoom, socketToPlayer);
       await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
+      listen_to_player0(playRoom);
     } catch (e) {
       print("cannot create room");
     }
@@ -125,6 +127,7 @@ class Gameserver_controller {
             if (event.length > 3) {
               throw Exception();
             }
+
             x0 = int.parse(event[0]);
             x1 = int.parse(event[2]);
 
@@ -148,25 +151,17 @@ class Gameserver_controller {
           }
 
           playRoom.hand = 1;
-          playRoom.player0?.socket.close();
+          await playRoom.player0?.socket.close();
         }
       }, onDone: () async {
-        if (playRoom.opened) {
-          playRoom.opened = false;
+        playRoom.opened = false;
+        delete_room(playRoom);
 
-          await Tokensservice.instance
-              .change_token_status(playRoom.player0!.Id);
-          if (playRoom.player1 != null) {
-            await Tokensservice.instance
-                .change_token_status(playRoom.player1!.Id);
-            print(playRoom.player0?.Id);
+        await playRoom.player0?.socket.close();
 
-            await playRoom.player0?.socket.close();
-            await playRoom.player1?.socket.close();
+        await playRoom.player1?.socket.close();
 
-            delete_room(playRoom);
-          }
-        }
+        await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
       }, onError: (e) {
         playRoom.player0?.socket.close();
       });
@@ -224,21 +219,12 @@ class Gameserver_controller {
         },
         cancelOnError: true,
         onDone: () async {
-          if (playRoom.opened) {
-            playRoom.opened = false;
-            playRoom.player1?.socket.close();
+          playRoom.opened = false;
+          await playRoom.player1?.socket.close();
+          await playRoom.player0?.socket.close();
 
-            await Tokensservice.instance
-                .change_token_status(playRoom.player1!.Id);
-            if (playRoom.player0 != null) {
-              await Tokensservice.instance
-                  .change_token_status(playRoom.player0!.Id);
-
-              playRoom.player0?.socket.close();
-
-              delete_room(playRoom);
-            }
-          }
+          await Tokensservice.instance
+              .change_token_status(playRoom.player1!.Id);
         },
       );
     } catch (e) {
@@ -291,8 +277,9 @@ class Gameserver_controller {
       }));
       playRoom.opened = true;
       listen_to_player1(playRoom);
-      listen_to_player0(playRoom);
     } catch (e) {
+      await playRoom.player0?.socket.close();
+      await playRoom.player1?.socket.close();
       print("cannnot contact player socket");
     }
   }
