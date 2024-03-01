@@ -13,38 +13,13 @@ class Mongo_Auth_Repository implements Auth_Repository {
   }
 
   @override
-  Future<Player?> Signup(String playername, String password) async {
-    try {
-      final existing =
-          await playerscollection.findOne(where.eq("playername", playername));
-      if (existing?.isEmpty ?? true) {
-        WriteResult result = await playerscollection.insertOne({
-          "playername": playername,
-          "password": hashIT(password),
-          "lastconnection": Timestamp(DateTime.now().second),
-          "playedgames": 0,
-          "wongames": 0
-        });
-        final player = Player(
-            result.id, playername, Timestamp(DateTime.now().second), 0, 0);
-        await Tokensservice.instance.prepare_token(player: player);
-        return player;
-      } else {
-        print("Player exists with that name");
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
-  @override
   Future<Player?> get_playerbyId({required ObjectId id}) async {
     try {
       final existing = await playerscollection.findOne(where.id(id));
       if (existing != null && existing.isNotEmpty) {
         return Player(
             id,
+            existing["name"],
             existing["email"],
             (existing["lastconnection"] != null)
                 ? existing["lastconnection"]
@@ -62,45 +37,15 @@ class Mongo_Auth_Repository implements Auth_Repository {
   Future<Player?> get_playerbyName({required String playername}) async {
     try {
       final existing =
-          await playerscollection.findOne(where.eq("playername", playername));
+          await playerscollection.findOne(where.eq("name", playername));
       if (existing != null && existing.isNotEmpty) {
         return Player(
             existing["_id"],
-            existing["playername"],
+            existing["name"],
+            existing["email"],
             existing["lastconnection"],
             existing["playedgames"],
             existing["wongames"]);
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
-  @override
-  Future<Player?> Signin(String playername, String password) async {
-    try {
-      final existing = await playerscollection.findOne(
-          where.eq("playername", playername).eq("password", hashIT(password)));
-      if (existing == null || existing.isEmpty) {
-        return null;
-      } else {
-        await playerscollection.update(where.id(existing["_id"]), {
-          "_id": existing["_id"],
-          "playername": playername,
-          "password": hashIT(password),
-          "lastconnection": Timestamp(DateTime.now().second),
-          "playedgames": existing["playedgames"],
-          "wongames": existing["wongames"]
-        });
-        final player = Player(
-            existing["_id"],
-            playername,
-            Timestamp(DateTime.now().second),
-            existing["playedgames"],
-            existing["wongames"]);
-        await Tokensservice.instance.prepare_token(player: player);
-        return player;
       }
     } catch (e) {
       print(e);

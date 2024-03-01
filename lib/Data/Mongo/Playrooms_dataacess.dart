@@ -43,15 +43,25 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
 
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
     try {
-      final doc = await playroomscollection.insertOne({
-        "createrid": play_room.player0?.Id,
-        "joinerid": play_room.player1?.Id,
-        "start": Timestamp(DateTime.now().second),
-        "end": Timestamp(DateTime.now().second),
-        "winner": -1
-      });
-      if (doc.document != null) {
-        return doc.document!["_id"] as ObjectId?;
+      if (play_room.player0?.Id != null && play_room.player1?.Id != null) {
+        final player0doc = await Authservice.instance
+            .get_playerbyId(id: play_room.player0?.Id ?? ObjectId());
+        final player1doc = await Authservice.instance
+            .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
+
+        final doc = await playroomscollection.insertOne({
+          "creatorid": play_room.player0?.Id,
+          "joinerid": play_room.player1?.Id,
+          "creatorname": player0doc?.playername,
+          "joinername": player1doc?.playername,
+          "start": Timestamp(DateTime.now().second),
+          "end": Timestamp(DateTime.now().second),
+          "winner": -1
+        });
+
+        if (doc.document != null) {
+          return doc.document!["_id"] as ObjectId?;
+        }
       }
     } catch (e) {
       print(e);

@@ -154,7 +154,6 @@ class Gameserver_controller {
           await playRoom.player0?.socket.close();
         }
       }, onDone: () async {
-        playRoom.opened = false;
         delete_room(playRoom);
 
         await playRoom.player0?.socket.close();

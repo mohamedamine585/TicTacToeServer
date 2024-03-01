@@ -4,10 +4,8 @@ import '../Core/Modules/Player.dart';
 
 abstract class Auth_Repository {
   init();
-  Future<Player?> Signup(String playername, String password);
   Future<Player?> get_playerbyId({required ObjectId id});
   Future<Player?> get_playerbyName({required String playername});
-  Future<Player?> Signin(String playername, String password);
   Future<String?> change_password(
       {required String playername,
       required String old_password,

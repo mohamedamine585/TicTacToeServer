@@ -14,7 +14,7 @@ class GameServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    server = await HttpServer.bind(HOST_GAME, PORT_GAME);
+    server = await HttpServer.bind(HOST_GAME, 8081);
     print(
         "Game server is running on ${server.address.address} port ${server.port}");
   }
