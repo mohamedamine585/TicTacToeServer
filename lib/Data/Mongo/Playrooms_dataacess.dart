@@ -48,7 +48,8 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
             .get_playerbyId(id: play_room.player0?.Id ?? ObjectId());
         final player1doc = await Authservice.instance
             .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
-
+        print(player1doc?.playername);
+        print(player0doc?.playername);
         final doc = await playroomscollection.insertOne({
           "creatorid": play_room.player0?.Id,
           "joinerid": play_room.player1?.Id,

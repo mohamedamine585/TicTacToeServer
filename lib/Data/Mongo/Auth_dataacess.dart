@@ -19,7 +19,7 @@ class Mongo_Auth_Repository implements Auth_Repository {
       if (existing != null && existing.isNotEmpty) {
         return Player(
             id,
-            existing["name"],
+            existing["name"] ?? "",
             existing["email"],
             (existing["lastconnection"] != null)
                 ? existing["lastconnection"]
