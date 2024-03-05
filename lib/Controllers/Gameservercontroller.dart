@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:shelf/shelf.dart';
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:tic_tac_toe_server/Controllers/utils.dart';
 
 import '../../Core/Modules/Player_Room.dart';
@@ -18,7 +16,7 @@ class Gameserver_controller {
     await Tokensservice.instance.make_available_all_tokens();
   }
 
-  static Pairing(Request preq, ObjectId id) async {
+  static Pairing(HttpRequest preq, ObjectId id) async {
     final availableRoom = look_for_available_play_room();
     if (availableRoom == null) {
       await create_room(preq, id);
@@ -49,11 +47,13 @@ class Gameserver_controller {
     try {
       if (playRoom.opened) {
         await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
-        await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
-      }
 
-      if (playRoom.player0 != null && playRoom.player1 != null) {
-        await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
+        await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
+
+        if (playRoom.player0 != null && playRoom.player1 != null) {
+          print("object");
+          await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
+        }
       }
 
       for (int ids = playRoom.id + 1; ids < GameServer.rooms.length; ids++) {
@@ -97,27 +97,25 @@ class Gameserver_controller {
     return null;
   }
 
-  static Response dealWithRequest(Request playRequest) {
+  static DealWithRequest(HttpRequest playRequest) async {
     String? playerid;
     try {
-      playerid = Tokenmiddleware.Check_Token(
-          playRequest.headers["authorization"]?.split(" ")[1]);
+      playerid =
+          Tokenmiddleware.Check_Token(playRequest.headers.value("token"));
     } catch (e) {
       print(e);
     }
 
     if (playerid != null) {
-        // Handle WebSocket upgrade
-        webSocketHandler(()async{
-              await Pairing(playRequest, ObjectId.fromHexString(playerid ?? ""));
-        });
+      if (WebSocketTransformer.isUpgradeRequest(playRequest)) {
+        await Gameserver_controller.Pairing(
+            playRequest, ObjectId.parse(playerid));
       } else {
-        // Non-websocket request
-        return Response.forbidden("WebSocket connection required.");
+        playRequest.response.close();
       }
     } else {
-      // Invalid token
-      return Response.unauthorized(json.encode({"message": "Invalid token"}));
+      playRequest.response.write(json.encode({"message": "Invalid token"}));
+      playRequest.response.close();
     }
   }
 
