@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/Controllers/utils.dart';
+import 'package:tic_tac_toe_server/middleware/gamemiddleware.dart';
+import 'package:tic_tac_toe_server/middleware/requestmiddleware.dart';
 
 import '../../Core/Modules/Player_Room.dart';
 import '../../Services/PlayRoomService.dart';
@@ -16,8 +18,9 @@ class Gameserver_controller {
     await Tokensservice.instance.make_available_all_tokens();
   }
 
-  static Pairing(HttpRequest preq, ObjectId id) async {
-    final availableRoom = look_for_available_play_room();
+  static Pairing(HttpRequest preq, ObjectId? roomid, ObjectId id) async {
+    final availableRoom = look_for_available_play_room(roomid);
+
     if (availableRoom == null) {
       await create_room(preq, id);
     } else {
@@ -34,9 +37,9 @@ class Gameserver_controller {
     return null;
   }
 
-  static Play_room? look_for_available_play_room() {
+  static Play_room? look_for_available_play_room(ObjectId? roomid) {
     for (Play_room room in GameServer.rooms) {
-      if (!room.opened) {
+      if (!room.opened && (roomid != null) ? room.roomid == roomid : true) {
         return room;
       }
     }
@@ -51,7 +54,8 @@ class Gameserver_controller {
         await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
 
         if (playRoom.player0 != null && playRoom.player1 != null) {
-          print("object");
+          print(playRoom.player0?.Id);
+          print(playRoom.player1?.Id);
           await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
         }
       }
@@ -97,19 +101,58 @@ class Gameserver_controller {
     return null;
   }
 
-  static DealWithRequest(HttpRequest playRequest) async {
+  static Router(HttpRequest request) async {
     String? playerid;
     try {
       playerid =
-          Tokenmiddleware.Check_Token(playRequest.headers.value("token"));
+          Tokenmiddleware.Check_Token(request.headers.value("Authorization"));
+      if (playerid != null) {
+        switch (request.requestedUri.path) {
+          case "/":
+            final roomid =
+                await GameMiddleware.checkforSepecificRoom(request: request);
+
+            await MakeHimPlay(request, roomid, playerid);
+
+            break;
+          case "/player":
+            if (request.method == "GET") {
+              request.response.write(json
+                  .encode(await PlayRoomService.instance.getdoc(id: playerid)));
+            } else if (request.method == "PUT") {
+              final reqBody = await Requestmiddleware.checkbodyForPlayerupdate(
+                  request: request);
+              if (reqBody != null) {
+                final updateddoc = await PlayRoomService.instance
+                    .updatePlayer(playerupdate: reqBody, id: playerid);
+                if (updateddoc != null) {
+                  request.response
+                      .write(json.encode({"message": "Player Updated"}));
+                }
+              }
+            } else if (request.method == "DELETE") {
+            } else if (request.method == "POST") {}
+            break;
+          case "/games":
+            break;
+          default:
+        }
+      } else {
+        request.response.statusCode == HttpStatus.unauthorized;
+        request.response.write(json.encode({"message": "Invalid token"}));
+      }
+      await request.response.close();
     } catch (e) {
       print(e);
     }
+  }
 
+  static MakeHimPlay(
+      HttpRequest playRequest, ObjectId? roomid, String? playerid) async {
     if (playerid != null) {
       if (WebSocketTransformer.isUpgradeRequest(playRequest)) {
         await Gameserver_controller.Pairing(
-            playRequest, ObjectId.parse(playerid));
+            playRequest, roomid, ObjectId.parse(playerid));
       } else {
         playRequest.response.close();
       }
@@ -220,7 +263,6 @@ class Gameserver_controller {
         },
         cancelOnError: true,
         onDone: () async {
-          playRoom.opened = false;
           await playRoom.player1?.socket.close();
           await playRoom.player0?.socket.close();
 

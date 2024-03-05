@@ -25,7 +25,7 @@ class GameServer {
     try {
       server.listen((HttpRequest playRequest) async {
         try {
-          await Gameserver_controller.DealWithRequest(playRequest);
+          await Gameserver_controller.Router(playRequest);
         } catch (e) {
           print("Error");
         }

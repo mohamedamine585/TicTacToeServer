@@ -6,17 +6,17 @@ import '../../utils/consts.dart';
 class Tokenmiddleware {
   static String? Check_Token(String? token) {
     try {
-      if (token == null) {
+      if (token?.split(" ")[1] == null) {
         print("Invalid token");
         throw Exception("Invalid token");
       }
-
-      // Verify a token (SecretKey for HMAC & PublicKey for all the others)
-      final jwt = JWT.verify(token, SecretKey(SECRET_SAUCE));
+      final jwt =
+          JWT.verify(token?.split(" ")[1] ?? "", SecretKey(SECRET_SAUCE));
       if (jwt.payload == null) {
         throw Exception("No payload");
       }
-      return jwt.payload["playerid"];
+      final playerid = jwt.payload["playerid"];
+      return playerid;
     } on JWTExpiredException {
       print('Jwt expired');
     } on JWTException catch (e) {

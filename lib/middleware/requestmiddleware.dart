@@ -1,49 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
 import '../../Services/Tokensservice.dart';
 import 'tokenmiddleware.dart';
 
 class Requestmiddleware {
-  static Future<bool> check_request_bodyFormat(
-      {required HttpRequest request, required dynamic Jsonrequest}) async {
+  static Future<Map<String, dynamic>?> checkbodyForPlayerupdate(
+      {required HttpRequest request}) async {
     try {
-      switch (request.method) {
-        case "PUT":
-          switch (request.uri.path) {
-            case "/ChangeName/":
-              if ((Jsonrequest["new_name"] != null) &&
-                  (Jsonrequest["playername"] != null) &&
-                  (Jsonrequest["password"] != null)) {
-                return true;
-              }
-              break;
-            case "/ChangePassword/":
-              if ((Jsonrequest["new_password"] != null) &&
-                  (Jsonrequest["playername"] != null) &&
-                  (Jsonrequest["password"] != null)) {
-                return true;
-              }
-              break;
-          }
-          break;
-
-        case "POST":
-          switch (request.uri.path) {
-            case "/Signup/":
-              if ((Jsonrequest["playername"] != null) &&
-                  (Jsonrequest["password"] != null)) {
-                return true;
-              }
-              break;
-          }
-          break;
-
-        default:
+      var body = json.decode(await utf8.decodeStream(request));
+      if (body["email"] != null || body["name"] != null) {
+        if (body["email"].length != 0 && body["name"].length != 0) {
+          return body;
+        }
       }
+      request.response.statusCode = HttpStatus.badRequest;
+      request.response.write(json.encode({"message": "Invalid Body"}));
     } catch (e) {
-      print("Cannot check Body format !");
+      print(e);
     }
-    return false;
+    return null;
   }
 
   static bool check_signinRequest({required HttpRequest request}) {
