@@ -29,12 +29,16 @@ jobs:
         - name : install jemeter
           run: echo $PATH
 
-        - name: Run both containers
+        - name: Run Container
         
           
-          run: docker-compose up &
+          run: docker -p 8080:8080 run gameserver &
           shell: bash
-
+        - name: Wait for Container
+        
+          
+          run: sleep 10
+          shell: bash
 
 
         - name: Install dependencies
