@@ -9,7 +9,7 @@ test_gameserver() {
   group('************** Test ***************', () {
     test("get doc", () async {
       final client = HttpClient();
-      final request = await client.get("localhost", 8080, "/player");
+      final request = await client.get("0.0.0.0", 8080, "/player");
       request.headers.add("Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k");
       final response = await request.close();
