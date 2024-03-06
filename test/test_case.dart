@@ -8,15 +8,6 @@ import 'package:web_socket_channel/io.dart';
 test_gameserver() {
   String message0 = "Room created";
   group('************** Test ***************', () {
-    test("get doc", () async {
-      final response =
-          await http.get(Uri.parse("http://localhost:8080/player"), headers: {
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
-      });
-      expect(response.statusCode, 200);
-      expect(json.decode(response.body)["email"], isNotNull);
-    });
     test("Connect to a play room", () async {
       final response = IOWebSocketChannel.connect(
           Uri.parse("ws://localhost:8080"),
@@ -48,6 +39,15 @@ test_gameserver() {
           await response.sink.close();
         }
       });
+    });
+    test("get doc", () async {
+      final response =
+          await http.get(Uri.parse("http://localhost:8080/player"), headers: {
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
+      });
+      expect(response.statusCode, 200);
+      expect(json.decode(response.body)["email"], isNotNull);
     });
   });
 }
