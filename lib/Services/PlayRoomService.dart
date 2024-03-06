@@ -22,4 +22,14 @@ class PlayRoomService {
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
     return await PlayroomDataservice.open_PlayRoom(play_room: play_room);
   }
+
+  Future<Map<String, dynamic>?> getdoc({required String id}) async {
+    return await PlayroomDataservice.getdoc(id: id);
+  }
+
+  Future<Map<String, dynamic>?> updatePlayer(
+      {required Map<String, dynamic> playerupdate, required String id}) async {
+    return await PlayroomDataservice.updatePlayer(
+        playerupdate: playerupdate, id: id);
+  }
 }

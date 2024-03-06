@@ -41,6 +41,44 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
     }
   }
 
+  Future<Map<String, dynamic>?> updatePlayer(
+      {required Map<String, dynamic> playerupdate, required String id}) async {
+    try {
+      final existingDoc =
+          await playerscollection.findOne(where.id(ObjectId.fromHexString(id)));
+
+      if (existingDoc != null) {
+        final existingPassword = existingDoc['password'];
+
+        final playerdoc = await playerscollection.update(
+          where.id(existingDoc["_id"]),
+          {
+            "name": playerupdate["name"],
+            "email": playerupdate["email"],
+            "password":
+                existingPassword, // Include the existing password in the update
+          },
+        );
+        return playerdoc;
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  Future<Map<String, dynamic>?> getdoc({required String id}) async {
+    try {
+      final playerdoc =
+          await playerscollection.findOne(where.id(ObjectId.fromHexString(id)));
+
+      return playerdoc;
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
     try {
       if (play_room.player0?.Id != null && play_room.player1?.Id != null) {

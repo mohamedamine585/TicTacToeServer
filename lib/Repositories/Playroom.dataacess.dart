@@ -10,4 +10,9 @@ abstract class Playroom_Repository {
   Future<void> close_PlayRoom({required Play_room play_room});
   @override
   Future<ObjectId?> open_PlayRoom({required Play_room play_room});
+  @override
+  Future<Map<String, dynamic>?> getdoc({required String id});
+  @override
+  Future<Map<String, dynamic>?> updatePlayer(
+      {required Map<String, dynamic> playerupdate, required String id});
 }
