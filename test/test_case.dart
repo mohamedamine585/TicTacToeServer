@@ -6,31 +6,22 @@ import 'package:test/test.dart';
 import 'package:web_socket_channel/io.dart';
 
 test_gameserver() {
-  String message0 = "Room Created";
+  String message0 = "Room created";
   final env = DotEnv()..load();
   group('************** Test ***************', () {
-    test("get doc", () async {
-      final response =
-          await get(Uri.parse("http://localhost:8080/player"), headers: {
-        "Authorization":
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
-      });
-      expect(response.statusCode, 200);
-      expect(json.decode(response.body)["email"], isNotNull);
-    });
-    test("Connect to a play room", () async {
+    test("Connect to a play room1", () async {
       final response = IOWebSocketChannel.connect(
           Uri.parse("ws://localhost:${env["PORT"]}"),
           headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k",
+            "mode": "random"
           });
       response.stream.listen((event) {
         expect(json.decode(event)["message"], message0);
       });
     });
-    test("Connect to a play room", () async {
-      message0 = "Opponent found !";
+    test("Connect to a play room2", () async {
       final response = IOWebSocketChannel.connect(
           Uri.parse("ws://localhost:${env["PORT"]}"),
           headers: {
@@ -39,11 +30,22 @@ test_gameserver() {
           });
 
       response.stream.listen((event) async {
+        message0 = "Opponent found !";
+
         expect(json.decode(event)["message"], "Opponent found !");
         if (json.decode(event)["message"] == "Opponent found !") {
           await response.sink.close();
         }
       });
+    });
+    test("get doc", () async {
+      final response =
+          await get(Uri.parse("http://localhost:8080/player"), headers: {
+        "Authorization":
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
+      });
+      expect(response.statusCode, 200);
+      expect(json.decode(response.body)["email"], isNotNull);
     });
   });
 }
