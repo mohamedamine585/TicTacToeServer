@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dotenv/dotenv.dart';
 import 'package:test/test.dart';
 import 'package:web_socket_channel/io.dart';
 
 test_gameserver() {
+  final env = DotEnv()..load();
   String message0 = "Room created";
   group('************** Test ***************', () {
     test("get doc", () async {
       final client = HttpClient();
-      final request = await client.get("0.0.0.0", 8080, "/player");
+      final request = await client.get(env["HOST_CLIENT"] ?? "localhost",
+          int.parse(env["PORT"] ?? "8080"), "/player");
       request.headers.add("Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k");
       final response = await request.close();
@@ -20,7 +23,8 @@ test_gameserver() {
     });
     test("Connect to a play room", () async {
       final response = IOWebSocketChannel.connect(
-          Uri.parse("ws://localhost:8080"),
+          Uri.parse(
+              "ws://${env["HOST_CLIENT"] ?? "localhost"}:${env["PORT"] ?? "8080"}"),
           headers: {
             "Authorization":
                 "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k"
@@ -36,7 +40,8 @@ test_gameserver() {
     test("Connect to a play room", () async {
       message0 = "Opponent found !";
       final response = IOWebSocketChannel.connect(
-          Uri.parse("ws://localhost:8080"),
+          Uri.parse(
+              "ws://${env["HOST_CLIENT"] ?? "localhost"}:${env["PORT"] ?? "8080"}"),
           headers: {
             "Authorization":
                 "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZTcyNTY3NDAzYTNlNTkxYTMwMWExNSIsImlhdCI6MTcwOTY0NzIwNywiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.K4fV-ReDKIomtTGFQ6-X4766rry4batvLHYPaiVzNA8"
