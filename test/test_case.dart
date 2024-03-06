@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:dotenv/dotenv.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:test/test.dart';
 import 'package:web_socket_channel/io.dart';
@@ -15,7 +13,6 @@ test_gameserver() {
       request.headers.add("Authorization",
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k");
       final response = await request.close();
-      await http.get(Uri.parse("http://localhost:8080/player"), headers: {});
       expect(response.statusCode, 200);
       expect(
           json.decode(await response.transform(utf8.decoder).join())["email"],
