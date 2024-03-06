@@ -9,7 +9,7 @@ RUN dart pub get
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
-RUN dart compile exe lib/launchgame.dart -o bin/gameserver
+RUN dart compile exe lib/main.dart -o bin/gameserver
 FROM scratch
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/gameserver /app/bin/
