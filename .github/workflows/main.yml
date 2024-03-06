@@ -32,7 +32,7 @@ jobs:
         - name: Run Container
         
           
-          run: docker -p 8080:8080 run gameserver &
+          run: docker run -p 8080:8080  gameserver &
           shell: bash
         - name: Wait for Container
         
