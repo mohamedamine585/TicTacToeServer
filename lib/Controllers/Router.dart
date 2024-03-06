@@ -41,7 +41,10 @@ class Router {
             } else if (request.method == "DELETE") {
             } else if (request.method == "POST") {}
             break;
-          case "/games":
+          case "/test":
+            request.response.statusCode == HttpStatus.ok;
+            request.response
+                .write(json.encode({"message": "Request Received"}));
             break;
           default:
         }

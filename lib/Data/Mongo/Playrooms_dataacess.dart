@@ -88,7 +88,8 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
             .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
         print(player1doc?.playername);
         print(player0doc?.playername);
-        final doc = await playroomscollection.insertOne({
+
+        final playRoomData = {
           "creatorid": play_room.player0?.Id,
           "joinerid": play_room.player1?.Id,
           "creatorname": player0doc?.playername,
@@ -96,7 +97,10 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
           "start": Timestamp(DateTime.now().second),
           "end": Timestamp(DateTime.now().second),
           "winner": -1
-        });
+        };
+        playRoomData.addAll(
+            (play_room.roomid == null) ? {"_id": play_room.roomid} : {});
+        final doc = await playroomscollection.insertOne(playRoomData);
 
         if (doc.document != null) {
           return doc.document!["_id"] as ObjectId?;

@@ -2,8 +2,7 @@ name: Dart Test
 
 on:
   push:
-    branches:
-      - feature 
+      
 
 jobs:
   
@@ -19,12 +18,8 @@ jobs:
         - uses: dart-lang/setup-dart@v1
         - uses: actions/checkout@v3
        
-        - name: Build auth Container 
-          run:  docker build  -t authserver -f Dockerfile.authserver .       
-        
-      
         - name: Build game Container
-          run:  docker build  -t gameserver -f Dockerfile.gameserver .   
+          run:  docker build  -t gameserver .   
         
         - name : install jemeter
           run:  wget -q "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.zip" -P /tmp
@@ -34,12 +29,16 @@ jobs:
         - name : install jemeter
           run: echo $PATH
 
-        - name: Run both containers
+        - name: Run Container
         
           
-          run: docker-compose up &
+          run: docker run -p 8080:8080  gameserver &
           shell: bash
-
+        - name: Wait for Container
+        
+          
+          run: sleep 15
+          shell: bash
 
 
         - name: Install dependencies

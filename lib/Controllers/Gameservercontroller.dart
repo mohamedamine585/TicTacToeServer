@@ -56,8 +56,8 @@ class Gameserver_controller {
             playRoom.Grid[x0][x1] = 'X';
 
             if (checkWin(play_room: playRoom) == 'X') {
-              sendDataTo("You won", playRoom, playRoom.player0!.socket);
-              sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
+              sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
+              sendDataTo("You Lost", playRoom, playRoom.player1!.socket, null);
               playRoom.player0?.socket.close(null, "won");
             } else {
               playRoom.hand = 1;
@@ -68,8 +68,8 @@ class Gameserver_controller {
           }
         } catch (e) {
           if (playRoom.player1 != null && playRoom.player0 != null) {
-            sendDataTo("You won", playRoom, playRoom.player1!.socket);
-            sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
+            sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
+            sendDataTo("You Lost", playRoom, playRoom.player0!.socket, null);
           }
 
           playRoom.hand = 1;
@@ -113,8 +113,9 @@ class Gameserver_controller {
               playRoom.Grid[x0][x1] = 'O';
 
               if (checkWin(play_room: playRoom) == 'O') {
-                sendDataTo("You won", playRoom, playRoom.player1!.socket);
-                sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
+                sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
+                sendDataTo(
+                    "You Lost", playRoom, playRoom.player0!.socket, null);
                 playRoom.player1?.socket.close(null, "won");
               } else {
                 playRoom.hand = 0;
@@ -124,8 +125,9 @@ class Gameserver_controller {
               }
             } catch (e) {
               if (playRoom.player0 != null && playRoom.player1 != null) {
-                sendDataTo("You won", playRoom, playRoom.player0!.socket);
-                sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
+                sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
+                sendDataTo(
+                    "You Lost", playRoom, playRoom.player1!.socket, null);
               }
 
               playRoom.hand = 0;
@@ -223,8 +225,8 @@ class Gameserver_controller {
     }
   }
 
-  static sendDataTo(
-      String? message, Play_room playRoom, WebSocket playersocket) {
+  static sendDataTo(String? message, Play_room playRoom, WebSocket playersocket,
+      String? roomid) {
     if (message != null) {
       playersocket.add(json.encode({
         "message": message,
@@ -239,6 +241,7 @@ class Gameserver_controller {
           playRoom.Grid[2][1] ?? '',
           playRoom.Grid[2][2] ?? ''
         ],
+        "roomid": roomid
       }));
     }
   }

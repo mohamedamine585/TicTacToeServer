@@ -113,25 +113,39 @@ class RoomManagerController {
     return null;
   }
 
-  static Pairing(HttpRequest preq, ObjectId? roomid, ObjectId id) async {
+  static Pairing(HttpRequest playrequest, ObjectId? roomid, ObjectId id) async {
     final availableRoom = look_for_available_play_room(roomid);
+    print(availableRoom?.gameWithaFriend);
 
-    if (availableRoom == null) {
-      await create_room(preq, id);
+    if (availableRoom == null && roomid == null) {
+      await create_room(playrequest, id);
+    } else if (availableRoom == null && roomid != null) {
+      playrequest.response.write(json.encode({"message": "Room not Found"}));
+    } else if ((availableRoom != null &&
+        ((availableRoom.gameWithaFriend && roomid != null) ||
+            !availableRoom.gameWithaFriend))) {
+      await join_room(playrequest, id, availableRoom);
     } else {
-      await join_room(preq, id, availableRoom);
+      playrequest.response.statusCode = 404;
     }
   }
 
   static create_room(HttpRequest gameRequest, ObjectId id) async {
     try {
       final socketToPlayer = await WebSocketTransformer.upgrade(gameRequest);
-      Play_room playRoom = Play_room(Gameserver_controller.rooms.length,
-          Player_Socket(socketToPlayer, id), null, 0);
+      Play_room playRoom = Play_room(
+          Gameserver_controller.rooms.length,
+          ObjectId(),
+          Player_Socket(socketToPlayer, id),
+          null,
+          0,
+          (gameRequest.headers.value("mode") == "friend"));
+
+      print(playRoom.roomid);
 
       Gameserver_controller.rooms.add(playRoom);
-      Gameserver_controller.sendDataTo(
-          "Room created", playRoom, socketToPlayer);
+      Gameserver_controller.sendDataTo("Room created", playRoom, socketToPlayer,
+          playRoom.roomid?.toHexString());
       await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
       Gameserver_controller.listen_to_player0(playRoom);
     } catch (e) {
