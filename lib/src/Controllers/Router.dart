@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:tic_tac_toe_server/src/Controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/Controllers/PlayersManagerController.dart';
 import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 import 'package:tic_tac_toe_server/src/middleware/gamemiddleware.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';
@@ -24,14 +26,14 @@ class Router {
             break;
           case "/player":
             if (request.method == "GET") {
-              request.response.write(json
-                  .encode(await PlayRoomService.instance.getdoc(id: playerid)));
+              request.response.write(json.encode(
+                  await PlayersManagerController.getdoc(playerid: playerid)));
             } else if (request.method == "PUT") {
               final reqBody = await Requestmiddleware.checkbodyForPlayerupdate(
                   request: request);
               if (reqBody != null) {
-                final updateddoc = await PlayRoomService.instance
-                    .updatePlayer(playerupdate: reqBody, id: playerid);
+                final updateddoc = await PlayersManagerController.updatedoc(
+                    playerupdate: reqBody, id: playerid);
                 if (updateddoc != null) {
                   request.response
                       .write(json.encode({"message": "Player Updated"}));
@@ -45,6 +47,14 @@ class Router {
             request.response
                 .write(json.encode({"message": "Request Received"}));
             break;
+
+          case "/activity":
+            if (WebSocketTransformer.isUpgradeRequest(request)) {
+              final webosocket = await WebSocketTransformer.upgrade(request);
+              PlayersManagerController.onlineActivity(webSocket: webosocket);
+            }
+            break;
+
           default:
         }
       } else {

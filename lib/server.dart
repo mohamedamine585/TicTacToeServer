@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dotenv/dotenv.dart' as dotenv;
 import 'package:tic_tac_toe_server/src/Controllers/Router.dart';
 import 'package:tic_tac_toe_server/src/Data/Mongo/MongoDb.dart';
-import 'package:tic_tac_toe_server/src/utils/utils.dart';
 
 import 'src/Controllers/Gameservercontroller.dart';
 

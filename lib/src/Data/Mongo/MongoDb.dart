@@ -1,13 +1,11 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
 import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
 import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 import '../utils.dart';
 
-import '../../Repositories/Db.dart';
-
-class DbRepository implements DB_Repository {
+class DbRepository {
   static DbRepository instance = DbRepository.getInstance();
 
   // Private constructor to prevent external instantiation
@@ -24,7 +22,7 @@ class DbRepository implements DB_Repository {
     db = await Db.create(
         "mongodb+srv://mohamedamine:medaminetlili123@cluster0.qf8cb49.mongodb.net/$dbname");
     await db.open();
-    Authservice.instance.init();
+    PlayerService.instance.init();
     Tokensservice.instance.init();
     PlayRoomService.instance.init();
     print(db.databaseName);

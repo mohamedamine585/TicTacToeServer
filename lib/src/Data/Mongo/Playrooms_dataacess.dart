@@ -1,21 +1,20 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
-import 'package:tic_tac_toe_server/src/Repositories/Playroom.dataacess.dart';
-import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 import '../utils.dart';
 
-class Mongo_Playroom_Repository implements Playroom_Repository {
+class Mongo_Playroom_Repository {
   init() async {
     playroomscollection = DbCollection(db, "playrooms");
   }
 
   Future<void> close_PlayRoom({required Play_room play_room}) async {
     try {
-      final p0 =
-          await Authservice.instance.get_playerbyId(id: play_room.player0!.Id);
-      final p1 =
-          await Authservice.instance.get_playerbyId(id: play_room.player1!.Id);
+      final p0 = await PlayerService.instance
+          .get_playerbyId(id: play_room.player0!.Id);
+      final p1 = await PlayerService.instance
+          .get_playerbyId(id: play_room.player1!.Id);
       if (play_room.hand != null) {
         await playerscollection.update(
             where.id(p0!.Id),
@@ -39,50 +38,12 @@ class Mongo_Playroom_Repository implements Playroom_Repository {
     }
   }
 
-  Future<Map<String, dynamic>?> updatePlayer(
-      {required Map<String, dynamic> playerupdate, required String id}) async {
-    try {
-      final existingDoc =
-          await playerscollection.findOne(where.id(ObjectId.fromHexString(id)));
-
-      if (existingDoc != null) {
-        final existingPassword = existingDoc['password'];
-
-        final playerdoc = await playerscollection.update(
-          where.id(existingDoc["_id"]),
-          {
-            "name": playerupdate["name"],
-            "email": playerupdate["email"],
-            "password":
-                existingPassword, // Include the existing password in the update
-          },
-        );
-        return playerdoc;
-      }
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
-  Future<Map<String, dynamic>?> getdoc({required String id}) async {
-    try {
-      final playerdoc =
-          await playerscollection.findOne(where.id(ObjectId.fromHexString(id)));
-
-      return playerdoc;
-    } catch (e) {
-      print(e);
-    }
-    return null;
-  }
-
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
     try {
       if (play_room.player0?.Id != null && play_room.player1?.Id != null) {
-        final player0doc = await Authservice.instance
+        final player0doc = await PlayerService.instance
             .get_playerbyId(id: play_room.player0?.Id ?? ObjectId());
-        final player1doc = await Authservice.instance
+        final player1doc = await PlayerService.instance
             .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
         print(player1doc?.playername);
         print(player0doc?.playername);

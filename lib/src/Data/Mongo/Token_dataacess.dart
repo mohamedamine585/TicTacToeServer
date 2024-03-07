@@ -1,12 +1,11 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
-import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 import '../utils.dart';
 import '../../utils/utils.dart';
-import '../../Repositories/Token.dataacess.dart';
 
-class Mongo_Token_Repository implements Token_Repository {
+class Mongo_Token_Repository {
   @override
   init() async {
     tokenscollection = DbCollection(db, "tokens");
@@ -103,7 +102,7 @@ class Mongo_Token_Repository implements Token_Repository {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
       if (existing != null && existing.isNotEmpty) {
-        return await Authservice.instance.get_playerbyId(id: existing["_id"]);
+        return await PlayerService.instance.get_playerbyId(id: existing["_id"]);
       }
     } catch (e) {
       print(e);

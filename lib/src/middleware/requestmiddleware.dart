@@ -10,7 +10,9 @@ class Requestmiddleware {
       {required HttpRequest request}) async {
     try {
       var body = json.decode(await utf8.decodeStream(request));
-      if (body["email"] != null || body["name"] != null) {
+      if (body["email"] != null ||
+          body["name"] != null ||
+          body["lastconnection"] != null) {
         if (body["email"].length != 0 && body["name"].length != 0) {
           return body;
         }
