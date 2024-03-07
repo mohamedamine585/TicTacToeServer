@@ -1,7 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../../utils/consts.dart';
+import '../utils/consts.dart';
 
 class Tokenmiddleware {
   static String? Check_Token(String? token) {

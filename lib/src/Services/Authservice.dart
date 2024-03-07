@@ -1,8 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Repositories/Auth.dataacess.dart';
-import 'package:tic_tac_toe_server/Data/Mongo/Auth_dataacess.dart';
-
-import '../Core/Modules/Player.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
+import 'package:tic_tac_toe_server/src/Repositories/Auth.dataacess.dart';
+import 'package:tic_tac_toe_server/src/Data/Mongo/Auth_dataacess.dart';
 
 import 'utils.dart';
 

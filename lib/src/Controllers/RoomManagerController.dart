@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/Controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player_token.dart';
+import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
+import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
 
-import '../../Core/Modules/Player_Room.dart';
-import '../../Services/PlayRoomService.dart';
-import '../../Services/Tokensservice.dart';
-import '../../Core/Modules/Player_token.dart';
+import '../Core/Modeles/Player_Room.dart';
 
 class RoomManagerController {
   static join_room(

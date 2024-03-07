@@ -1,8 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Repositories/Playroom.dataacess.dart';
-import 'package:tic_tac_toe_server/Data/Mongo/Playrooms_dataacess.dart';
-
-import '../Core/Modules/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/Repositories/Playroom.dataacess.dart';
+import 'package:tic_tac_toe_server/src/Data/Mongo/Playrooms_dataacess.dart';
 
 class PlayRoomService {
   Playroom_Repository PlayroomDataservice;

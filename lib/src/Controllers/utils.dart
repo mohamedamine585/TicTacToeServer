@@ -1,4 +1,4 @@
-import 'package:tic_tac_toe_server/Core/Modules/Player_Room.dart';
+import '../Core/Modeles/Player_Room.dart';
 
 String checkWin({required Play_room play_room}) {
   // Check rows and columns

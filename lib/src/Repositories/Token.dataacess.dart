@@ -1,6 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 
-import '../Core/Modules/Player.dart';
+import '../Core/Modeles/Player.dart';
 
 abstract class Token_Repository {
   init();

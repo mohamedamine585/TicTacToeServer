@@ -1,10 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Repositories/Auth.dataacess.dart';
-import 'package:tic_tac_toe_server/Repositories/Playroom.dataacess.dart';
-import 'package:tic_tac_toe_server/Data/Mongo/Auth_dataacess.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/Repositories/Playroom.dataacess.dart';
+import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
 
-import '../../Core/Modules/Player_Room.dart';
-import '../../../Services/Authservice.dart';
 import '../utils.dart';
 
 class Mongo_Playroom_Repository implements Playroom_Repository {

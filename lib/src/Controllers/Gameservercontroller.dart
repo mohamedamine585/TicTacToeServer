@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Controllers/RoomManagerController.dart';
-import 'package:tic_tac_toe_server/Controllers/utils.dart';
-import 'package:tic_tac_toe_server/Core/Modules/Player.dart';
+import 'package:tic_tac_toe_server/src/Controllers/RoomManagerController.dart';
+import 'package:tic_tac_toe_server/src/Controllers/utils.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
 
-import '../../Core/Modules/Player_Room.dart';
-import '../../Services/Tokensservice.dart';
+import '../Core/Modeles/Player.dart';
 
 class Gameserver_controller {
   static var rooms = <Play_room>[];

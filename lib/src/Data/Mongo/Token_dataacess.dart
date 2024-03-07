@@ -1,9 +1,9 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
+import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
 
-import '../../Core/Modules/Player.dart';
-import '../../../Services/Authservice.dart';
 import '../utils.dart';
-import '../../../utils/utils.dart';
+import '../../utils/utils.dart';
 import '../../Repositories/Token.dataacess.dart';
 
 class Mongo_Token_Repository implements Token_Repository {

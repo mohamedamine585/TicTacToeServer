@@ -1,9 +1,10 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import '../../Core/Modules/Player.dart';
-import '../../../Services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
+import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
+
 import '../utils.dart';
 import '../../middleware/tokenmiddleware.dart';
-import '../../../utils/utils.dart';
+import '../../utils/utils.dart';
 import '../../Repositories/Auth.dataacess.dart';
 
 class Mongo_Auth_Repository implements Auth_Repository {

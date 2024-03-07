@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import '../../Services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
+
 import 'tokenmiddleware.dart';
 
 class Requestmiddleware {

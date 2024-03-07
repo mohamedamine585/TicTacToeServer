@@ -1,9 +1,10 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Services/Authservice.dart';
+import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
+import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
 
 import '../utils.dart';
-import '../../../Services/Authservice.dart';
-import '../../../Services/PlayRoomService.dart';
-import '../../../Services/Tokensservice.dart';
+
 import '../../Repositories/Db.dart';
 
 class DbRepository implements DB_Repository {

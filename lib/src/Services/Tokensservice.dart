@@ -1,10 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/Repositories/Token.dataacess.dart';
-import 'package:tic_tac_toe_server/Data/Mongo/Token_dataacess.dart';
-
-import '../Core/Modules/Player.dart';
-
-import 'utils.dart';
+import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
+import 'package:tic_tac_toe_server/src/Repositories/Token.dataacess.dart';
+import 'package:tic_tac_toe_server/src/Data/Mongo/Token_dataacess.dart';
 
 class Tokensservice {
   Token_Repository TokenDataservice;

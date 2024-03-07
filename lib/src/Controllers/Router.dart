@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/Controllers/Gameservercontroller.dart';
-import 'package:tic_tac_toe_server/middleware/gamemiddleware.dart';
-import 'package:tic_tac_toe_server/middleware/requestmiddleware.dart';
-import 'package:tic_tac_toe_server/middleware/tokenmiddleware.dart';
-
-import '../../Services/PlayRoomService.dart';
+import 'package:tic_tac_toe_server/src/Controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
+import 'package:tic_tac_toe_server/src/middleware/gamemiddleware.dart';
+import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
+import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';
 
 class Router {
   static route(HttpRequest request) async {
