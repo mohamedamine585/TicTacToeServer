@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:tic_tac_toe_server/src/Services/online_activity_service.dart';
 import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 class PlayersManagerController {
-  static onlineActivity({required WebSocket webSocket}) {
-    OnlineActivityService.instance.getOnlineActivity(webSocket: webSocket);
+  static Future<List<Map<String, dynamic>>> onlineActivity() {
+    return OnlineActivityService.instance.getOnlineActivity();
   }
 
   static getdoc({required String playerid}) async {

@@ -1,8 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:tic_tac_toe_server/src/Data/Mongo/players_dataaccess.dart';
 
 class OnlineActivityService {
@@ -10,10 +5,13 @@ class OnlineActivityService {
   OnlineActivityService._(this.playersDataAccess);
   static OnlineActivityService instance =
       OnlineActivityService._(PlayersDataAccess());
-  void getOnlineActivity({required WebSocket webSocket}) async {
+  Future<List<Map<String, dynamic>>> getOnlineActivity() async {
     final stream = playersDataAccess.getActivePlayers();
-    stream.listen((event) {
-      webSocket.add(json.encode({"players": event}));
+
+    List<Map<String, dynamic>> onlinePlayers = [];
+    await stream.forEach((element) {
+      onlinePlayers.add(element);
     });
+    return onlinePlayers;
   }
 }

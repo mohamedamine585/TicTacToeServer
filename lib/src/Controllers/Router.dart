@@ -49,10 +49,14 @@ class Router {
             break;
 
           case "/activity":
-            if (WebSocketTransformer.isUpgradeRequest(request)) {
-              final webosocket = await WebSocketTransformer.upgrade(request);
-              PlayersManagerController.onlineActivity(webSocket: webosocket);
+            if (request.method == "GET") {
+              request.response.statusCode = HttpStatus.ok;
+              request.response
+                  .write(await PlayersManagerController.onlineActivity());
+            } else {
+              request.response.statusCode = HttpStatus.notFound;
             }
+
             break;
 
           default:
