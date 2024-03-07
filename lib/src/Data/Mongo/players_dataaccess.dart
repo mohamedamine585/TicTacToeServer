@@ -138,6 +138,7 @@ class PlayersDataAccess {
           {
             "name": playerupdate["name"],
             "email": playerupdate["email"],
+            "lastconnection": DateTime.now(),
             "password":
                 existingPassword, // Include the existing password in the update
           },
