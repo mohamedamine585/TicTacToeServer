@@ -7,9 +7,8 @@ import 'package:tic_tac_toe_server/src/utils/utils.dart';
 
 class PlayersDataAccess {
   Stream<Map<String, dynamic>> getActivePlayers() {
-    return playerscollection.find(where
-        .lte("lastconnection", DateTime.now().subtract(Duration(minutes: 1)))
-        .or(where.eq("lastconnection", null)));
+    return playerscollection.find(where.lte(
+        "lastconnection", DateTime.now().subtract(Duration(minutes: 1))));
   }
 
   Future<Player?> get_playerbyId({required ObjectId id}) async {
