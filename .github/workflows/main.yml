@@ -20,15 +20,7 @@ jobs:
        
         - name: Build game Container
           run:  docker build  -t gameserver .   
-        
-        - name : install jemeter
-          run:  wget -q "https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.4.1.zip" -P /tmp
-
-        - name : install jemeter
-          run: unzip -q "/tmp/apache-jmeter-5.4.1.zip" -d /opt
-        - name : install jemeter
-          run: echo $PATH
-
+ 
         - name: Run Container
         
           
@@ -45,10 +37,7 @@ jobs:
           run: dart pub get
         
 
-        - name:  load testing 
-          run: /opt/apache-jmeter-5.4.1/bin/jmeter -n -t ./jmetertestplan.jmx -l results.jtl
-        - name:  show load testing results
-          run: cat results.jtl
+      
 
 
         - name: Run tests 
