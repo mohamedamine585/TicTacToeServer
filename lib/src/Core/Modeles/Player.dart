@@ -6,8 +6,9 @@ class Player {
   final String email;
   final Timestamp? lastconnection;
   int playedGames = 0;
+  int score;
   int WonGames = 0;
 
   Player(this.Id, this.playername, this.email, this.lastconnection,
-      this.playedGames, this.WonGames);
+      this.playedGames, this.WonGames, this.score);
 }

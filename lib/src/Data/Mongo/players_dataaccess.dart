@@ -22,8 +22,9 @@ class PlayersDataAccess {
             (existing["lastconnection"] != null)
                 ? existing["lastconnection"]
                 : Timestamp(),
-            (existing["playedgames"] != null) ? existing["playedgames"] : 0,
-            (existing["wongames"] != null) ? existing["wongames"] : 0);
+            existing["playedgames"] ?? 0,
+            existing["wongames"] ?? 0,
+            existing["score"] ?? 0);
       }
     } catch (e) {
       print(e);
@@ -42,7 +43,8 @@ class PlayersDataAccess {
             existing["email"],
             existing["lastconnection"],
             existing["playedgames"],
-            existing["wongames"]);
+            existing["wongames"],
+            existing["score"]);
       }
     } catch (e) {
       print(e);

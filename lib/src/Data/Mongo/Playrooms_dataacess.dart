@@ -9,7 +9,10 @@ class Mongo_Playroom_Repository {
     playroomscollection = DbCollection(db, "playrooms");
   }
 
-  Future<void> close_PlayRoom({required Play_room play_room}) async {
+  Future<void> close_PlayRoom(
+      {required Play_room play_room,
+      required int Function(int, int) winScoreAlg,
+      required int Function(int, int) looseScoreAlg}) async {
     try {
       final p0 = await PlayerService.instance
           .get_playerbyId(id: play_room.player0!.Id);
@@ -18,12 +21,23 @@ class Mongo_Playroom_Repository {
       if (play_room.hand != null) {
         await playerscollection.update(
             where.id(p0!.Id),
-            modify.set("playedgames", p0.playedGames + 1).set("wongames",
-                (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames));
+            modify
+                .set("playedgames", p0.playedGames + 1)
+                .set("wongames",
+                    (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames)
+                .set(
+                    "score",
+                    (play_room.hand == 0)
+                        ? winScoreAlg(p0.score, p1?.score ?? 0)
+                        : looseScoreAlg(p0.score, p1?.score ?? 1)));
         await playerscollection.update(
             where.id(p1!.Id),
-            modify.set("playedgames", p1.playedGames + 1).set("wongames",
-                (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames));
+            modify
+                .set("playedgames", p1.playedGames + 1)
+                .set("wongames",
+                    (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames)
+                .set("score",
+                    (play_room.hand == 0) ? winScoreAlg : looseScoreAlg));
         await playroomscollection.update(
             where.id(play_room.roomid!),
             modify

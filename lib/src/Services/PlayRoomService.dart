@@ -1,7 +1,8 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
 import 'package:tic_tac_toe_server/src/Data/Mongo/Playrooms_dataacess.dart';
-import 'package:tic_tac_toe_server/src/Data/Mongo/players_dataaccess.dart';
+import 'package:tic_tac_toe_server/src/Services/algs.dart/loose_score_alg.dart';
+import 'package:tic_tac_toe_server/src/Services/algs.dart/win_score_alg.dart';
 
 class PlayRoomService {
   Mongo_Playroom_Repository PlayroomDataservice;
@@ -15,7 +16,10 @@ class PlayRoomService {
   }
 
   Future<void> close_PlayRoom({required Play_room play_room}) async {
-    await PlayroomDataservice.close_PlayRoom(play_room: play_room);
+    await PlayroomDataservice.close_PlayRoom(
+        play_room: play_room,
+        winScoreAlg: winScoreAlg,
+        looseScoreAlg: looseScoreAlg);
   }
 
   Future<ObjectId?> open_PlayRoom({required Play_room play_room}) async {
