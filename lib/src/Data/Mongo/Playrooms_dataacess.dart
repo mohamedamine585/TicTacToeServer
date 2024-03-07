@@ -24,10 +24,10 @@ class Mongo_Playroom_Repository {
             modify
                 .set("playedgames", p0.playedGames + 1)
                 .set("wongames",
-                    (play_room.hand == 0) ? p0.WonGames + 1 : p0.WonGames)
+                    (play_room.hand! % 2 == 0) ? p0.WonGames + 1 : p0.WonGames)
                 .set(
                     "score",
-                    (play_room.hand == 0)
+                    (play_room.hand! % 2 == 0)
                         ? winScoreAlg(p0.score, p1?.score ?? 0)
                         : looseScoreAlg(p0.score, p1?.score ?? 1)));
         await playerscollection.update(
@@ -35,9 +35,9 @@ class Mongo_Playroom_Repository {
             modify
                 .set("playedgames", p1.playedGames + 1)
                 .set("wongames",
-                    (play_room.hand == 1) ? p1.WonGames + 1 : p1.WonGames)
+                    (play_room.hand! % 2 == 1) ? p1.WonGames + 1 : p1.WonGames)
                 .set("score",
-                    (play_room.hand == 0) ? winScoreAlg : looseScoreAlg));
+                    (play_room.hand! % 2 == 1) ? winScoreAlg : looseScoreAlg));
         await playroomscollection.update(
             where.id(play_room.roomid!),
             modify

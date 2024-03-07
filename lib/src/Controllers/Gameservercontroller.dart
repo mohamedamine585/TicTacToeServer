@@ -58,6 +58,10 @@ class Gameserver_controller {
             if (checkWin(play_room: playRoom) == 'X') {
               sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
               sendDataTo("You Lost", playRoom, playRoom.player1!.socket, null);
+
+              // save that player 0 won
+              playRoom.hand = 2;
+
               playRoom.player0?.socket.close(null, "won");
             } else {
               playRoom.hand = 1;
@@ -76,6 +80,9 @@ class Gameserver_controller {
           await playRoom.player0?.socket.close();
         }
       }, onDone: () async {
+        if (playRoom.hand != 3 && playRoom.hand != 2) {
+          playRoom.hand = 1;
+        }
         RoomManagerController.delete_room(playRoom);
 
         await playRoom.player0?.socket.close();
@@ -116,6 +123,7 @@ class Gameserver_controller {
                 sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
                 sendDataTo(
                     "You Lost", playRoom, playRoom.player0!.socket, null);
+                playRoom.hand = 3;
                 playRoom.player1?.socket.close(null, "won");
               } else {
                 playRoom.hand = 0;
@@ -130,8 +138,6 @@ class Gameserver_controller {
                     "You Lost", playRoom, playRoom.player1!.socket, null);
               }
 
-              playRoom.hand = 0;
-
               playRoom.player1?.socket.close();
             }
           }
@@ -142,6 +148,9 @@ class Gameserver_controller {
         },
         cancelOnError: true,
         onDone: () async {
+          if (playRoom.hand != 3 && playRoom.hand != 2) {
+            playRoom.hand = 0;
+          }
           await playRoom.player1?.socket.close();
           await playRoom.player0?.socket.close();
 
