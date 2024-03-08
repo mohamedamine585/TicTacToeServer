@@ -36,8 +36,11 @@ class Mongo_Playroom_Repository {
                 .set("playedgames", p1.playedGames + 1)
                 .set("wongames",
                     (play_room.hand! % 2 == 1) ? p1.WonGames + 1 : p1.WonGames)
-                .set("score",
-                    (play_room.hand! % 2 == 1) ? winScoreAlg : looseScoreAlg));
+                .set(
+                    "score",
+                    (play_room.hand! % 2 == 1)
+                        ? winScoreAlg(p1.score, p0.score)
+                        : looseScoreAlg(p1.score, p0.score)));
         await playroomscollection.update(
             where.id(play_room.roomid!),
             modify
