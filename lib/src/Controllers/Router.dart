@@ -49,9 +49,8 @@ class Router {
 
           case "/activity":
             if (request.method == "GET") {
-              request.response.statusCode = HttpStatus.ok;
-              request.response
-                  .write(await PlayersManagerController.onlineActivity());
+              await PlayersManagerController.subscribeToOnlineActivity(
+                  request: request);
             } else {
               request.response.statusCode = HttpStatus.notFound;
             }

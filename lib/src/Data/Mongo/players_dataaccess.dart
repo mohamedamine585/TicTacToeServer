@@ -6,9 +6,20 @@ import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';
 import 'package:tic_tac_toe_server/src/utils/utils.dart';
 
 class PlayersDataAccess {
-  Stream<Map<String, dynamic>> getActivePlayers() {
-    return playerscollection.find(where.lte(
-        "lastconnection", DateTime.now().subtract(Duration(minutes: 1))));
+  Stream<Map<String, dynamic>>? getActivePlayers() {
+    try {
+      final pipeline = AggregationPipelineBuilder()
+          .addStage(Match(where
+              .gte("lastconnection",
+                  DateTime.now().subtract(Duration(minutes: 1)))
+              .or(where.eq("lastconnection", null))
+              .map['\$query']))
+          .build();
+
+      return playerscollection.modernAggregate(pipeline);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<Player?> get_playerbyId({required ObjectId id}) async {
