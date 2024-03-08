@@ -5,7 +5,7 @@ import 'package:dotenv/dotenv.dart' as dotenv;
 import 'package:tic_tac_toe_server/src/controllers/Router.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/MongoDb.dart';
 
-import 'src/controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
 
 class GameServer {
   static late HttpServer server;
@@ -36,5 +36,6 @@ class GameServer {
     } catch (e) {
       print("Cannot start server");
     }
+    return null;
   }
 }
