@@ -1,4 +1,4 @@
-import '../Core/Modeles/Player_Room.dart';
+import '../models/Player_Room.dart';
 
 String checkWin({required Play_room play_room}) {
   // Check rows and columns

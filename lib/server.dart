@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dotenv/dotenv.dart' as dotenv;
-import 'package:tic_tac_toe_server/src/Controllers/Router.dart';
-import 'package:tic_tac_toe_server/src/Data/Mongo/MongoDb.dart';
+import 'package:tic_tac_toe_server/src/controllers/Router.dart';
+import 'package:tic_tac_toe_server/src/data/Mongo/MongoDb.dart';
 
-import 'src/Controllers/Gameservercontroller.dart';
+import 'src/controllers/Gameservercontroller.dart';
 
 class GameServer {
   static late HttpServer server;
@@ -21,7 +21,7 @@ class GameServer {
         "Game server is running on ${server.address.address} port ${server.port}");
   }
 
-  static serve() async {
+  static Future<HttpServer?> serve() async {
     await init();
     await Gameserver_controller.init_tokens_state();
     try {
@@ -32,6 +32,7 @@ class GameServer {
           print("Error");
         }
       });
+      return server;
     } catch (e) {
       print("Cannot start server");
     }

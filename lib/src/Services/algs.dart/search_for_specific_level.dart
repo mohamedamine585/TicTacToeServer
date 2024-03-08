@@ -1,5 +1,5 @@
-import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
-import 'package:tic_tac_toe_server/src/Core/Modeles/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/models/Player.dart';
+import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
 import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 Future<String> playGameWithSpecificPlayer(

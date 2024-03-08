@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/Controllers/Gameservercontroller.dart';
-import 'package:tic_tac_toe_server/src/Controllers/PlayersManagerController.dart';
-import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
-import 'package:tic_tac_toe_server/src/Services/player_service.dart';
+import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/controllers/PlayersManagerController.dart';
+
 import 'package:tic_tac_toe_server/src/middleware/gamemiddleware.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';

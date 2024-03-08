@@ -1,7 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/src/Core/Modeles/Player.dart';
-import 'package:tic_tac_toe_server/src/Data/Mongo/players_dataaccess.dart';
-import 'package:tic_tac_toe_server/src/Data/utils.dart';
+import 'package:tic_tac_toe_server/src/models/Player.dart';
+import 'package:tic_tac_toe_server/src/data/Mongo/players_dataaccess.dart';
+import 'package:tic_tac_toe_server/src/data/utils.dart';
 
 class PlayerService {
   PlayersDataAccess playerRepository;

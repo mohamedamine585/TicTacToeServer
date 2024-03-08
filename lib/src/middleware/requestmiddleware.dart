@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/services/Tokensservice.dart';
 
 import 'tokenmiddleware.dart';
 
