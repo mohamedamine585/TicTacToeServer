@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/controllers/PlayRequestHandler.dart';
-import 'package:tic_tac_toe_server/src/controllers/PlayersManagerController.dart';
+import '/src/controllers/PlayRequestHandler.dart';
+import '/src/controllers/PlayersManagerController.dart';
 
-import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
-import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';
+import '/src/middleware/requestmiddleware.dart';
+import '/src/middleware/tokenmiddleware.dart';
 
 void Function(HttpRequest) router = (HttpRequest request) async {
   String? playerid;
