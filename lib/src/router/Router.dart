@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:tic_tac_toe_server/src/router/pipeline.dart';
+
 import '/src/controllers/PlayRequestHandler.dart';
 import '/src/controllers/PlayersManagerController.dart';
 
@@ -8,56 +10,42 @@ import '/src/middleware/requestmiddleware.dart';
 import '/src/middleware/tokenmiddleware.dart';
 
 void Function(HttpRequest) router = (HttpRequest request) async {
-  String? playerid;
+  Pipeline pipeline = Pipeline(request);
   try {
-    playerid = Tokenmiddleware.Check_Token(request);
-    if (playerid != null) {
-      switch (request.requestedUri.path) {
-        case "/":
+    pipeline.addmiddleware(checkToken);
+    switch (request.requestedUri.path) {
+      case "/":
+        await pipeline.addasynchandler(handlePlayRequestModern);
+        break;
+      case "/player":
+        if (request.method == "GET") {
+          await pipeline.addasynchandler(getdoc);
+        } else if (request.method == "PUT") {
+          await pipeline
+              .addmiddleware(checkbodyForPlayerupdate)
+              .addasynchandler(updatedoc);
+        } else if (request.method == "DELETE") {
+        } else if (request.method == "POST") {}
+        break;
+      case "/test":
+        request.response.statusCode == HttpStatus.ok;
+        request.response.write(json.encode({"message": "Request Received"}));
+        break;
 
-          // v1 of match making
-          await handlePlayRequestModern(request, playerid);
+      case "/activity":
+        if (request.method == "GET") {
+          await pipeline
+              .addmiddleware(checkbodyForPlayerupdate)
+              .addasynchandler(subscribeToOnlineActivity);
+        } else {
+          request.response.statusCode = HttpStatus.notFound;
+        }
 
-          break;
-        case "/player":
-          if (request.method == "GET") {
-            request.response.write(json.encode(
-                await PlayersManagerController.getdoc(playerid: playerid)));
-          } else if (request.method == "PUT") {
-            final reqBody = await Requestmiddleware.checkbodyForPlayerupdate(
-                request: request);
-            if (reqBody != null) {
-              final updateddoc = await PlayersManagerController.updatedoc(
-                  playerupdate: reqBody, id: playerid);
-              if (updateddoc != null) {
-                request.response
-                    .write(json.encode({"message": "Player Updated"}));
-              }
-            }
-          } else if (request.method == "DELETE") {
-          } else if (request.method == "POST") {}
-          break;
-        case "/test":
-          request.response.statusCode == HttpStatus.ok;
-          request.response.write(json.encode({"message": "Request Received"}));
-          break;
+        break;
 
-        case "/activity":
-          if (request.method == "GET") {
-            await PlayersManagerController.subscribeToOnlineActivity(
-                request: request);
-          } else {
-            request.response.statusCode = HttpStatus.notFound;
-          }
-
-          break;
-
-        default:
-      }
-    } else {
-      request.response.statusCode == HttpStatus.unauthorized;
-      request.response.write(json.encode({"message": "Invalid token"}));
+      default:
     }
+
     await request.response.close();
   } catch (e) {
     print(e);

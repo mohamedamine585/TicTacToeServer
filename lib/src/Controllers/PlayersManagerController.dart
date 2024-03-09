@@ -4,35 +4,41 @@ import 'dart:io';
 import 'package:tic_tac_toe_server/src/services/online_activity_service.dart';
 import 'package:tic_tac_toe_server/src/services/player_service.dart';
 
-class PlayersManagerController {
-  static Future<void> subscribeToOnlineActivity(
-      {required HttpRequest request}) async {
-    final stream = OnlineActivityService.instance.getOnlineActivity();
-    if (WebSocketTransformer.isUpgradeRequest(request)) {
-      final websocket = await WebSocketTransformer.upgrade(request);
-      stream?.listen((event) {
-        // to fix
-        event.remove("lastconnection");
-        websocket.add(json.encode({"players": event}));
-      });
-    }
+Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
+  final stream = OnlineActivityService.instance.getOnlineActivity();
+  if (WebSocketTransformer.isUpgradeRequest(request)) {
+    final websocket = await WebSocketTransformer.upgrade(request);
+    stream?.listen((event) {
+      // to fix
+      event.remove("lastconnection");
+      websocket.add(json.encode({"players": event}));
+    });
   }
+};
 
-  static getdoc({required String playerid}) async {
-    try {
-      return await PlayerService.instance.getdoc(id: playerid);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  static updatedoc(
-      {required Map<String, dynamic> playerupdate, required String id}) async {
-    try {
-      return await PlayerService.instance
-          .updatePlayer(id: id, playerupdate: playerupdate);
-    } catch (e) {
-      print(e);
-    }
+getdoc(HttpRequest request) async {
+  try {
+    final doc = await PlayerService.instance
+        .getdoc(id: request.response.headers.value("playerid")!);
+    request.response.write(json.encode(doc));
+  } catch (e) {
+    print(e);
   }
 }
+
+Function(HttpRequest) updatedoc = (HttpRequest request) async {
+  try {
+    final playerid = request.headers.value("playerid");
+    final Map<String, dynamic> playerupdate = {
+      "name": request.response.headers.value("name"),
+      "email": request.response.headers.value("email")
+    };
+    final updateddoc = await PlayerService.instance
+        .updatePlayer(id: playerid!, playerupdate: playerupdate);
+    if (updateddoc != null) {
+      request.response.write(json.encode({"message": "Player Updated"}));
+    }
+  } catch (e) {
+    print(e);
+  }
+};
