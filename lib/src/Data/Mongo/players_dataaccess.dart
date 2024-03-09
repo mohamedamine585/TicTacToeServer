@@ -20,6 +20,7 @@ class PlayersDataAccess {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   Future<Player?> get_playerbyId({required ObjectId id}) async {
@@ -176,7 +177,6 @@ class PlayersDataAccess {
     return null;
   }
 
-  @override
   Future<void> updateActivity({required String playerid}) async {
     try {
       final playerID = ObjectId.fromHexString(playerid);

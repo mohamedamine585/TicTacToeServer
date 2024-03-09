@@ -18,6 +18,7 @@ class MatchMakerController {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   static String? createRoom() {
@@ -32,6 +33,7 @@ class MatchMakerController {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 
   static acceptPlayer(HttpRequest playrequest, String playerid) async {
