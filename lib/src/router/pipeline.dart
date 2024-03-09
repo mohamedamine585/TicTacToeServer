@@ -13,8 +13,7 @@ class Pipeline {
     await handler(_request);
   }
 
-  Pipeline addhandler(Function(HttpRequest) handler) {
+  void addhandler(Function(HttpRequest) handler) {
     handler(_request);
-    return this;
   }
 }
