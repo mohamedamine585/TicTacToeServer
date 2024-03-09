@@ -46,38 +46,33 @@ class MatchMakerController {
   }
 
   static connectToPlayroom(
-      HttpRequest playrequest, ObjectId playerId, String roomid) async {
+      HttpRequest playrequest, ObjectId playerId, ObjectId roomid) async {
     try {
-      if (WebSocketTransformer.isUpgradeRequest(playrequest)) {
-        // open websocket connection with the player
-        final playerWebScoket = await WebSocketTransformer.upgrade(playrequest);
+      // open websocket connection with the player
+      final playerWebScoket = await WebSocketTransformer.upgrade(playrequest);
 
-        // find playroom (can Upgrade using a Map instead of a list)
-        for (int i = 0; i <= Gameserver_controller.rooms.length; i++) {
-          if (Gameserver_controller.rooms[i].roomid ==
-              ObjectId.fromHexString(roomid)) {
-            if (Gameserver_controller.rooms[i].player0 == null) {
-              Gameserver_controller.rooms[i].player0 =
-                  Player_Socket(playerWebScoket, playerId);
+      // find playroom (can Upgrade using a Map instead of a list)
+      for (int i = 0; i <= Gameserver_controller.rooms.length; i++) {
+        if (Gameserver_controller.rooms[i].roomid == roomid) {
+          if (Gameserver_controller.rooms[i].player0 == null) {
+            Gameserver_controller.rooms[i].player0 =
+                Player_Socket(playerWebScoket, playerId);
 
-              // sending a wait message to the player
-              Gameserver_controller.sendDataTo(
-                  "Waiting the opponent ...",
-                  Gameserver_controller.rooms[i],
-                  Gameserver_controller.rooms[i].player0!.socket,
-                  roomid);
-            } else if (Gameserver_controller.rooms[i].player1 == null) {
-              Gameserver_controller.rooms[i].player1 =
-                  Player_Socket(playerWebScoket, playerId);
+            // sending a wait message to the player
+            Gameserver_controller.sendDataTo(
+                "Waiting the opponent ...",
+                Gameserver_controller.rooms[i],
+                Gameserver_controller.rooms[i].player0!.socket,
+                roomid.toHexString());
+          } else if (Gameserver_controller.rooms[i].player1 == null) {
+            Gameserver_controller.rooms[i].player1 =
+                Player_Socket(playerWebScoket, playerId);
 
-              startGame(Gameserver_controller.rooms[i]);
-            } else {
-              playrequest.response.statusCode = HttpStatus.badRequest;
-            }
+            startGame(Gameserver_controller.rooms[i]);
+          } else {
+            playrequest.response.statusCode = HttpStatus.badRequest;
           }
         }
-      } else {
-        playrequest.response.statusCode = HttpStatus.badRequest;
       }
     } catch (e) {
       print(e);

@@ -41,7 +41,7 @@ class Requestmiddleware {
       final token = request.headers.value("token");
       switch (request.method) {
         case ("PUT"):
-          if ((Tokenmiddleware.Check_Token(token) != null) &&
+          if ((Tokenmiddleware.Check_Token(request) != null) &&
               (await Tokensservice.instance
                       .fetch_nonfree_token(token: token!)) !=
                   null) {
@@ -50,8 +50,7 @@ class Requestmiddleware {
 
           break;
         case ("DELETE"):
-          if ((Tokenmiddleware.Check_Token(request.headers.value("token")) !=
-                  null) &&
+          if ((Tokenmiddleware.Check_Token(request) != null) &&
               (await Tokensservice.instance
                       .fetch_nonfree_token(token: token!)) !=
                   null) {

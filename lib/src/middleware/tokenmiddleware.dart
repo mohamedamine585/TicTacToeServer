@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 import '../utils/consts.dart';
 
 class Tokenmiddleware {
-  static String? Check_Token(String? token) {
+  static String? Check_Token(HttpRequest request) {
     try {
+      final token = request.headers.value("Authorization");
       if (token?.split(" ")[1] == null) {
         print("Invalid token");
         throw Exception("Invalid token");

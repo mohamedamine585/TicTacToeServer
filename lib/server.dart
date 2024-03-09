@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dotenv/dotenv.dart' as dotenv;
-import 'package:tic_tac_toe_server/src/controllers/Router.dart';
+import 'package:tic_tac_toe_server/src/router/Router.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/MongoDb.dart';
 
 import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
@@ -25,13 +25,8 @@ class GameServer {
     await init();
     await Gameserver_controller.init_tokens_state();
     try {
-      server.listen((HttpRequest playRequest) async {
-        try {
-          await Router.route(playRequest);
-        } catch (e) {
-          print("Error");
-        }
-      });
+      server.listen(router, onError: onError);
+
       return server;
     } catch (e) {
       print("Cannot start server");
