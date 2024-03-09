@@ -2,10 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dotenv/dotenv.dart' as dotenv;
+import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/MongoDb.dart';
 import 'package:tic_tac_toe_server/src/router/Router.dart';
-
-import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
 
 class GameServer {
   static late HttpServer server;
