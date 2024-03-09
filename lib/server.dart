@@ -20,17 +20,17 @@ class GameServer {
     print(
         "Game server is running on ${server.address.address} port ${server.port}");
   }
+}
 
-  static Future<HttpServer?> serve() async {
-    await init();
-    await Gameserver_controller.init_tokens_state();
-    try {
-      server.listen(router, onError: onError);
+Future<HttpServer?> run() async {
+  await GameServer.init();
+  await Gameserver_controller.init_tokens_state();
+  try {
+    GameServer.server.listen(router, onError: onError);
 
-      return server;
-    } catch (e) {
-      print("Cannot start server");
-    }
-    return null;
+    return GameServer.server;
+  } catch (e) {
+    print("Cannot start server");
   }
+  return null;
 }
