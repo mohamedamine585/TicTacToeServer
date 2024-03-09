@@ -2,23 +2,22 @@ import 'dart:convert';
 import 'dart:io';
 
 Function(HttpRequest) checkbodyForPlayerupdate = (HttpRequest request) async {
-  try {
-    var body = json.decode(await utf8.decodeStream(request));
-    if (body["email"] != null ||
-        body["name"] != null ||
-        body["lastconnection"] != null) {
-      // change constraint  ********************
+  var body = json.decode(await utf8.decodeStream(request));
+  if (body["email"] != null ||
+      body["name"] != null ||
+      body["lastconnection"] != null) {
+    // change constraint  ********************
 
-      if (body["email"].length != 0 || body["name"].length != 0) {
-        request.response.headers.set("name", body["name"]);
-        request.response.headers.set("email", body["email"]);
-      }
+    if (body["email"].length != 0 || body["name"].length != 0) {
+      request.response.headers.set("name", body["name"]);
+      request.response.headers.set("email", body["email"]);
     }
+  } else {
     request.response.statusCode = HttpStatus.badRequest;
     request.response.write(json.encode({"message": "Invalid Body"}));
-  } catch (e) {
-    print(e);
+    throw Exception();
   }
+
   return null;
 };
 

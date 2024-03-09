@@ -11,6 +11,7 @@ import '/src/middleware/tokenmiddleware.dart';
 
 void Function(HttpRequest) router = (HttpRequest request) async {
   Pipeline pipeline = Pipeline(request);
+
   try {
     pipeline.addmiddleware(checkToken);
     switch (request.requestedUri.path) {
@@ -45,11 +46,10 @@ void Function(HttpRequest) router = (HttpRequest request) async {
 
       default:
     }
-
-    await request.response.close();
   } catch (e) {
     print(e);
   }
+  await request.response.close();
 };
 Function? onError = (e) {
   print(e);
