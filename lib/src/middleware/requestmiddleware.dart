@@ -1,16 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/Services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/services/Tokensservice.dart';
 
-import 'tokenmiddleware.dart';
+import 'package:tic_tac_toe_server/src/middleware/tokenmiddleware.dart';
 
 class Requestmiddleware {
   static Future<Map<String, dynamic>?> checkbodyForPlayerupdate(
       {required HttpRequest request}) async {
     try {
       var body = json.decode(await utf8.decodeStream(request));
-      if (body["email"] != null || body["name"] != null) {
+      if (body["email"] != null ||
+          body["name"] != null ||
+          body["lastconnection"] != null) {
         if (body["email"].length != 0 && body["name"].length != 0) {
           return body;
         }
@@ -39,7 +41,7 @@ class Requestmiddleware {
       final token = request.headers.value("token");
       switch (request.method) {
         case ("PUT"):
-          if ((Tokenmiddleware.Check_Token(token) != null) &&
+          if ((Tokenmiddleware.Check_Token(request) != null) &&
               (await Tokensservice.instance
                       .fetch_nonfree_token(token: token!)) !=
                   null) {
@@ -48,8 +50,7 @@ class Requestmiddleware {
 
           break;
         case ("DELETE"):
-          if ((Tokenmiddleware.Check_Token(request.headers.value("token")) !=
-                  null) &&
+          if ((Tokenmiddleware.Check_Token(request) != null) &&
               (await Tokensservice.instance
                       .fetch_nonfree_token(token: token!)) !=
                   null) {
