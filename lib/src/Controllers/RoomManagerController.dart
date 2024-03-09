@@ -61,7 +61,7 @@ class RoomManagerController {
     }
   }
 
-  static delete_room(Play_room playRoom) async {
+  static Future<void> delete_room(Play_room playRoom) async {
     try {
       if (playRoom.opened) {
         await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
@@ -75,11 +75,6 @@ class RoomManagerController {
         }
       }
 
-      for (int ids = playRoom.id + 1;
-          ids < Gameserver_controller.rooms.length;
-          ids++) {
-        Gameserver_controller.rooms[ids].id = ids--;
-      }
       Gameserver_controller.rooms.remove(playRoom);
     } catch (e) {
       print(e);

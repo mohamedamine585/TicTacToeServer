@@ -16,7 +16,7 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         case "/":
 
           // v1 of match making
-          await handlePlayRequest(request, playerid);
+          await handlePlayRequestModern(request, playerid);
 
           break;
         case "/player":

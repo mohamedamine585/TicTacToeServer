@@ -43,6 +43,7 @@ class Gameserver_controller {
     try {
       playRoom.player0?.socket.listen((event) async {
         try {
+          print(event);
           if (playRoom.hand == 0) {
             event as String;
             if (event.length > 3) {
@@ -82,13 +83,11 @@ class Gameserver_controller {
         if (playRoom.hand != 3 && playRoom.hand != 2) {
           playRoom.hand = 1;
         }
-        RoomManagerController.delete_room(playRoom);
+        await RoomManagerController.delete_room(playRoom);
 
         await playRoom.player0?.socket.close();
 
         await playRoom.player1?.socket.close();
-
-        await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
       }, onError: (e) {
         playRoom.player0?.socket.close();
       });
@@ -152,9 +151,6 @@ class Gameserver_controller {
           }
           await playRoom.player1?.socket.close();
           await playRoom.player0?.socket.close();
-
-          await Tokensservice.instance
-              .change_token_status(playRoom.player1!.Id);
         },
       );
     } catch (e) {

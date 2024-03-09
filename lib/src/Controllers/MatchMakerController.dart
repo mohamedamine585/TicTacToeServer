@@ -8,10 +8,10 @@ import 'package:tic_tac_toe_server/src/models/Player_token.dart';
 import '../models/Player_Room.dart';
 
 class MatchMakerController {
-  static String? findRoom() {
+  static String? findFreeRoom() {
     try {
       for (Play_room playRoom in Gameserver_controller.rooms) {
-        if (playRoom.player0 == null || playRoom.player1 == null) {
+        if (playRoom.player1 == null && !playRoom.gameWithaFriend) {
           return playRoom.roomid?.toHexString();
         }
       }
@@ -21,11 +21,11 @@ class MatchMakerController {
     return null;
   }
 
-  static String? createRoom() {
+  static String? createRoom(bool playWithaFriend) {
     try {
       // create playroom object without sockets
       Play_room play_room = Play_room(Gameserver_controller.rooms.length,
-          ObjectId(), null, null, null, true);
+          ObjectId(), null, null, null, playWithaFriend);
 
       Gameserver_controller.rooms.add(play_room);
 
@@ -38,8 +38,15 @@ class MatchMakerController {
 
   static acceptPlayer(HttpRequest playrequest, String playerid) async {
     try {
-      String? playRoomId = findRoom();
-      playRoomId ??= createRoom();
+      String? playRoomId;
+      final mode = playrequest.headers.value("mode");
+      if (mode == "friend") {
+        playRoomId ??= createRoom(mode == "friend");
+      } else {
+        playRoomId = findFreeRoom();
+        playRoomId ??= createRoom(mode == "friend");
+      }
+
       playrequest.response.statusCode = HttpStatus.ok;
       playrequest.response.write(json.encode({"roomid": playRoomId}));
     } catch (e) {
@@ -47,33 +54,46 @@ class MatchMakerController {
     }
   }
 
+  static int? findfreeRoomindex(ObjectId roomid) {
+    try {
+      for (int i = 0; i < Gameserver_controller.rooms.length; i++) {
+        if (Gameserver_controller.rooms[i].roomid == roomid &&
+            Gameserver_controller.rooms[i].player1 == null) {
+          return i;
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   static connectToPlayroom(
       HttpRequest playrequest, ObjectId playerId, ObjectId roomid) async {
     try {
-      // open websocket connection with the player
-      final playerWebScoket = await WebSocketTransformer.upgrade(playrequest);
-
       // find playroom (can Upgrade using a Map instead of a list)
-      for (int i = 0; i <= Gameserver_controller.rooms.length; i++) {
-        if (Gameserver_controller.rooms[i].roomid == roomid) {
-          if (Gameserver_controller.rooms[i].player0 == null) {
-            Gameserver_controller.rooms[i].player0 =
-                Player_Socket(playerWebScoket, playerId);
 
-            // sending a wait message to the player
-            Gameserver_controller.sendDataTo(
-                "Waiting the opponent ...",
-                Gameserver_controller.rooms[i],
-                Gameserver_controller.rooms[i].player0!.socket,
-                roomid.toHexString());
-          } else if (Gameserver_controller.rooms[i].player1 == null) {
-            Gameserver_controller.rooms[i].player1 =
-                Player_Socket(playerWebScoket, playerId);
+      final playroomindex = findfreeRoomindex(roomid);
+      if (playroomindex != null) {
+        // open websocket connection with the player
+        final playerWebScoket = await WebSocketTransformer.upgrade(playrequest);
+        if (Gameserver_controller.rooms[playroomindex].player0 == null) {
+          Gameserver_controller.rooms[playroomindex].player0 =
+              Player_Socket(playerWebScoket, playerId);
 
-            startGame(Gameserver_controller.rooms[i]);
-          } else {
-            playrequest.response.statusCode = HttpStatus.badRequest;
-          }
+          // sending a wait message to the player
+          Gameserver_controller.sendDataTo(
+              "Waiting the opponent ...",
+              Gameserver_controller.rooms[playroomindex],
+              Gameserver_controller.rooms[playroomindex].player0!.socket,
+              roomid.toHexString());
+        } else if (Gameserver_controller.rooms[playroomindex].player1 == null) {
+          Gameserver_controller.rooms[playroomindex].player1 =
+              Player_Socket(playerWebScoket, playerId);
+
+          startGame(Gameserver_controller.rooms[playroomindex]);
+        } else {
+          playrequest.response.statusCode = HttpStatus.badRequest;
         }
       }
     } catch (e) {
@@ -89,8 +109,9 @@ class MatchMakerController {
           playRoom.player1!.socket, playRoom.roomid?.toHexString());
 
       // start receiving data from players
+      playRoom.hand = 0;
       Gameserver_controller.listen_to_player0(playRoom);
-      Gameserver_controller.listen_to_player0(playRoom);
+      Gameserver_controller.listen_to_player1(playRoom);
     } catch (e) {
       print(e);
     }
