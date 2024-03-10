@@ -49,7 +49,7 @@ void Function(HttpRequest) router = (HttpRequest request) async {
   } catch (e) {
     print(e);
   }
-  await request.response.close();
+  await pipeline.close(request);
 };
 Function? onError = (e) {
   print(e);

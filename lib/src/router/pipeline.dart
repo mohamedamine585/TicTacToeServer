@@ -13,6 +13,10 @@ class Pipeline {
     await handler(_request);
   }
 
+  Future<void> close(HttpRequest request) async {
+    await request.response.close();
+  }
+
   void addhandler(Function(HttpRequest) handler) {
     handler(_request);
   }
