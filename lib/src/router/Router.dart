@@ -46,8 +46,9 @@ void Function(HttpRequest) router = (HttpRequest request) async {
     }
   } catch (e) {
     print(e);
+  } finally {
+    await pipeline.close(request);
   }
-  await pipeline.close(request);
 };
 Function? onError = (e) {
   print(e);
