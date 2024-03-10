@@ -164,7 +164,7 @@ class Gameserver_controller {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
           "message": message,
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -180,7 +180,7 @@ class Gameserver_controller {
 
         playRoom.player1?.socket.add(json.encode({
           "message": message,
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -197,7 +197,7 @@ class Gameserver_controller {
     } else {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -212,7 +212,7 @@ class Gameserver_controller {
         }));
 
         playRoom.player1?.socket.add(json.encode({
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -234,7 +234,7 @@ class Gameserver_controller {
     if (message != null) {
       playersocket.add(json.encode({
         "message": message,
-        "Grid": [
+        "grid": [
           playRoom.Grid[0][0] ?? '',
           playRoom.Grid[0][1] ?? '',
           playRoom.Grid[0][2] ?? '',
