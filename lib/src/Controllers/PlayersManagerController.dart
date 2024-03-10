@@ -28,7 +28,7 @@ getdoc(HttpRequest request) async {
 
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
-    final playerid = request.headers.value("playerid");
+    final playerid = request.response.headers.value("playerid");
     final Map<String, dynamic> playerupdate = {
       "name": request.response.headers.value("name"),
       "email": request.response.headers.value("email")

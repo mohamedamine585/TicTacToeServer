@@ -22,9 +22,8 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         if (request.method == "GET") {
           await pipeline.addasynchandler(getdoc);
         } else if (request.method == "PUT") {
-          await pipeline
-              .addmiddleware(checkbodyForPlayerupdate)
-              .addasynchandler(updatedoc);
+          await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
+          await pipeline.addasynchandler(updatedoc);
         } else if (request.method == "DELETE") {
         } else if (request.method == "POST") {}
         break;
@@ -35,8 +34,7 @@ void Function(HttpRequest) router = (HttpRequest request) async {
 
       case "/activity":
         if (request.method == "GET") {
-          await pipeline
-              .addmiddleware(checkbodyForPlayerupdate)
+          await (await pipeline.addasyncmiddleware(checkbodyForPlayerupdate))
               .addasynchandler(subscribeToOnlineActivity);
         } else {
           request.response.statusCode = HttpStatus.notFound;

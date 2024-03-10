@@ -9,6 +9,11 @@ class Pipeline {
     return this;
   }
 
+  Future<Pipeline> addasyncmiddleware(Function(HttpRequest) middleware) async {
+    await middleware(_request);
+    return this;
+  }
+
   Future<void> addasynchandler(Function(HttpRequest) handler) async {
     await handler(_request);
   }

@@ -8,17 +8,16 @@ Function(HttpRequest) checkbodyForPlayerupdate = (HttpRequest request) async {
       body["lastconnection"] != null) {
     // change constraint  ********************
 
-    if (body["email"].length != 0 || body["name"].length != 0) {
-      request.response.headers.set("name", body["name"]);
+    if (body["email"] != null && body["email"].length != 0) {
       request.response.headers.set("email", body["email"]);
+    }
+    if (body["name"] != null && body["name"].length != 0) {
+      request.response.headers.set("name", body["name"]);
     }
   } else {
     request.response.statusCode = HttpStatus.badRequest;
-    request.response.write(json.encode({"message": "Invalid Body"}));
-    throw Exception();
+    throw Exception("Invalid body");
   }
-
-  return null;
 };
 
 bool check_signinRequest({required HttpRequest request}) {
