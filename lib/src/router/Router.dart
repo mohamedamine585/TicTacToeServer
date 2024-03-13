@@ -34,8 +34,8 @@ void Function(HttpRequest) router = (HttpRequest request) async {
 
       case "/activity":
         if (request.method == "GET") {
-          await (await pipeline.addasyncmiddleware(checkbodyForPlayerupdate))
-              .addasynchandler(subscribeToOnlineActivity);
+          await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
+          await pipeline.addasynchandler(subscribeToOnlineActivity);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }

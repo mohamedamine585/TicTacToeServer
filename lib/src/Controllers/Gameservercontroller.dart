@@ -43,7 +43,6 @@ class Gameserver_controller {
     try {
       playRoom.player0?.socket.listen((event) async {
         try {
-          print(event);
           if (playRoom.hand == 0) {
             event as String;
             if (event.length > 3) {
@@ -82,6 +81,10 @@ class Gameserver_controller {
       }, onDone: () async {
         if (playRoom.hand != 3 && playRoom.hand != 2) {
           playRoom.hand = 1;
+          if (playRoom.player1?.socket.closeCode == null) {
+            sendDataTo("Connection Lost You Won", playRoom,
+                playRoom.player1!.socket, playRoom.roomid?.toHexString());
+          }
         }
         await RoomManagerController.delete_room(playRoom);
 
@@ -144,10 +147,13 @@ class Gameserver_controller {
           playRoom.player1!.socket.close();
           print("Error");
         },
-        cancelOnError: true,
         onDone: () async {
           if (playRoom.hand != 3 && playRoom.hand != 2) {
             playRoom.hand = 0;
+            if (playRoom.player0?.socket.closeCode == null) {
+              sendDataTo("Connection Lost You Won", playRoom,
+                  playRoom.player0!.socket, playRoom.roomid?.toHexString());
+            }
           }
           await playRoom.player1?.socket.close();
           await playRoom.player0?.socket.close();
