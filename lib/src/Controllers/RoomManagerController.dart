@@ -62,12 +62,8 @@ class RoomManagerController {
 
   static Future<void> delete_room(Play_room playRoom) async {
     try {
-      if (playRoom.opened) {
-        if (playRoom.player0 != null && playRoom.player1 != null) {
-          print(playRoom.player0?.Id);
-          print(playRoom.player1?.Id);
-          await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
-        }
+      if (playRoom.player0 != null && playRoom.player1 != null) {
+        await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
       }
 
       Gameserver_controller.rooms.remove(playRoom);

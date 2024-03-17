@@ -16,6 +16,7 @@ class Mongo_Playroom_Repository {
     try {
       final p0 = await PlayerService.instance
           .get_playerbyId(id: play_room.player0!.Id);
+
       final p1 = await PlayerService.instance
           .get_playerbyId(id: play_room.player1!.Id);
       if (play_room.hand != null) {
@@ -30,6 +31,8 @@ class Mongo_Playroom_Repository {
                     (play_room.hand! % 2 == 0)
                         ? winScoreAlg(p0.score, p1?.score ?? 0)
                         : looseScoreAlg(p0.score, p1?.score ?? 1)));
+
+        print("object");
         await playerscollection.update(
             where.id(p1!.Id),
             modify
@@ -44,11 +47,11 @@ class Mongo_Playroom_Repository {
         await playroomscollection.update(
             where.id(play_room.roomid!),
             modify
-                .set("end", Timestamp(DateTime.now().second))
+                .set("end", DateTime.now())
                 .set("winner", (play_room.hand == null) ? -1 : play_room.hand));
       } else {
-        await playroomscollection.update(where.id(play_room.roomid!),
-            modify.set("end", Timestamp(DateTime.now().second)));
+        await playroomscollection.update(
+            where.id(play_room.roomid!), modify.set("end", DateTime.now()));
       }
     } catch (e) {
       print(e);

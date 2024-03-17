@@ -20,7 +20,6 @@ getdoc(HttpRequest request) async {
   try {
     final doc = await PlayerService.instance
         .getdoc(id: request.response.headers.value("playerid")!);
-    doc?.remove("lastconnection");
     request.response.write(json.encode(doc));
   } catch (e) {
     print(e);

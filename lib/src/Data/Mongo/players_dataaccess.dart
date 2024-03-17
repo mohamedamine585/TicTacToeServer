@@ -92,6 +92,8 @@ class PlayersDataAccess {
     try {
       final playerdoc =
           await playerscollection.findOne(where.id(ObjectId.fromHexString(id)));
+      playerdoc?.remove("lastconnection");
+      playerdoc?.remove("password");
 
       return playerdoc;
     } catch (e) {

@@ -86,6 +86,7 @@ class Gameserver_controller {
                 playRoom.player1!.socket, playRoom.roomid?.toHexString());
           }
         }
+
         await RoomManagerController.delete_room(playRoom);
 
         await playRoom.player0?.socket.close();
