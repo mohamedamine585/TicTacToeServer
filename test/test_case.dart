@@ -24,7 +24,7 @@ test_gameserver() {
       final request = await client.get(env["HOST_CLIENT"] ?? "localhost",
           int.parse(env["PORT"] ?? "8080"), "/player");
       request.headers.add("Authorization",
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k");
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZjhiYzJhN2NjZDQ5MGRjNmVkZDkxYSIsImlhdCI6MTcxMDc5OTkxNCwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.T8QcQdZW8mVyQgOsK22vU0ps536x0XLsOrJoYi02r50");
       final response = await request.close();
       expect(response.statusCode, 200);
       expect(
