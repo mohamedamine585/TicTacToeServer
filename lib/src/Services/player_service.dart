@@ -36,4 +36,9 @@ class PlayerService {
     return await playerRepository.updatePlayer(
         playerupdate: playerupdate, id: id);
   }
+
+  Future<List<Map<String, dynamic>?>> getPlayerHistory(
+      {required String id}) async {
+    return await playerRepository.getPlayerHistory(playerid: id);
+  }
 }

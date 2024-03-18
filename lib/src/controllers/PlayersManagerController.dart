@@ -16,7 +16,7 @@ Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
   }
 };
 
-getdoc(HttpRequest request) async {
+Function(HttpRequest) getdoc = (HttpRequest request) async {
   try {
     final doc = await PlayerService.instance
         .getdoc(id: request.response.headers.value("playerid")!);
@@ -24,7 +24,7 @@ getdoc(HttpRequest request) async {
   } catch (e) {
     print(e);
   }
-}
+};
 
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
@@ -37,6 +37,21 @@ Function(HttpRequest) updatedoc = (HttpRequest request) async {
         .updatePlayer(id: playerid!, playerupdate: playerupdate);
     if (updateddoc != null) {
       request.response.write(json.encode({"message": "Player Updated"}));
+    }
+  } catch (e) {
+    print(e);
+  }
+};
+
+Function(HttpRequest) getPlayerHistory = (HttpRequest request) async {
+  try {
+    final playerid = request.response.headers.value("playerid");
+    if (playerid != null) {
+      final history =
+          await PlayerService.instance.getPlayerHistory(id: playerid);
+      request.response.write(json.encode({"history": history}));
+    } else {
+      request.response.statusCode = HttpStatus.unauthorized;
     }
   } catch (e) {
     print(e);

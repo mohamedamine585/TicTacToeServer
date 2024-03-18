@@ -54,7 +54,7 @@ class Gameserver_controller {
 
             playRoom.Grid[x0][x1] = 'X';
 
-            if (checkWin(play_room: playRoom) == 'X') {
+            if (checkWin(Grid: playRoom.Grid) == 'X') {
               sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
               sendDataTo("You Lost", playRoom, playRoom.player1!.socket, null);
 
@@ -121,7 +121,7 @@ class Gameserver_controller {
 
               playRoom.Grid[x0][x1] = 'O';
 
-              if (checkWin(play_room: playRoom) == 'O') {
+              if (checkWin(Grid: playRoom.Grid) == 'O') {
                 sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
                 sendDataTo(
                     "You Lost", playRoom, playRoom.player0!.socket, null);

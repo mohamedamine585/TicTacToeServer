@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/models/Player_token.dart';
+import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
 
 import '../models/Player_Room.dart';
 
@@ -93,7 +94,7 @@ connectToPlayroom(HttpRequest playrequest) async {
         Gameserver_controller.rooms[playroomindex].player1 =
             Player_Socket(playerWebScoket, playerid);
 
-        startGame(Gameserver_controller.rooms[playroomindex]);
+        await startGame(Gameserver_controller.rooms[playroomindex]);
       } else {
         playrequest.response.statusCode = HttpStatus.badRequest;
       }
@@ -103,13 +104,13 @@ connectToPlayroom(HttpRequest playrequest) async {
   }
 }
 
-startGame(Play_room playRoom) {
+startGame(Play_room playRoom) async {
   try {
     Gameserver_controller.sendDataTo("Game started", playRoom,
         playRoom.player0!.socket, playRoom.roomid?.toHexString());
     Gameserver_controller.sendDataTo("Game started", playRoom,
         playRoom.player1!.socket, playRoom.roomid?.toHexString());
-
+    await PlayRoomService.instance.open_PlayRoom(play_room: playRoom);
     // start receiving data from players
     playRoom.hand = 0;
     Gameserver_controller.listen_to_player0(playRoom);

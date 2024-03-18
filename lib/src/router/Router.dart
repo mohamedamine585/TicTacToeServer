@@ -1,7 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
+import 'package:tic_tac_toe_server/src/data/utils.dart';
+import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
+import 'package:tic_tac_toe_server/src/models/Player_token.dart';
 import 'package:tic_tac_toe_server/src/router/pipeline.dart';
+import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
 
 import '/src/controllers/PlayRequestHandler.dart';
 import '/src/controllers/PlayersManagerController.dart';
@@ -27,22 +32,31 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         } else if (request.method == "DELETE") {
         } else if (request.method == "POST") {}
         break;
-      case "/test":
+      case "/health":
         request.response.statusCode == HttpStatus.ok;
         request.response.write(json.encode({"message": "Request Received"}));
         break;
 
       case "/activity":
         if (request.method == "GET") {
-          await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
           await pipeline.addasynchandler(subscribeToOnlineActivity);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }
+        break;
+      case "/history":
+        if (request.method == "GET") {
+          await pipeline.addasynchandler(getPlayerHistory);
+        }
 
         break;
 
+      case "/fix":
+        await Mongo_Playroom_Repository()
+            .closeSpecificPlayRoom(roomid: "65f8b351c671a1e54763e81d");
+        break;
       default:
+        request.response.statusCode = HttpStatus.notFound;
     }
   } catch (e) {
     print(e);

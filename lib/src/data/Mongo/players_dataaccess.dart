@@ -28,9 +28,7 @@ class PlayersDataAccess {
             id,
             existing["name"] ?? "",
             existing["email"],
-            (existing["lastconnection"] != null)
-                ? existing["lastconnection"]
-                : Timestamp(),
+            DateTime.now(),
             existing["playedgames"] ?? 0,
             existing["wongames"] ?? 0,
             existing["score"] ?? 0);
@@ -113,5 +111,32 @@ class PlayersDataAccess {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<List<Map<String, dynamic>>> getPlayerHistory(
+      {required String playerid}) async {
+    try {
+      final playerID = ObjectId.fromHexString(playerid);
+
+      final history = await playroomscollection
+          .find(where
+              .eq("creatorid", playerID)
+              .or(where.eq("joinerid", playerID)))
+          .toList();
+      history.forEach((element) {
+        element.remove("start");
+        element.remove("end");
+        if ((element["creatorid"] == playerID && element["winner"] == 0) ||
+            (element["joinerid"] == playerID && element["winner"] == 1)) {
+          element["winner"] = 0;
+        } else {
+          element["winner"] = 1;
+        }
+      });
+      return history;
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 }
