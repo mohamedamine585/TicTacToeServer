@@ -90,6 +90,8 @@ connectToPlayroom(HttpRequest playrequest) async {
             Gameserver_controller.rooms[playroomindex],
             Gameserver_controller.rooms[playroomindex].player0!.socket,
             roomid.toHexString());
+        Gameserver_controller.listen_to_player0(
+            Gameserver_controller.rooms[playroomindex]);
       } else if (Gameserver_controller.rooms[playroomindex].player1 == null) {
         Gameserver_controller.rooms[playroomindex].player1 =
             Player_Socket(playerWebScoket, playerid);
@@ -113,7 +115,6 @@ startGame(Play_room playRoom) async {
     await PlayRoomService.instance.open_PlayRoom(play_room: playRoom);
     // start receiving data from players
     playRoom.hand = 0;
-    Gameserver_controller.listen_to_player0(playRoom);
     Gameserver_controller.listen_to_player1(playRoom);
   } catch (e) {
     print(e);

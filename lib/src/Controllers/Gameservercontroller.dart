@@ -38,7 +38,7 @@ class Gameserver_controller {
     }
   }
 
-  static listen_to_player0(Play_room playRoom) {
+  static listen_to_player0(Play_room playRoom) async {
     int x0 = 0, x1 = 0;
     try {
       playRoom.player0?.socket.listen((event) async {
@@ -79,25 +79,29 @@ class Gameserver_controller {
           await playRoom.player0?.socket.close();
         }
       }, onDone: () async {
-        if (playRoom.hand != 3 && playRoom.hand != 2) {
-          playRoom.hand = 1;
-          if (playRoom.player1?.socket.closeCode == null) {
-            sendDataTo("Connection Lost You Won", playRoom,
-                playRoom.player1!.socket, playRoom.roomid?.toHexString());
+        if (playRoom.player1 != null) {
+          if ((playRoom.hand != 3 && playRoom.hand != 2)) {
+            playRoom.hand = 1;
+            if (playRoom.player1?.socket.closeCode == null) {
+              sendDataTo("Connection Lost You Won", playRoom,
+                  playRoom.player1!.socket, playRoom.roomid?.toHexString());
+            }
           }
+          await RoomManagerController.delete_room(playRoom);
+          await playRoom.player1?.socket.close();
+        } else {
+          Gameserver_controller
+              .rooms[Gameserver_controller.rooms.indexOf(playRoom)]
+              .player0 = null;
         }
 
-        await RoomManagerController.delete_room(playRoom);
-
         await playRoom.player0?.socket.close();
-
-        await playRoom.player1?.socket.close();
       }, onError: (e) {
         playRoom.player0?.socket.close();
       });
     } catch (e) {
       if (playRoom.player1 != null) {
-        RoomManagerController.delete_room(playRoom);
+        await RoomManagerController.delete_room(playRoom);
       }
 
       print("Cannot listen to player");
@@ -149,15 +153,18 @@ class Gameserver_controller {
           print("Error");
         },
         onDone: () async {
-          if (playRoom.hand != 3 && playRoom.hand != 2) {
-            playRoom.hand = 0;
-            if (playRoom.player0?.socket.closeCode == null) {
-              sendDataTo("Connection Lost You Won", playRoom,
-                  playRoom.player0!.socket, playRoom.roomid?.toHexString());
+          if (playRoom.player0 != null) {
+            if (playRoom.hand != 3 && playRoom.hand != 2) {
+              playRoom.hand = 0;
+              if (playRoom.player0?.socket.closeCode == null) {
+                sendDataTo("Connection Lost You Won", playRoom,
+                    playRoom.player0!.socket, playRoom.roomid?.toHexString());
+              }
             }
+            await playRoom.player0?.socket.close();
           }
+
           await playRoom.player1?.socket.close();
-          await playRoom.player0?.socket.close();
         },
       );
     } catch (e) {
