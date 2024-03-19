@@ -19,30 +19,6 @@ class PlayerService {
     return await playerRepository.get_playerbyName(playername: playername);
   }
 
-  Future<String?> change_password(
-      {required String playername,
-      required String old_password,
-      required String newpassword}) async {
-    return await playerRepository.change_password(
-        playername: playername,
-        old_password: old_password,
-        newpassword: newpassword);
-  }
-
-  Future<bool> change_name(
-      {required String playername,
-      required String password,
-      required String new_name}) async {
-    return await playerRepository.change_name(
-        playername: playername, password: password, new_name: new_name);
-  }
-
-  Future<Map<String, bool>?> delete_user(
-      {required String playername, required String password}) async {
-    return await playerRepository.delete_user(
-        playername: playername, password: password);
-  }
-
   updateActivity({required String playerid}) async {
     try {
       await playerRepository.updateActivity(playerid: playerid);
@@ -59,5 +35,10 @@ class PlayerService {
       {required Map<String, dynamic> playerupdate, required String id}) async {
     return await playerRepository.updatePlayer(
         playerupdate: playerupdate, id: id);
+  }
+
+  Future<List<Map<String, dynamic>?>> getPlayerHistory(
+      {required String id}) async {
+    return await playerRepository.getPlayerHistory(playerid: id);
   }
 }

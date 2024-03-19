@@ -5,7 +5,6 @@ import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/models/Player_token.dart';
 import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
-import 'package:tic_tac_toe_server/src/services/Tokensservice.dart';
 
 import '../models/Player_Room.dart';
 
@@ -63,16 +62,8 @@ class RoomManagerController {
 
   static Future<void> delete_room(Play_room playRoom) async {
     try {
-      if (playRoom.opened) {
-        await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
-
-        await Tokensservice.instance.change_token_status(playRoom.player1!.Id);
-
-        if (playRoom.player0 != null && playRoom.player1 != null) {
-          print(playRoom.player0?.Id);
-          print(playRoom.player1?.Id);
-          await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
-        }
+      if (playRoom.player0 != null && playRoom.player1 != null) {
+        await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
       }
 
       Gameserver_controller.rooms.remove(playRoom);
@@ -139,7 +130,6 @@ class RoomManagerController {
       Gameserver_controller.rooms.add(playRoom);
       Gameserver_controller.sendDataTo("Room created", playRoom, socketToPlayer,
           playRoom.roomid?.toHexString());
-      await Tokensservice.instance.change_token_status(playRoom.player0!.Id);
       Gameserver_controller.listen_to_player0(playRoom);
     } catch (e) {
       print("cannot create room");

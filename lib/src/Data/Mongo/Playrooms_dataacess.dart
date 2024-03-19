@@ -16,9 +16,16 @@ class Mongo_Playroom_Repository {
     try {
       final p0 = await PlayerService.instance
           .get_playerbyId(id: play_room.player0!.Id);
+
       final p1 = await PlayerService.instance
           .get_playerbyId(id: play_room.player1!.Id);
+
       if (play_room.hand != null) {
+        await playroomscollection.update(
+            where.id(play_room.roomid!),
+            modify
+                .set("end", DateTime.now())
+                .set("winner", (play_room.hand! % 2)));
         await playerscollection.update(
             where.id(p0!.Id),
             modify
@@ -30,6 +37,7 @@ class Mongo_Playroom_Repository {
                     (play_room.hand! % 2 == 0)
                         ? winScoreAlg(p0.score, p1?.score ?? 0)
                         : looseScoreAlg(p0.score, p1?.score ?? 1)));
+
         await playerscollection.update(
             where.id(p1!.Id),
             modify
@@ -41,14 +49,9 @@ class Mongo_Playroom_Repository {
                     (play_room.hand! % 2 == 1)
                         ? winScoreAlg(p1.score, p0.score)
                         : looseScoreAlg(p1.score, p0.score)));
-        await playroomscollection.update(
-            where.id(play_room.roomid!),
-            modify
-                .set("end", Timestamp(DateTime.now().second))
-                .set("winner", (play_room.hand == null) ? -1 : play_room.hand));
       } else {
-        await playroomscollection.update(where.id(play_room.roomid!),
-            modify.set("end", Timestamp(DateTime.now().second)));
+        await playroomscollection.update(
+            where.id(play_room.roomid!), modify.set("end", DateTime.now()));
       }
     } catch (e) {
       print(e);
@@ -62,8 +65,6 @@ class Mongo_Playroom_Repository {
             .get_playerbyId(id: play_room.player0?.Id ?? ObjectId());
         final player1doc = await PlayerService.instance
             .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
-        print(player1doc?.playername);
-        print(player0doc?.playername);
 
         final playRoomData = {
           "creatorid": play_room.player0?.Id,
@@ -74,8 +75,7 @@ class Mongo_Playroom_Repository {
           "end": Timestamp(DateTime.now().second),
           "winner": -1
         };
-        playRoomData.addAll(
-            (play_room.roomid == null) ? {"_id": play_room.roomid} : {});
+        playRoomData.addAll({"_id": play_room.roomid});
         final doc = await playroomscollection.insertOne(playRoomData);
 
         if (doc.document != null) {
@@ -86,5 +86,14 @@ class Mongo_Playroom_Repository {
       print(e);
     }
     return null;
+  }
+
+  Future<void> closeSpecificPlayRoom({required String roomid}) async {
+    try {
+      await playroomscollection.update(where.id(ObjectId.fromHexString(roomid)),
+          modify.set("end", DateTime.now()).set("winner", 0));
+    } catch (e) {
+      print(e);
+    }
   }
 }

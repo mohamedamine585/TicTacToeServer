@@ -38,12 +38,11 @@ class Gameserver_controller {
     }
   }
 
-  static listen_to_player0(Play_room playRoom) {
+  static listen_to_player0(Play_room playRoom) async {
     int x0 = 0, x1 = 0;
     try {
       playRoom.player0?.socket.listen((event) async {
         try {
-          print(event);
           if (playRoom.hand == 0) {
             event as String;
             if (event.length > 3) {
@@ -55,7 +54,7 @@ class Gameserver_controller {
 
             playRoom.Grid[x0][x1] = 'X';
 
-            if (checkWin(play_room: playRoom) == 'X') {
+            if (checkWin(Grid: playRoom.Grid) == 'X') {
               sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
               sendDataTo("You Lost", playRoom, playRoom.player1!.socket, null);
 
@@ -80,20 +79,29 @@ class Gameserver_controller {
           await playRoom.player0?.socket.close();
         }
       }, onDone: () async {
-        if (playRoom.hand != 3 && playRoom.hand != 2) {
-          playRoom.hand = 1;
+        if (playRoom.player1 != null) {
+          if ((playRoom.hand != 3 && playRoom.hand != 2)) {
+            playRoom.hand = 1;
+            if (playRoom.player1?.socket.closeCode == null) {
+              sendDataTo("Connection Lost You Won", playRoom,
+                  playRoom.player1!.socket, playRoom.roomid?.toHexString());
+            }
+          }
+          await RoomManagerController.delete_room(playRoom);
+          await playRoom.player1?.socket.close();
+        } else {
+          Gameserver_controller
+              .rooms[Gameserver_controller.rooms.indexOf(playRoom)]
+              .player0 = null;
         }
-        await RoomManagerController.delete_room(playRoom);
 
         await playRoom.player0?.socket.close();
-
-        await playRoom.player1?.socket.close();
       }, onError: (e) {
         playRoom.player0?.socket.close();
       });
     } catch (e) {
       if (playRoom.player1 != null) {
-        RoomManagerController.delete_room(playRoom);
+        await RoomManagerController.delete_room(playRoom);
       }
 
       print("Cannot listen to player");
@@ -117,7 +125,7 @@ class Gameserver_controller {
 
               playRoom.Grid[x0][x1] = 'O';
 
-              if (checkWin(play_room: playRoom) == 'O') {
+              if (checkWin(Grid: playRoom.Grid) == 'O') {
                 sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
                 sendDataTo(
                     "You Lost", playRoom, playRoom.player0!.socket, null);
@@ -144,13 +152,19 @@ class Gameserver_controller {
           playRoom.player1!.socket.close();
           print("Error");
         },
-        cancelOnError: true,
         onDone: () async {
-          if (playRoom.hand != 3 && playRoom.hand != 2) {
-            playRoom.hand = 0;
+          if (playRoom.player0 != null) {
+            if (playRoom.hand != 3 && playRoom.hand != 2) {
+              playRoom.hand = 0;
+              if (playRoom.player0?.socket.closeCode == null) {
+                sendDataTo("Connection Lost You Won", playRoom,
+                    playRoom.player0!.socket, playRoom.roomid?.toHexString());
+              }
+            }
+            await playRoom.player0?.socket.close();
           }
+
           await playRoom.player1?.socket.close();
-          await playRoom.player0?.socket.close();
         },
       );
     } catch (e) {
@@ -164,7 +178,7 @@ class Gameserver_controller {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
           "message": message,
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -180,7 +194,7 @@ class Gameserver_controller {
 
         playRoom.player1?.socket.add(json.encode({
           "message": message,
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -197,7 +211,7 @@ class Gameserver_controller {
     } else {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -212,7 +226,7 @@ class Gameserver_controller {
         }));
 
         playRoom.player1?.socket.add(json.encode({
-          "Grid": [
+          "grid": [
             playRoom.Grid[0][0] ?? '',
             playRoom.Grid[0][1] ?? '',
             playRoom.Grid[0][2] ?? '',
@@ -234,7 +248,7 @@ class Gameserver_controller {
     if (message != null) {
       playersocket.add(json.encode({
         "message": message,
-        "Grid": [
+        "grid": [
           playRoom.Grid[0][0] ?? '',
           playRoom.Grid[0][1] ?? '',
           playRoom.Grid[0][2] ?? '',
