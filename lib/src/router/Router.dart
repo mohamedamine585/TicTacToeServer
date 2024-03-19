@@ -22,7 +22,6 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         break;
       case "/player":
         if (request.method == "GET") {
-          print("it gets");
           await pipeline.addasynchandler(getdoc);
         } else if (request.method == "PUT") {
           await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
