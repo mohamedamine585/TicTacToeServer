@@ -4,41 +4,41 @@ import 'package:tic_tac_toe_server/src/data/Mongo/players_dataaccess.dart';
 import 'package:tic_tac_toe_server/src/data/utils.dart';
 
 class PlayerService {
-  PlayersDataAccess playerRepository;
-  PlayerService._(this.playerRepository);
+  PlayersDataAccess playersDataAccess;
+  PlayerService._(this.playersDataAccess);
   static PlayerService instance = PlayerService._(PlayersDataAccess());
   init() {
     playerscollection = DbCollection(db, "players");
   }
 
   Future<Player?> get_playerbyId({required ObjectId id}) async {
-    return await playerRepository.get_playerbyId(id: id);
+    return await playersDataAccess.get_playerbyId(id: id);
   }
 
   Future<Player?> get_playerbyName({required String playername}) async {
-    return await playerRepository.get_playerbyName(playername: playername);
+    return await playersDataAccess.get_playerbyName(playername: playername);
   }
 
   updateActivity({required String playerid}) async {
     try {
-      await playerRepository.updateActivity(playerid: playerid);
+      await playersDataAccess.updateActivity(playerid: playerid);
     } catch (e) {
       print(e);
     }
   }
 
   Future<Map<String, dynamic>?> getdoc({required String id}) async {
-    return await playerRepository.getdoc(id: id);
+    return await playersDataAccess.getdoc(id: id);
   }
 
   Future<Map<String, dynamic>?> updatePlayer(
       {required Map<String, dynamic> playerupdate, required String id}) async {
-    return await playerRepository.updatePlayer(
+    return await playersDataAccess.updatePlayer(
         playerupdate: playerupdate, id: id);
   }
 
   Future<List<Map<String, dynamic>?>> getPlayerHistory(
       {required String id}) async {
-    return await playerRepository.getPlayerHistory(playerid: id);
+    return await playersDataAccess.getPlayerHistory(playerid: id);
   }
 }

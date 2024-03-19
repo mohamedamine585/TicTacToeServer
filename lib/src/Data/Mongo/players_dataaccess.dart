@@ -59,6 +59,26 @@ class PlayersDataAccess {
     return null;
   }
 
+  Future<Player?> getPlayerByEmail({required String email}) async {
+    try {
+      final existing =
+          await playerscollection.findOne(where.eq("email", email));
+      if (existing != null && existing.isNotEmpty) {
+        return Player(
+            existing["_id"],
+            existing["name"],
+            existing["email"],
+            existing["lastconnection"],
+            existing["playedgames"],
+            existing["wongames"],
+            existing["score"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> updatePlayer(
       {required Map<String, dynamic> playerupdate, required String id}) async {
     try {
@@ -73,6 +93,9 @@ class PlayersDataAccess {
           {
             "name": playerupdate["name"],
             "email": playerupdate["email"],
+            "score": playerupdate["score"],
+            "playedgames": playerupdate["playedgames"],
+            "wongames": playerupdate["wongames"],
             "lastconnection": DateTime.now(),
             "password":
                 existingPassword, // Include the existing password in the update
@@ -115,6 +138,7 @@ class PlayersDataAccess {
 
   Future<List<Map<String, dynamic>>> getPlayerHistory(
       {required String playerid}) async {
+    get_playerbyEmail({required String playername}) {}
     try {
       final playerID = ObjectId.fromHexString(playerid);
 

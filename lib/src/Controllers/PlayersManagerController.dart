@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/services/online_activity_service.dart';
 import 'package:tic_tac_toe_server/src/services/player_service.dart';
 
@@ -29,7 +30,13 @@ Function(HttpRequest) getdoc = (HttpRequest request) async {
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
     final playerid = request.response.headers.value("playerid");
+    final player = await PlayerService.instance
+        .get_playerbyId(id: ObjectId.fromHexString(playerid ?? ""));
     final Map<String, dynamic> playerupdate = {
+      "playedgames": player?.playedGames,
+      "wongames": player?.WonGames,
+      "lastconnection": player?.lastconnection,
+      "score": player?.score,
       "name": request.response.headers.value("name"),
       "email": request.response.headers.value("email")
     };
