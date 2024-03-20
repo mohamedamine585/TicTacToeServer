@@ -9,7 +9,7 @@ double Function(int, int) loosingPenalty =
 
 double Function(int, int) winningReward = (int playerscore, int opponentscore) {
   if (playerscore != 0) {
-    return (10 * opponentscore / playerscore);
+    return (10 + (10 * opponentscore / playerscore));
   } else {
     return (opponentscore / 2 + 10);
   }
