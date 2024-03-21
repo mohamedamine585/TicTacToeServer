@@ -25,6 +25,7 @@ void Function(HttpRequest) router = (HttpRequest request) async {
           await pipeline.addasynchandler(getdoc);
         } else if (request.method == "PUT") {
           await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
+          await pipeline.addasyncmiddleware(checkemailuniqueness);
           await pipeline.addasynchandler(updatedoc);
         } else if (request.method == "DELETE") {
         } else if (request.method == "POST") {}

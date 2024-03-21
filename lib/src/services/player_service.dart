@@ -1,22 +1,27 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Data/Mongo/players_dataaccess.dart';
+
 import 'package:tic_tac_toe_server/src/models/Player.dart';
-import 'package:tic_tac_toe_server/src/data/Mongo/players_dataaccess.dart';
 import 'package:tic_tac_toe_server/src/data/utils.dart';
 
 class PlayerService {
-  PlayersDataAccess playersDataAccess;
+  PlayersDataAccess playersDataAccess = PlayersDataAccess();
   PlayerService._(this.playersDataAccess);
   static PlayerService instance = PlayerService._(PlayersDataAccess());
   init() {
     playerscollection = DbCollection(db, "players");
   }
 
-  Future<Player?> get_playerbyId({required ObjectId id}) async {
+  Future<Player?> getPlayerById({required ObjectId id}) async {
     return await playersDataAccess.get_playerbyId(id: id);
   }
 
-  Future<Player?> get_playerbyName({required String playername}) async {
+  Future<Player?> getPlayeryName({required String playername}) async {
     return await playersDataAccess.get_playerbyName(playername: playername);
+  }
+
+  Future<Player?> getPlayerByEmail({required String email}) async {
+    return await playersDataAccess.getPlayerByEmail(email: email);
   }
 
   updateActivity({required String playerid}) async {

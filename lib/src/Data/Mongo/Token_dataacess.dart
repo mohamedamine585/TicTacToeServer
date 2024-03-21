@@ -1,6 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 import 'package:tic_tac_toe_server/src/models/Player.dart';
-import 'package:tic_tac_toe_server/src/services/player_service.dart';
 
 import '../utils.dart';
 import '../../utils/utils.dart';
@@ -96,7 +96,7 @@ class Mongo_Token_Repository {
     try {
       final existing = await tokenscollection.findOne(where.eq("token", token));
       if (existing != null && existing.isNotEmpty) {
-        return await PlayerService.instance.get_playerbyId(id: existing["_id"]);
+        return await PlayerService.instance.getPlayerById(id: existing["_id"]);
       }
     } catch (e) {
       print(e);

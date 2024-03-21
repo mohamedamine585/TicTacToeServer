@@ -1,6 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
-import 'package:tic_tac_toe_server/src/services/player_service.dart';
 
 import '../utils.dart';
 
@@ -14,11 +14,11 @@ class Mongo_Playroom_Repository {
       required int Function(int, int) winScoreAlg,
       required int Function(int, int) looseScoreAlg}) async {
     try {
-      final p0 = await PlayerService.instance
-          .get_playerbyId(id: play_room.player0!.Id);
+      final p0 =
+          await PlayerService.instance.getPlayerById(id: play_room.player0!.Id);
 
-      final p1 = await PlayerService.instance
-          .get_playerbyId(id: play_room.player1!.Id);
+      final p1 =
+          await PlayerService.instance.getPlayerById(id: play_room.player1!.Id);
 
       if (play_room.hand != null) {
         await playroomscollection.update(
@@ -62,9 +62,9 @@ class Mongo_Playroom_Repository {
     try {
       if (play_room.player0?.Id != null && play_room.player1?.Id != null) {
         final player0doc = await PlayerService.instance
-            .get_playerbyId(id: play_room.player0?.Id ?? ObjectId());
+            .getPlayerById(id: play_room.player0?.Id ?? ObjectId());
         final player1doc = await PlayerService.instance
-            .get_playerbyId(id: play_room.player1?.Id ?? ObjectId());
+            .getPlayerById(id: play_room.player1?.Id ?? ObjectId());
 
         final playRoomData = {
           "creatorid": play_room.player0?.Id,

@@ -9,8 +9,8 @@ Future<String> playGameWithSpecificPlayer(
     int diffInScore = levelScore, newscorediff;
     Player? player0;
     for (Play_room play_room in playRooms) {
-      player0 = await PlayerService.instance
-          .get_playerbyId(id: play_room.player0!.Id);
+      player0 =
+          await PlayerService.instance.getPlayerById(id: play_room.player0!.Id);
       if (player0 != null) {
         newscorediff = diffInscore(player0.score, levelScore);
         if (newscorediff < diffInScore) {

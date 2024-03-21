@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
+import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/services/online_activity_service.dart';
-import 'package:tic_tac_toe_server/src/services/player_service.dart';
 
 Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
   final stream = OnlineActivityService.instance.getOnlineActivity();
@@ -27,23 +28,42 @@ Function(HttpRequest) getdoc = (HttpRequest request) async {
   }
 };
 
+Function(HttpRequest) checkemailuniqueness = (HttpRequest request) async {
+  try {
+    Player? player;
+    if (request.response.headers.value("email") != "") {
+      player = await PlayerService.instance.getPlayerByEmail(
+          email: request.response.headers.value("email") ?? "");
+      if (player != null) {
+        request.response.statusCode = HttpStatus.badRequest;
+      }
+    }
+  } catch (e) {
+    print(e);
+  }
+};
+
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
     final playerid = request.response.headers.value("playerid");
     final player = await PlayerService.instance
-        .get_playerbyId(id: ObjectId.fromHexString(playerid ?? ""));
-    final Map<String, dynamic> playerupdate = {
-      "playedgames": player?.playedGames,
-      "wongames": player?.WonGames,
-      "lastconnection": player?.lastconnection,
-      "score": player?.score,
-      "name": request.response.headers.value("name"),
-      "email": request.response.headers.value("email")
-    };
-    final updateddoc = await PlayerService.instance
-        .updatePlayer(id: playerid!, playerupdate: playerupdate);
-    if (updateddoc != null) {
-      request.response.write(json.encode({"message": "Player Updated"}));
+        .getPlayerById(id: ObjectId.fromHexString(playerid ?? ""));
+    if (player != null) {
+      final Map<String, dynamic> playerupdate = {
+        "playedgames": player.playedGames,
+        "wongames": player.WonGames,
+        "lastconnection": player.lastconnection,
+        "score": player.score,
+        "name": request.response.headers.value("name"),
+        "email": request.response.headers.value("email")
+      };
+      final updateddoc = await PlayerService.instance
+          .updatePlayer(id: playerid!, playerupdate: playerupdate);
+      if (updateddoc != null) {
+        request.response.write(json.encode({"message": "Player Updated"}));
+      }
+    } else {
+      request.response.statusCode = HttpStatus.badRequest;
     }
   } catch (e) {
     print(e);
