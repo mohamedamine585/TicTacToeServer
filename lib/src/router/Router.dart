@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:tic_tac_toe_server/src/Controllers/PlayersManagerController.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
+import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 
 import 'package:tic_tac_toe_server/src/router/pipeline.dart';
 
 import '/src/controllers/PlayRequestHandler.dart';
-import '/src/controllers/PlayersManagerController.dart';
 
-import '/src/middleware/requestmiddleware.dart';
 import '/src/middleware/tokenmiddleware.dart';
 
 void Function(HttpRequest) router = (HttpRequest request) async {
@@ -26,7 +26,7 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         } else if (request.method == "PUT") {
           await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
           await pipeline.addasyncmiddleware(checkemailuniqueness);
-          await pipeline.addasynchandler(updatedoc);
+          await pipeline.addasynchandler(updatePlayer);
         } else if (request.method == "DELETE") {
         } else if (request.method == "POST") {}
         break;

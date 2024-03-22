@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Services/imagesService.dart';
 import 'package:tic_tac_toe_server/src/Services/player_service.dart';
-import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/services/online_activity_service.dart';
 
 Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
@@ -27,22 +27,14 @@ Function(HttpRequest) getdoc = (HttpRequest request) async {
     print(e);
   }
 };
-
-Function(HttpRequest) checkemailuniqueness = (HttpRequest request) async {
-  try {
-    Player? player;
-    if (request.response.headers.value("email") != "") {
-      player = await PlayerService.instance.getPlayerByEmail(
-          email: request.response.headers.value("email") ?? "");
-      if (player != null) {
-        request.response.statusCode = HttpStatus.badRequest;
-      }
-    }
-  } catch (e) {
-    print(e);
+Function(HttpRequest) updatePlayer = (HttpRequest request) async {
+  if (request.headers.value("update") == "name" ||
+      request.headers.value("update") == "email") {
+    await updatedoc(request);
+  } else if (request.headers.value("update") == "image") {
+    await updateProfilePhoto(request);
   }
 };
-
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
     final playerid = request.response.headers.value("playerid");
@@ -67,6 +59,15 @@ Function(HttpRequest) updatedoc = (HttpRequest request) async {
     }
   } catch (e) {
     print(e);
+  }
+};
+
+Function(HttpRequest) updateProfilePhoto = (HttpRequest request) async {
+  final imagePath = await ImagesService.saveImage(request);
+  if (imagePath != null) {
+    request.response.write('Image uploaded successfully');
+  } else {
+    request.response.statusCode = HttpStatus.badRequest;
   }
 };
 
