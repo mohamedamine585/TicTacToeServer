@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:tic_tac_toe_server/src/Controllers/PlayersManagerController.dart';
+import 'package:tic_tac_toe_server/src/Controllers/imc.dart/imagesController.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 
@@ -22,13 +23,20 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         break;
       case "/player":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(getdoc);
+          if (request.uri.path != "/player/image") {
+            await pipeline.addasynchandler(getdoc);
+          } else {
+            await pipeline.addasynchandler(getImage);
+          }
         } else if (request.method == "PUT") {
           await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
           await pipeline.addasyncmiddleware(checkemailuniqueness);
-          await pipeline.addasynchandler(updatePlayer);
+          await pipeline.addasynchandler(updatedoc);
         } else if (request.method == "DELETE") {
-        } else if (request.method == "POST") {}
+          request.response.statusCode = HttpStatus.notFound;
+        } else if (request.method == "POST") {
+          request.response.statusCode = HttpStatus.notFound;
+        }
         break;
       case "/health":
         request.response.statusCode == HttpStatus.ok;
@@ -48,7 +56,15 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         }
 
         break;
-
+      case "/player/image":
+        if (request.method == "GET") {
+          await pipeline.addasynchandler(getImage);
+        } else if (request.method == "POST") {
+          await pipeline.addasynchandler(updateImage);
+        } else {
+          request.response.statusCode = HttpStatus.notFound;
+        }
+        break;
       case "/fix":
         await Mongo_Playroom_Repository()
             .closeSpecificPlayRoom(roomid: "65f8b351c671a1e54763e81d");

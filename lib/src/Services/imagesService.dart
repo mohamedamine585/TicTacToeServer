@@ -3,21 +3,28 @@ import 'dart:io';
 import 'package:mime/mime.dart';
 
 class ImagesService {
-  static Future<String?> saveImage(HttpRequest request) async {
-    // accessing /fileupload endpoint
-    List<int> dataBytes = [];
+  static Future<List<int>?> extractImageBytes(HttpRequest request) async {
+    try {
+      // accessing /fileupload endpoint
+      List<int> dataBytes = [];
 
-    await for (var data in request) {
-      dataBytes.addAll(data);
+      await for (var data in request) {
+        dataBytes.addAll(data);
+      }
+      return dataBytes;
+    } catch (e) {
+      print(e);
     }
+    return null;
+  }
 
-    String boundary = request.headers.contentType?.parameters['boundary'] ?? "";
-    final transformer = MimeMultipartTransformer(boundary);
+  static Future<String?> saveImage(
+      String playerid, List<int> dataBytes, String? boundary) async {
+    final transformer = MimeMultipartTransformer(boundary ?? "");
     final uploadDirectory = './upload';
 
     final bodyStream = Stream.fromIterable([dataBytes]);
     final parts = await transformer.bind(bodyStream).toList();
-    final playerid = request.response.headers.value("playerid");
     for (var part in parts) {
       final content = await part.toList();
       final contentDisposition = part.headers['content-disposition'];
