@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/Controllers/PlayersManagerController.dart';
-import 'package:tic_tac_toe_server/src/Controllers/imc.dart/imagesController.dart';
+import 'package:tic_tac_toe_server/src/controllers/PlayersManagerController.dart';
+import 'package:tic_tac_toe_server/src/controllers/imc.dart/imagesController.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 

@@ -45,7 +45,7 @@ test_gameserver() {
 
       request.files.add(MultipartFile.fromBytes(
         "image",
-        await File("./meta/meta1.png").readAsBytes(),
+        await File("./test/meta/meta1.png").readAsBytes(),
         filename: 'image.jpg',
       ));
 
