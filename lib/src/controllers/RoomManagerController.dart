@@ -125,7 +125,8 @@ class RoomManagerController {
           Player_Socket(socketToPlayer, id),
           null,
           0,
-          (gameRequest.headers.value("mode") == "friend"));
+          (gameRequest.headers.value("mode") == "friend"),
+          true);
 
       Gameserver_controller.rooms.add(playRoom);
       Gameserver_controller.sendDataTo("Room created", playRoom, socketToPlayer,

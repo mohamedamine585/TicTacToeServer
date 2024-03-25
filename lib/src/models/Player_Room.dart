@@ -17,7 +17,7 @@ class Play_room {
   Player_Socket? player0;
   Player_Socket? player1;
   Play_room(this.id, this.roomid, this.player0, this.player1, this.hand,
-      this.gameWithaFriend);
+      this.gameWithaFriend, this.opened);
 }
 
 // Implement your logic to find and pair users, then create and manage rooms

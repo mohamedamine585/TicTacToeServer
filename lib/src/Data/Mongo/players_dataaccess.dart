@@ -27,7 +27,7 @@ class PlayersDataAccess {
         return Player(
             id,
             existing["name"] ?? "",
-            existing["email"],
+            existing["email"] ?? "",
             DateTime.now(),
             existing["playedgames"] ?? 0,
             existing["wongames"] ?? 0,

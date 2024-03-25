@@ -80,8 +80,9 @@ class Gameserver_controller {
         }
       }, onDone: () async {
         if (playRoom.player1 != null) {
-          if ((playRoom.hand != 3 && playRoom.hand != 2)) {
+          if ((playRoom.hand != 3 && playRoom.hand != 2 && playRoom.opened)) {
             playRoom.hand = 1;
+            playRoom.opened = false;
             if (playRoom.player1?.socket.closeCode == null) {
               sendDataTo("Connection Lost You Won", playRoom,
                   playRoom.player1!.socket, playRoom.roomid?.toHexString());
@@ -154,8 +155,9 @@ class Gameserver_controller {
         },
         onDone: () async {
           if (playRoom.player0 != null) {
-            if (playRoom.hand != 3 && playRoom.hand != 2) {
+            if (playRoom.hand != 3 && playRoom.hand != 2 && playRoom.opened) {
               playRoom.hand = 0;
+              playRoom.opened = false;
               if (playRoom.player0?.socket.closeCode == null) {
                 sendDataTo("Connection Lost You Won", playRoom,
                     playRoom.player0!.socket, playRoom.roomid?.toHexString());

@@ -25,7 +25,7 @@ String? createRoom(bool playWithaFriend) {
   try {
     // create playroom object without sockets
     Play_room play_room = Play_room(Gameserver_controller.rooms.length,
-        ObjectId(), null, null, null, playWithaFriend);
+        ObjectId(), null, null, null, playWithaFriend, true);
 
     Gameserver_controller.rooms.add(play_room);
 
