@@ -129,8 +129,8 @@ class RoomManagerController {
           true);
 
       Gameserver_controller.rooms.add(playRoom);
-      Gameserver_controller.sendDataTo("Room created", playRoom, socketToPlayer,
-          playRoom.roomid?.toHexString());
+      Gameserver_controller.sendDataTo(
+          "Room created", playRoom, socketToPlayer);
       Gameserver_controller.listen_to_player0(playRoom);
     } catch (e) {
       print("cannot create room");
