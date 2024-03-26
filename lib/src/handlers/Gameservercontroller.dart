@@ -189,7 +189,9 @@ class Gameserver_controller {
             playRoom.Grid[2][1] ?? '',
             playRoom.Grid[2][2] ?? ''
           ],
-          "hand": "${playRoom.hand}"
+          "hand": "${playRoom.hand}",
+          "player0id": playRoom.player0?.Id.toHexString(),
+          "player1id": playRoom.player1?.Id.toHexString()
         }));
 
         playRoom.player1?.socket.add(json.encode({
@@ -205,7 +207,9 @@ class Gameserver_controller {
             playRoom.Grid[2][1] ?? '',
             playRoom.Grid[2][2] ?? ''
           ],
-          "hand": "${playRoom.hand}"
+          "hand": "${playRoom.hand}",
+          "player0id": playRoom.player0?.Id.toHexString(),
+          "player1id": playRoom.player1?.Id.toHexString()
         }));
       }
     } else {
@@ -222,7 +226,9 @@ class Gameserver_controller {
             playRoom.Grid[2][1] ?? '',
             playRoom.Grid[2][2] ?? ''
           ],
-          "hand": "${playRoom.hand}"
+          "hand": "${playRoom.hand}",
+          "player0id": playRoom.player0?.Id.toHexString(),
+          "player1id": playRoom.player1?.Id.toHexString()
         }));
 
         playRoom.player1?.socket.add(json.encode({
@@ -238,6 +244,8 @@ class Gameserver_controller {
             playRoom.Grid[2][2] ?? ''
           ],
           "hand": "${playRoom.hand}",
+          "player0id": playRoom.player0?.Id.toHexString(),
+          "player1id": playRoom.player1?.Id.toHexString()
         }));
       }
     }
