@@ -23,8 +23,26 @@ Function(HttpRequest) updateImage = (HttpRequest request) async {
   }
 };
 Function(HttpRequest) getImage = (HttpRequest request) async {
+  final image = File(
+      './upload/${request.response.headers.value("playerid") ?? request.response.headers.value("playerid")}.jpg');
+  if (image.existsSync()) {
+    final imageBytes =
+        await ImagesService.compressImage(await image.readAsBytes());
+    if (imageBytes != null) {
+      request.response
+        ..headers.contentType = ContentType.binary
+        ..add(await image.readAsBytes());
+      request.response.write(imageBytes);
+    } else {
+      request.response.statusCode = HttpStatus.internalServerError;
+    }
+  } else {
+    request.response.statusCode = HttpStatus.badRequest;
+  }
+};
+Function(HttpRequest) getOtherPlayerImage = (HttpRequest request) async {
   final image =
-      File('./upload/${request.response.headers.value("playerid")}.jpg');
+      File('./upload/${request.response.headers.value("otherid")}.jpg');
   if (image.existsSync()) {
     final imageBytes =
         await ImagesService.compressImage(await image.readAsBytes());

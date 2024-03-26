@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 
 import '../utils/consts.dart';
 
@@ -18,6 +19,7 @@ Function(HttpRequest) checkToken = (HttpRequest request) {
   }
   final playerid = jwt.payload["playerid"];
   if (playerid != null) {
+    getotherid(request); // extract id from path
     request.response.headers
         .add("playerid", playerid, preserveHeaderCase: true);
   } else {

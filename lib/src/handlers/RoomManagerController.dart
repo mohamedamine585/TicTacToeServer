@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/src/controllers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/handlers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/models/Player_token.dart';
 import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
 

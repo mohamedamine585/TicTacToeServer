@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/controllers/PlayersManagerController.dart';
-import 'package:tic_tac_toe_server/src/controllers/imc.dart/imagesController.dart';
+import 'package:tic_tac_toe_server/src/handlers/PlayersManagerController.dart';
+import 'package:tic_tac_toe_server/src/handlers/imc.dart/imagesController.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 
 import 'package:tic_tac_toe_server/src/router/pipeline.dart';
 
-import '/src/controllers/PlayRequestHandler.dart';
+import '../handlers/PlayRequestHandler.dart';
 
 import '/src/middleware/tokenmiddleware.dart';
 
@@ -17,17 +17,14 @@ void Function(HttpRequest) router = (HttpRequest request) async {
 
   try {
     pipeline.addmiddleware(checkToken);
-    switch (request.requestedUri.path) {
+    String path = request.response.headers.value("path") ?? "";
+    switch (path) {
       case "/":
         await pipeline.addasynchandler(handlePlayRequestModern);
         break;
       case "/player":
         if (request.method == "GET") {
-          if (request.uri.path != "/player/image") {
-            await pipeline.addasynchandler(getdoc);
-          } else {
-            await pipeline.addasynchandler(getImage);
-          }
+          await pipeline.addasynchandler(getdoc);
         } else if (request.method == "PUT") {
           await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
           await pipeline.addasyncmiddleware(checkemailuniqueness);

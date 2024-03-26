@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/src/controllers/RoomManagerController.dart';
-import 'package:tic_tac_toe_server/src/controllers/utils.dart';
+import 'package:tic_tac_toe_server/src/handlers/RoomManagerController.dart';
+import 'package:tic_tac_toe_server/src/handlers/utils.dart';
 import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
 import 'package:tic_tac_toe_server/src/services/Tokensservice.dart';

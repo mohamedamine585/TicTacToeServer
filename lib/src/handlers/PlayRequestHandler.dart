@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:tic_tac_toe_server/src/controllers/MatchMakerController.dart';
+import 'package:tic_tac_toe_server/src/handlers/MatchMakerController.dart';
 
 Function(HttpRequest) handlePlayRequestModern = (HttpRequest request) async {
   final roomid = request.headers.value("roomid");

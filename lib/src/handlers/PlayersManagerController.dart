@@ -20,14 +20,24 @@ Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
 
 Function(HttpRequest) getdoc = (HttpRequest request) async {
   try {
-    final doc = await PlayerService.instance
-        .getdoc(id: request.response.headers.value("playerid")!);
+    final doc = await PlayerService.instance.getdoc(
+        id: request.response.headers.value("otherid") ??
+            request.response.headers.value("playerid")!);
+
     request.response.write(json.encode(doc));
   } catch (e) {
     print(e);
   }
 };
-
+Function(HttpRequest) getOtherPlayerDoc = (HttpRequest request) async {
+  try {
+    final doc = await PlayerService.instance
+        .getdoc(id: request.response.headers.value("otherid") ?? "");
+    request.response.write(json.encode(doc));
+  } catch (e) {
+    print(e);
+  }
+};
 Function(HttpRequest) updatedoc = (HttpRequest request) async {
   try {
     final playerid = request.response.headers.value("playerid");
