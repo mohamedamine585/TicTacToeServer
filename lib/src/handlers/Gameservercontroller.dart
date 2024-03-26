@@ -55,8 +55,8 @@ class Gameserver_controller {
             playRoom.Grid[x0][x1] = 'X';
 
             if (checkWin(Grid: playRoom.Grid) == 'X') {
-              sendDataTo("You won", playRoom, playRoom.player0!.socket);
-              sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
+              sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
+              sendDataTo("You Lost", playRoom, playRoom.player1!.socket, null);
 
               // save that player 0 won
               playRoom.hand = 2;
@@ -66,13 +66,13 @@ class Gameserver_controller {
               playRoom.hand = 1;
               print("player1 turn");
 
-              sendDataToboth(null, playRoom);
+              sendDataToboth(null, playRoom, null);
             }
           }
         } catch (e) {
           if (playRoom.player1 != null && playRoom.player0 != null) {
-            sendDataTo("You won", playRoom, playRoom.player1!.socket);
-            sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
+            sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
+            sendDataTo("You Lost", playRoom, playRoom.player0!.socket, null);
           }
 
           playRoom.hand = 1;
@@ -85,7 +85,7 @@ class Gameserver_controller {
             playRoom.opened = false;
             if (playRoom.player1?.socket.closeCode == null) {
               sendDataTo("Connection Lost You Won", playRoom,
-                  playRoom.player1!.socket);
+                  playRoom.player1!.socket, null);
             }
           }
           await RoomManagerController.delete_room(playRoom);
@@ -127,20 +127,22 @@ class Gameserver_controller {
               playRoom.Grid[x0][x1] = 'O';
 
               if (checkWin(Grid: playRoom.Grid) == 'O') {
-                sendDataTo("You won", playRoom, playRoom.player1!.socket);
-                sendDataTo("You Lost", playRoom, playRoom.player0!.socket);
+                sendDataTo("You won", playRoom, playRoom.player1!.socket, null);
+                sendDataTo(
+                    "You Lost", playRoom, playRoom.player0!.socket, null);
                 playRoom.hand = 3;
                 playRoom.player1?.socket.close(null, "won");
               } else {
                 playRoom.hand = 0;
                 print("player0 turn");
 
-                sendDataToboth(null, playRoom);
+                sendDataToboth(null, playRoom, null);
               }
             } catch (e) {
               if (playRoom.player0 != null && playRoom.player1 != null) {
-                sendDataTo("You won", playRoom, playRoom.player0!.socket);
-                sendDataTo("You Lost", playRoom, playRoom.player1!.socket);
+                sendDataTo("You won", playRoom, playRoom.player0!.socket, null);
+                sendDataTo(
+                    "You Lost", playRoom, playRoom.player1!.socket, null);
               }
 
               playRoom.player1?.socket.close();
@@ -158,7 +160,7 @@ class Gameserver_controller {
               playRoom.opened = false;
               if (playRoom.player0?.socket.closeCode == null) {
                 sendDataTo("Connection Lost You Won", playRoom,
-                    playRoom.player0!.socket);
+                    playRoom.player0!.socket, null);
               }
             }
             await playRoom.player0?.socket.close();
@@ -173,7 +175,8 @@ class Gameserver_controller {
     }
   }
 
-  static sendDataToboth(String? message, Play_room playRoom) {
+  static sendDataToboth(
+      String? message, Play_room playRoom, String? opponentid) {
     if (message != null) {
       if (playRoom.hand != null) {
         playRoom.player0?.socket.add(json.encode({
@@ -190,8 +193,7 @@ class Gameserver_controller {
             playRoom.Grid[2][2] ?? ''
           ],
           "hand": "${playRoom.hand}",
-          "player0id": playRoom.player0?.Id.toHexString(),
-          "player1id": playRoom.player1?.Id.toHexString()
+          "opponentid": opponentid,
         }));
 
         playRoom.player1?.socket.add(json.encode({
@@ -208,8 +210,7 @@ class Gameserver_controller {
             playRoom.Grid[2][2] ?? ''
           ],
           "hand": "${playRoom.hand}",
-          "player0id": playRoom.player0?.Id.toHexString(),
-          "player1id": playRoom.player1?.Id.toHexString()
+          "opponentid": opponentid,
         }));
       }
     } else {
@@ -227,8 +228,7 @@ class Gameserver_controller {
             playRoom.Grid[2][2] ?? ''
           ],
           "hand": "${playRoom.hand}",
-          "player0id": playRoom.player0?.Id.toHexString(),
-          "player1id": playRoom.player1?.Id.toHexString()
+          "opponentid": playRoom.player0?.Id.toHexString(),
         }));
 
         playRoom.player1?.socket.add(json.encode({
@@ -244,18 +244,14 @@ class Gameserver_controller {
             playRoom.Grid[2][2] ?? ''
           ],
           "hand": "${playRoom.hand}",
-          "player0id": playRoom.player0?.Id.toHexString(),
-          "player1id": playRoom.player1?.Id.toHexString()
+          "opponentid": opponentid,
         }));
       }
     }
   }
 
-  static sendDataTo(
-    String? message,
-    Play_room playRoom,
-    WebSocket playersocket,
-  ) {
+  static sendDataTo(String? message, Play_room playRoom, WebSocket playersocket,
+      String? opponentid) {
     if (message != null) {
       playersocket.add(json.encode({
         "message": message,
@@ -271,8 +267,7 @@ class Gameserver_controller {
           playRoom.Grid[2][2] ?? ''
         ],
         "roomid": playRoom.roomid?.toHexString(),
-        "player0id": playRoom.player0?.Id.toHexString(),
-        "player1id": playRoom.player1?.Id.toHexString()
+        "oppoenentid": opponentid
       }));
     }
   }
