@@ -24,7 +24,7 @@ Function(HttpRequest) updateImage = (HttpRequest request) async {
 };
 Function(HttpRequest) getImage = (HttpRequest request) async {
   final image = File(
-      './upload/${request.response.headers.value("playerid") ?? request.response.headers.value("playerid")}.jpg');
+      './upload/${request.response.headers.value("otherid") ?? request.response.headers.value("playerid")}.jpg');
   if (image.existsSync()) {
     final imageBytes =
         await ImagesService.compressImage(await image.readAsBytes());
