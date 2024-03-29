@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart';
 import 'package:mime/mime.dart';
+import 'package:tic_tac_toe_server/src/utils/consts.dart';
 
 class ImagesService {
   static List<String> extensions = ['jpg', 'png', 'jpeg'];
@@ -30,41 +31,29 @@ class ImagesService {
     final parts = await transformer.bind(bodyStream).toList();
     for (var part in parts) {
       final content = await part.toList();
-      final contentDisposition = part.headers['content-disposition'];
-      final filename = RegExp(r'filename="([^"]*)"')
-          .firstMatch(contentDisposition ?? "")
-          ?.group(1);
-      final imageextension = filename?.split('.').last;
 
       if (!Directory(uploadDirectory).existsSync()) {
         await Directory(uploadDirectory).create();
       }
-
-      if (imageextension != null && extensions.contains(imageextension)) {
-        deleteOldImageFiles(
-            uploadDirectory: uploadDirectory,
-            playerid: playerid,
-            imageextension: imageextension);
-        final image = await File(
-                '$uploadDirectory/$playerid.${filename?.split('.').last}')
-            .writeAsBytes(content[0]);
-        return image.path;
-      }
+      final compressedBytes =
+          await compressImage(Uint8List.fromList(content[0]), IMG_QUALITY);
+      final image = await File('$uploadDirectory/$playerid.jpg')
+          .writeAsBytes(compressedBytes as List<int>);
+      return image.path;
     }
+
     return null;
   }
 
-  static Future<Uint8List?> compressImage(Uint8List imageBytes) async {
+  static Future<Uint8List?> compressImage(
+      Uint8List imageBytes, int quality) async {
     try {
       final image = decodeImage(imageBytes);
 
       if (image != null) {
         // Compress the image
-        int targetWidth = 200;
-        int targetHeight = (image.height * (targetWidth / image.width)).round();
-        Image copressedImage =
-            Image.fromResized(image, width: targetWidth, height: targetHeight);
-        return copressedImage.getBytes();
+
+        return encodeJpg(image, quality: quality);
       }
     } catch (e) {
       print(e);

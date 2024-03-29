@@ -36,6 +36,10 @@ class PlayerService {
     return await playersDataAccess.getdoc(id: id);
   }
 
+  Future<bool> deleteAccount({required String id}) async {
+    return await playersDataAccess.deleteAccount(id: id);
+  }
+
   Future<Map<String, dynamic>?> updatePlayer(
       {required Map<String, dynamic> playerupdate, required String id}) async {
     return await playersDataAccess.updatePlayer(

@@ -17,6 +17,24 @@ Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
     });
   }
 };
+Function(HttpRequest) deletePlayer = (HttpRequest request) async {
+  try {
+    final playerid = request.response.headers.value("playerid");
+    if (playerid != null) {
+      final deleted = await PlayerService.instance.deleteAccount(id: playerid);
+      if (deleted) {
+        request.response.write(json.encode({"message": "Account deleted"}));
+      } else {
+        request.response.statusCode = HttpStatus.badRequest;
+      }
+    } else {
+      request.response.statusCode = HttpStatus.badRequest;
+    }
+  } catch (e) {
+    print(e);
+  }
+  request.response.statusCode = HttpStatus.badRequest;
+};
 
 Function(HttpRequest) getdoc = (HttpRequest request) async {
   try {

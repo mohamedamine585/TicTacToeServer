@@ -30,7 +30,9 @@ void Function(HttpRequest) router = (HttpRequest request) async {
           await pipeline.addasyncmiddleware(checkemailuniqueness);
           await pipeline.addasynchandler(updatedoc);
         } else if (request.method == "DELETE") {
-          request.response.statusCode = HttpStatus.notFound;
+          await pipeline.addasynchandler(deleteImage);
+
+          await pipeline.addasynchandler(deletePlayer);
         } else if (request.method == "POST") {
           request.response.statusCode = HttpStatus.notFound;
         }
@@ -58,6 +60,8 @@ void Function(HttpRequest) router = (HttpRequest request) async {
           await pipeline.addasynchandler(getImage);
         } else if (request.method == "POST") {
           await pipeline.addasynchandler(updateImage);
+        } else if (request.method == 'DELETE') {
+          await pipeline.addasynchandler(deleteImage);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }

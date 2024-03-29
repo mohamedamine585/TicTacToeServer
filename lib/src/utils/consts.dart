@@ -12,3 +12,5 @@ final context = SecurityContext.defaultContext
       'C:/Users/foxwe/OneDrive/Bureau/tic_tac_toe_server/public-cert.pem') // Replace with your certificate file
   ..usePrivateKey(
       'C:/Users/foxwe/OneDrive/Bureau/tic_tac_toe_server/private-key.pem'); // Replace with your private key file
+
+const IMG_QUALITY = 30;

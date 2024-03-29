@@ -39,6 +39,17 @@ class PlayersDataAccess {
     return null;
   }
 
+  Future<bool> deleteAccount({required String id}) async {
+    try {
+      final objectId = ObjectId.fromHexString(id);
+      final deleted = await playerscollection.deleteOne(where.id(objectId));
+      return deleted.isSuccess;
+    } catch (e) {
+      print(e);
+    }
+    return false;
+  }
+
   Future<Player?> get_playerbyName({required String playername}) async {
     try {
       final existing =
