@@ -50,4 +50,8 @@ class PlayerService {
       {required String id}) async {
     return await playersDataAccess.getPlayerHistory(playerid: id);
   }
+
+  Future<List<Map<String, dynamic>?>> getTopPlayers() async {
+    return await playersDataAccess.getTopPlayers();
+  }
 }

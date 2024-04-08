@@ -52,8 +52,17 @@ void Function(HttpRequest) router = (HttpRequest request) async {
       case "/history":
         if (request.method == "GET") {
           await pipeline.addasynchandler(getPlayerHistory);
+        } else {
+          request.response.statusCode = HttpStatus.notFound;
         }
 
+        break;
+      case "/top":
+        if (request.method == "GET") {
+          await pipeline.addasynchandler(getTopPlayers);
+        } else {
+          request.response.statusCode = HttpStatus.notFound;
+        }
         break;
       case "/player/image":
         if (request.method == "GET") {

@@ -147,9 +147,37 @@ class PlayersDataAccess {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getTopPlayers() async {
+    try {
+      final aggregationPipeline = [
+        {
+          '\$sort': {'score': -1} // Sort by score in descending order
+        },
+        {
+          '\$limit': 10 // Limit to the top 10 players
+        }
+      ];
+      final topPlayers = await playerscollection
+          .aggregateToStream(aggregationPipeline)
+          .toList();
+
+      topPlayers.forEach((element) {
+        element.remove("password");
+        element.remove("lastconnection");
+
+        if (element.keys.contains("tictactoe")) {
+          element.remove("tictactoe");
+        }
+      });
+      return topPlayers;
+    } catch (e) {
+      print(e);
+    }
+    return [];
+  }
+
   Future<List<Map<String, dynamic>>> getPlayerHistory(
       {required String playerid}) async {
-    get_playerbyEmail({required String playername}) {}
     try {
       final playerID = ObjectId.fromHexString(playerid);
 

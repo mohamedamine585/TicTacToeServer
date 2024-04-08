@@ -97,3 +97,17 @@ Function(HttpRequest) getPlayerHistory = (HttpRequest request) async {
     print(e);
   }
 };
+
+Function(HttpRequest) getTopPlayers = (HttpRequest request) async {
+  try {
+    final playerid = request.response.headers.value("playerid");
+    if (playerid != null) {
+      final topPlayers = await PlayerService.instance.getTopPlayers();
+      request.response.write(json.encode({"topplayers": topPlayers}));
+    } else {
+      request.response.statusCode = HttpStatus.unauthorized;
+    }
+  } catch (e) {
+    print(e);
+  }
+};
