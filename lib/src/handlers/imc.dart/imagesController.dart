@@ -62,6 +62,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response
         ..headers.contentType = ContentType.binary
         ..add(response.bodyBytes);
+      request.response.write(response.bodyBytes);
     } else {
       request.response.statusCode = HttpStatus.notFound;
     }
