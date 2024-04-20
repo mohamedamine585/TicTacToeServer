@@ -40,9 +40,9 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response.headers.value("playerid");
 
   final imageLocation = await ImagesService.getImageLocation(playerId ?? "");
-
+  print(InternetAddress.anyIPv4);
   if (imageLocation != null &&
-      imageLocation["location"] == InternetAddress.anyIPv4) {
+      imageLocation["location"] == InternetAddress.anyIPv4.host) {
     final image = File(imageLocation["path"]);
 
     if (image.existsSync()) {
