@@ -53,6 +53,6 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     }
   } else {
     request.response
-        .redirect(Uri.parse("https://${imageLocation["host"]}/player/image"));
+        .redirect(Uri.parse("https://${imageLocation!["host"]}/player/image"));
   }
 };
