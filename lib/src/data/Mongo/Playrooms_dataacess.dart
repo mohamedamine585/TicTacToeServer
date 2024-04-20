@@ -21,6 +21,9 @@ class Mongo_Playroom_Repository {
           await PlayerService.instance.getPlayerById(id: play_room.player1!.Id);
 
       if (play_room.hand != null) {
+        final winnerScore = winScoreAlg(p0?.score ?? 0, p1?.score ?? 0);
+        final looserScore = looseScoreAlg(p0?.score ?? 0, p1?.score ?? 1);
+
         await playroomscollection.update(
             where.id(play_room.roomid!),
             modify
@@ -33,10 +36,12 @@ class Mongo_Playroom_Repository {
                 .set("wongames",
                     (play_room.hand! % 2 == 0) ? p0.WonGames + 1 : p0.WonGames)
                 .set(
-                    "score",
+                    "progress",
                     (play_room.hand! % 2 == 0)
-                        ? winScoreAlg(p0.score, p1?.score ?? 0)
-                        : looseScoreAlg(p0.score, p1?.score ?? 1)));
+                        ? winnerScore - p0.score
+                        : looserScore - p0.score)
+                .set("score",
+                    (play_room.hand! % 2 == 0) ? winnerScore : looserScore));
 
         await playerscollection.update(
             where.id(p1!.Id),
@@ -44,6 +49,11 @@ class Mongo_Playroom_Repository {
                 .set("playedgames", p1.playedGames + 1)
                 .set("wongames",
                     (play_room.hand! % 2 == 1) ? p1.WonGames + 1 : p1.WonGames)
+                .set(
+                    "progress",
+                    (play_room.hand! % 2 == 1)
+                        ? winnerScore - p1.score
+                        : looserScore - p1.score)
                 .set(
                     "score",
                     (play_room.hand! % 2 == 1)
