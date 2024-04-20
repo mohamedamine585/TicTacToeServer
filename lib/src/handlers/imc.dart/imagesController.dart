@@ -55,11 +55,10 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     }
   } else {
     final response = await get(
-        Uri.parse("https://${imageLocation!["host"]}/player/image"),
+        Uri.parse("https://${imageLocation!["location"]}/player/image"),
         headers: {
           "authorization": request.headers.value("authorization") ?? ""
         });
-
     if (response.statusCode == 200) {
       request.response.add(response.bodyBytes);
     } else {
