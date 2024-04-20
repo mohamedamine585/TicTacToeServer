@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:http/http.dart';
 import 'package:tic_tac_toe_server/src/services/imagesService.dart';
 
 Function(HttpRequest) updateImage = (HttpRequest request) async {
