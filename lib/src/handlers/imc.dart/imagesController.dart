@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:http/http.dart';
 import 'package:tic_tac_toe_server/src/services/imagesService.dart';
 
 Function(HttpRequest) updateImage = (HttpRequest request) async {
@@ -52,7 +53,12 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response.statusCode = HttpStatus.notFound;
     }
   } else {
-    await request.response
-        .redirect(Uri.parse("https://${imageLocation!["host"]}/player/image"));
+    final response = await get(
+        Uri.parse("https://tictactoeserver-sdsf.onrender.com/player/image"),
+        headers: {
+          "authorization": request.headers.value("authorization") ?? ""
+        });
+
+    request.response.add(response.bodyBytes);
   }
 };
