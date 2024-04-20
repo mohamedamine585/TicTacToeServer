@@ -4,3 +4,5 @@ Db db = Db("");
 DbCollection playerscollection = DbCollection(db, "");
 DbCollection tokenscollection = DbCollection(db, "");
 DbCollection playroomscollection = DbCollection(db, "");
+DbCollection imageslocationscollection =
+    DbCollection(db, "imageslocationscollection");

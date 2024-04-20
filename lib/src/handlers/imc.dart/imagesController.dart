@@ -10,7 +10,10 @@ Function(HttpRequest) updateImage = (HttpRequest request) async {
     if (imageBytes != null) {
       final imagePath = await ImagesService.saveImage(playerid, imageBytes,
           request.headers.contentType?.parameters['boundary'] ?? "");
+
       if (imagePath != null) {
+        await ImagesService.saveImageLocation(
+            playerid, request.uri.host, imagePath);
         request.response.write('Image uploaded successfully');
       } else {
         request.response.statusCode = HttpStatus.badRequest;
@@ -33,25 +36,23 @@ Function(HttpRequest) deleteImage = (HttpRequest request) async {
   }
 };
 Function(HttpRequest) getImage = (HttpRequest request) async {
-  final image = File(
-      './upload/${request.response.headers.value("otherid") ?? request.response.headers.value("playerid")}.jpg');
-  if (image.existsSync()) {
-    request.response
-      ..headers.contentType = ContentType.binary
-      ..add(await image.readAsBytes());
-    request.response.write(await image.readAsBytes());
+  final playerId = request.response.headers.value("otherid") ??
+      request.response.headers.value("playerid");
+
+  final imageLocation = await ImagesService.getImageLocation(playerId ?? "");
+
+  if (imageLocation != null && imageLocation["location"] == request.uri.host) {
+    final image = File(imageLocation["path"]);
+
+    if (image.existsSync()) {
+      request.response
+        ..headers.contentType = ContentType.binary
+        ..add(await image.readAsBytes());
+      request.response.write(await image.readAsBytes());
+    } else {
+      request.response.statusCode = HttpStatus.notFound;
+    }
   } else {
-    request.response.statusCode = HttpStatus.badRequest;
-  }
-};
-Function(HttpRequest) getOtherPlayerImage = (HttpRequest request) async {
-  final image =
-      File('./upload/${request.response.headers.value("otherid")}.jpg');
-  if (image.existsSync()) {
-    request.response
-      ..headers.contentType = ContentType.binary
-      ..write(await image.readAsBytes());
-  } else {
-    request.response.statusCode = HttpStatus.badRequest;
+    request.response.statusCode = HttpStatus.notFound;
   }
 };

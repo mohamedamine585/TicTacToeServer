@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart';
 import 'package:mime/mime.dart';
+import 'package:tic_tac_toe_server/src/data/Mongo/ImageservicedataAccess.dart';
 import 'package:tic_tac_toe_server/src/utils/consts.dart';
 
 class ImagesService {
@@ -59,6 +60,26 @@ class ImagesService {
       print(e);
     }
     return null;
+  }
+
+  static Future<Map<String, dynamic>?> getImageLocation(String playerId) async {
+    try {
+      return await ImageLocationServiceDataAcess.fetchImageLocation(
+          playerId: playerId);
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  static Future<void> saveImageLocation(
+      String playerId, String location, String path) async {
+    try {
+      await ImageLocationServiceDataAcess.saveImageLocation(
+          playerId: playerId, location: location, path: path);
+    } catch (e) {
+      print(e);
+    }
   }
 
   static void deleteOldImageFiles(
