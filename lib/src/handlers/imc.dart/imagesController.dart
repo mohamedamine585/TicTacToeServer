@@ -54,7 +54,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     }
   } else {
     Response response = await get(
-        Uri.parse("https://tictactoeserver-sdsf.onrender.com/player/image"),
+        Uri.parse("https://${imageLocation!["host"]}/player/image"),
         headers: {
           "authorization": request.headers.value("authorization") ?? ""
         });
