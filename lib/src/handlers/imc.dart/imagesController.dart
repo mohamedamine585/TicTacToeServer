@@ -52,7 +52,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response.statusCode = HttpStatus.notFound;
     }
   } else {
-    request.response
+    await request.response
         .redirect(Uri.parse("https://${imageLocation!["host"]}/player/image"));
   }
 };
