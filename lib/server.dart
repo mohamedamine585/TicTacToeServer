@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dotenv/dotenv.dart' as dotenv;
 import 'package:tic_tac_toe_server/src/data/Mongo/MongoDb.dart';
 import 'package:tic_tac_toe_server/src/router/Router.dart';
+import 'package:tic_tac_toe_server/src/utils/utils.dart';
 
 class GameServer {
   static late HttpServer server;
@@ -11,7 +12,7 @@ class GameServer {
   /// ****     initialize server on localhost *****
 
   static Future<void> init() async {
-    var env = dotenv.DotEnv()..load();
+    env = dotenv.DotEnv()..load();
 
     await DbRepository.instance.init(env["DB"] ?? "TictactoeTest");
     server = await HttpServer.bind(

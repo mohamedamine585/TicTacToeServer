@@ -8,13 +8,9 @@ class ImageLocationServiceDataAcess {
       required String path}) async {
     try {
       final imageLocation = await fetchImageLocation(playerId: playerId);
-      if (imageLocation != null) {
+      if (imageLocation?.isNotEmpty ?? false) {
         await imageslocationscollection.updateOne(
-            where.id(imageLocation["_id"]), {
-          "location": location,
-          "playerid": ObjectId.fromHexString(playerId),
-          "path": path
-        });
+            where.id(imageLocation!["_id"]), modify.set("location", location));
       }
       final writeResult = await imageslocationscollection.insertOne({
         "location": location,
