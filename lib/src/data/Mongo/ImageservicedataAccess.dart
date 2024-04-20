@@ -11,13 +11,13 @@ class ImageLocationServiceDataAcess {
       if (imageLocation?.isNotEmpty ?? false) {
         await imageslocationscollection.updateOne(
             where.id(imageLocation!["_id"]), modify.set("location", location));
+      } else {
+        await imageslocationscollection.insertOne({
+          "location": location,
+          "playerid": ObjectId.fromHexString(playerId),
+          "path": path
+        });
       }
-      final writeResult = await imageslocationscollection.insertOne({
-        "location": location,
-        "playerid": ObjectId.fromHexString(playerId),
-        "path": path
-      });
-      return writeResult;
     } catch (e) {
       print(e);
     }
