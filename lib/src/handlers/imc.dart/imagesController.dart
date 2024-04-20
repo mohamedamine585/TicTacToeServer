@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:tic_tac_toe_server/src/services/imagesService.dart';
-import 'package:tic_tac_toe_server/src/utils/utils.dart';
 
 Function(HttpRequest) updateImage = (HttpRequest request) async {
   final playerid = request.response.headers.value("playerid");
@@ -14,7 +13,7 @@ Function(HttpRequest) updateImage = (HttpRequest request) async {
 
       if (imagePath != null) {
         await ImagesService.saveImageLocation(
-            playerid, env["PUBLIC_HOST"] as String, imagePath);
+            playerid, Platform.environment["PUBLIC_HOST"] as String, imagePath);
         request.response.write('Image uploaded successfully');
       } else {
         request.response.statusCode = HttpStatus.badRequest;
@@ -42,7 +41,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
 
   final imageLocation = await ImagesService.getImageLocation(playerId ?? "");
   if (imageLocation != null &&
-      imageLocation["location"] == env["PUBLIC_HOST"]) {
+      imageLocation["location"] == Platform.environment["PUBLIC_HOST"]) {
     final image = File(imageLocation["path"]);
 
     if (image.existsSync()) {
