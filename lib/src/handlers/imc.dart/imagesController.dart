@@ -13,7 +13,7 @@ Function(HttpRequest) updateImage = (HttpRequest request) async {
 
       if (imagePath != null) {
         await ImagesService.saveImageLocation(
-            playerid, request.uri.host, imagePath);
+            playerid, InternetAddress.anyIPv4.host, imagePath);
         request.response.write('Image uploaded successfully');
       } else {
         request.response.statusCode = HttpStatus.badRequest;
@@ -41,7 +41,8 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
 
   final imageLocation = await ImagesService.getImageLocation(playerId ?? "");
 
-  if (imageLocation != null && imageLocation["location"] == request.uri.host) {
+  if (imageLocation != null &&
+      imageLocation["location"] == InternetAddress.anyIPv4) {
     final image = File(imageLocation["path"]);
 
     if (image.existsSync()) {

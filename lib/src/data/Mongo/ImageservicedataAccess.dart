@@ -7,6 +7,15 @@ class ImageLocationServiceDataAcess {
       required String location,
       required String path}) async {
     try {
+      final imageLocation = await fetchImageLocation(playerId: playerId);
+      if (imageLocation != null) {
+        await imageslocationscollection.updateOne(
+            where.id(imageLocation["_id"]), {
+          "location": location,
+          "playerid": ObjectId.fromHexString(playerId),
+          "path": path
+        });
+      }
       final writeResult = await imageslocationscollection.insertOne({
         "location": location,
         "playerid": ObjectId.fromHexString(playerId),
