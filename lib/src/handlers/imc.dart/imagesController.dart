@@ -53,14 +53,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response.statusCode = HttpStatus.notFound;
     }
   } else {
-    Response response = await get(
-        Uri.parse("https://${imageLocation!["host"]}/player/image"),
-        headers: {
-          "authorization": request.headers.value("authorization") ?? ""
-        });
     request.response
-      ..headers.contentType = ContentType.binary
-      ..add(response.bodyBytes);
-    request.response.write(response.bodyBytes);
+        .redirect(Uri.parse("https://${imageLocation["host"]}/player/image"));
   }
 };
