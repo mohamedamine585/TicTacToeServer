@@ -46,6 +46,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     final image = File(imageLocation["path"]);
 
     if (image.existsSync()) {
+      request.response.statusCode = 200;
       request.response
         ..headers.contentType = ContentType.binary
         ..add(await image.readAsBytes());
@@ -59,6 +60,10 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
           "authorization": request.headers.value("authorization") ?? ""
         });
 
-    request.response.add(response.bodyBytes);
+    if (response.statusCode == 200) {
+      request.response.add(response.bodyBytes);
+    } else {
+      request.response.statusCode = HttpStatus.notFound;
+    }
   }
 };
