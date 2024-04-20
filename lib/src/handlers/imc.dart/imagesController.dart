@@ -49,20 +49,19 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response
         ..headers.contentType = ContentType.binary
         ..add(await image.readAsBytes());
-      request.response.write(await image.readAsBytes());
     } else {
       request.response.statusCode = HttpStatus.notFound;
     }
   } else {
-    Response response =
-        await get(Uri.parse("https://$imageLocation/player/image"), headers: {
-      "authorization": request.headers.value("authorization") ?? ""
-    });
+    Response response = await get(
+        Uri.parse("https://tictactoeserver-sdsf.onrender.com/player/image"),
+        headers: {
+          "authorization": request.headers.value("authorization") ?? ""
+        });
     if (response.statusCode == 200) {
       request.response
         ..headers.contentType = ContentType.binary
         ..add(response.bodyBytes);
-      request.response.write(response.bodyBytes);
     } else {
       request.response.statusCode = HttpStatus.notFound;
     }
