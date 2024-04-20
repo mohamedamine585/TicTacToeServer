@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:http/http.dart';
 import 'package:tic_tac_toe_server/src/services/imagesService.dart';
 
 Function(HttpRequest) updateImage = (HttpRequest request) async {
@@ -53,6 +54,17 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
       request.response.statusCode = HttpStatus.notFound;
     }
   } else {
-    request.response.statusCode = HttpStatus.notFound;
+    Response response =
+        await get(Uri.parse("https://$imageLocation/player/image"), headers: {
+      "authorization": request.headers.value("authorization") ?? ""
+    });
+    if (response.statusCode == 200) {
+      request.response
+        ..headers.contentType = ContentType.binary
+        ..add(response.bodyBytes);
+      request.response.write(response.bodyBytes);
+    } else {
+      request.response.statusCode = HttpStatus.notFound;
+    }
   }
 };
