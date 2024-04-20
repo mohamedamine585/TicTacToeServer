@@ -58,13 +58,9 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
         headers: {
           "authorization": request.headers.value("authorization") ?? ""
         });
-    if (response.statusCode == 200) {
-      request.response
-        ..headers.contentType = ContentType.binary
-        ..add(response.bodyBytes);
-      request.response.write(response.bodyBytes);
-    } else {
-      request.response.statusCode = HttpStatus.notFound;
-    }
+    request.response
+      ..headers.contentType = ContentType.binary
+      ..add(response.bodyBytes);
+    request.response.write(response.bodyBytes);
   }
 };
