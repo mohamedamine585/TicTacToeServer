@@ -53,9 +53,10 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     } else {
       request.response.statusCode = HttpStatus.notFound;
     }
-  } else {
+  } else if (imageLocation != null) {
+    // ************ should use a redirect but can't send headers (specifically the token ) with a redirection ******
     final response = await get(
-        Uri.parse("https://${imageLocation!["location"]}/player/image"),
+        Uri.parse("https://${imageLocation["location"]}/player/image"),
         headers: {
           "authorization": request.headers.value("authorization") ?? ""
         });
@@ -64,5 +65,7 @@ Function(HttpRequest) getImage = (HttpRequest request) async {
     } else {
       request.response.statusCode = HttpStatus.notFound;
     }
+  } else {
+    request.response.statusCode = HttpStatus.notFound;
   }
 };
