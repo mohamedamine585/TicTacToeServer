@@ -1,4 +1,5 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/handlers/Gameservercontroller.dart';
 
 import 'Player_token.dart';
 
@@ -16,8 +17,13 @@ class Play_room {
   int? hand;
   Player_Socket? player0;
   Player_Socket? player1;
+  Future? timeout;
   Play_room(this.id, this.roomid, this.player0, this.player1, this.hand,
-      this.gameWithaFriend, this.opened);
+      this.gameWithaFriend, this.opened) {
+    timeout = Future.delayed(Duration(seconds: 30), (() {
+      if (player0 == null && player1 == null) {
+        Gameserver_controller.rooms.remove(this);
+      }
+    }));
+  }
 }
-
-// Implement your logic to find and pair users, then create and manage rooms

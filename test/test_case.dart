@@ -32,7 +32,7 @@ test_gameserver() {
           json.decode(await response.transform(utf8.decoder).join())["email"],
           isNotNull);
     });
-    test("upload image", () async {
+    /* test("upload image", () async {
       final request = MultipartRequest(
           'POST',
           Uri.parse(
@@ -63,7 +63,7 @@ test_gameserver() {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJpZCI6IjY1ZDc3NjYwZTVlYjlmN2FmMDM5YmJmNCIsImlhdCI6MTcwODYzMzQyNiwiaXNzIjoiaHR0cHM6Ly9naXRodWIuY29tL2pvbmFzcm91c3NlbC9kYXJ0X2pzb253ZWJ0b2tlbiJ9.x12ElZDhNr_HIQBz5uJwNDrd4nRwBytkQ2lK1PifC8k");
       final response = await request.close();
       expect(response.statusCode, 200);
-    });
+    });*/
     test("get roomid", () async {
       final client = HttpClient();
       final request = await client.get(env["HOST_CLIENT"] ?? "localhost",

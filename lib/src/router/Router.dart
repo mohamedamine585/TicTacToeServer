@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:tic_tac_toe_server/src/handlers/PlayersManagerController.dart';
 import 'package:tic_tac_toe_server/src/handlers/imc.dart/imagesdataHandler.dart';
-import 'package:tic_tac_toe_server/src/data/Mongo/Playrooms_dataacess.dart';
 import 'package:tic_tac_toe_server/src/middleware/requestmiddleware.dart';
 
 import 'package:tic_tac_toe_server/src/router/pipeline.dart';
@@ -76,8 +75,8 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         }
         break;
       case "/fix":
-        await Mongo_Playroom_Repository()
-            .closeSpecificPlayRoom(roomid: "65f8b351c671a1e54763e81d");
+        /*  await Mongo_Playroom_Repository()
+            .closeSpecificPlayRoom(roomid: "65f8b351c671a1e54763e81d");*/
         break;
       default:
         request.response.statusCode = HttpStatus.notFound;
