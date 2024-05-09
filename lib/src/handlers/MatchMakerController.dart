@@ -8,11 +8,11 @@ import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
 
 import '../models/Player_Room.dart';
 
-String? findFreeRoom() {
+Play_room? findFreeRoom() {
   try {
     for (Play_room playRoom in Gameserver_controller.rooms) {
       if (playRoom.player1 == null && !playRoom.gameWithaFriend) {
-        return playRoom.roomid?.toHexString();
+        return playRoom;
       }
     }
   } catch (e) {
@@ -21,7 +21,7 @@ String? findFreeRoom() {
   return null;
 }
 
-String? createRoom(bool playWithaFriend) {
+Play_room? createRoom(bool playWithaFriend) {
   try {
     // create playroom object without sockets
     Play_room play_room = Play_room(Gameserver_controller.rooms.length,
@@ -29,7 +29,7 @@ String? createRoom(bool playWithaFriend) {
 
     Gameserver_controller.rooms.add(play_room);
 
-    return play_room.roomid?.toHexString();
+    return play_room;
   } catch (e) {
     print(e);
   }
@@ -38,17 +38,20 @@ String? createRoom(bool playWithaFriend) {
 
 acceptPlayer(HttpRequest playrequest) async {
   try {
-    String? playRoomId;
+    Play_room? playRoom;
     final mode = playrequest.headers.value("mode");
-    if (mode == "friend") {
-      playRoomId ??= createRoom(mode == "friend");
-    } else {
-      playRoomId = findFreeRoom();
-      playRoomId ??= createRoom(mode == "friend");
+
+    playRoom = findFreeRoom();
+    if (playRoom != null) {
+      Gameserver_controller.sendDataTo(
+          "Stand by", playRoom, playRoom.player0?.socket, "");
     }
 
+    playRoom ??= createRoom(mode == "friend");
+
     playrequest.response.statusCode = HttpStatus.ok;
-    playrequest.response.write(json.encode({"roomid": playRoomId}));
+    playrequest.response
+        .write(json.encode({"roomid": playRoom?.roomid?.toHexString()}));
   } catch (e) {
     print(e);
   }

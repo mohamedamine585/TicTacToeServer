@@ -250,10 +250,10 @@ class Gameserver_controller {
     }
   }
 
-  static sendDataTo(String? message, Play_room playRoom, WebSocket playersocket,
-      String? opponentid) {
+  static sendDataTo(String? message, Play_room playRoom,
+      WebSocket? playersocket, String? opponentid) {
     if (message != null) {
-      playersocket.add(json.encode({
+      playersocket?.add(json.encode({
         "message": message,
         "grid": [
           playRoom.Grid[0][0] ?? '',
