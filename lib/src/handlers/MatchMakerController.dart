@@ -13,8 +13,7 @@ Play_room? findFreeRoom(String? roomid) {
     for (Play_room playRoom in Gameserver_controller.rooms) {
       if (playRoom.player1 == null &&
           (!playRoom.gameWithaFriend ||
-              (playRoom.gameWithaFriend &&
-                  playRoom.roomid?.toHexString() == roomid))) {
+              playRoom.roomid?.toHexString() == roomid)) {
         return playRoom;
       }
     }
