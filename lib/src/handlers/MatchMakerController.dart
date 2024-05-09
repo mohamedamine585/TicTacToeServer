@@ -14,7 +14,7 @@ Play_room? findFreeRoom(String? roomid, bool withFriend) {
       if (playRoom.player1 == null &&
           ((playRoom.gameWithaFriend &&
                   roomid == playRoom.roomid?.toHexString()) ||
-              (!playRoom.gameWithaFriend && roomid == null))) {
+              (!playRoom.gameWithaFriend && roomid == null && !withFriend))) {
         return playRoom;
       }
     }
