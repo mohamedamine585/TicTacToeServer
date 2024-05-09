@@ -8,10 +8,13 @@ import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
 
 import '../models/Player_Room.dart';
 
-Play_room? findFreeRoom() {
+Play_room? findFreeRoom(String? roomid) {
   try {
     for (Play_room playRoom in Gameserver_controller.rooms) {
-      if (playRoom.player1 == null && !playRoom.gameWithaFriend) {
+      if (playRoom.player1 == null &&
+          (!playRoom.gameWithaFriend ||
+              (playRoom.gameWithaFriend &&
+                  playRoom.roomid?.toHexString() == roomid))) {
         return playRoom;
       }
     }
@@ -41,13 +44,14 @@ acceptPlayer(HttpRequest playrequest) async {
     Play_room? playRoom;
     final mode = playrequest.headers.value("mode");
 
-    playRoom = findFreeRoom();
+    playRoom = findFreeRoom(playrequest.headers.value("roomid"));
+
     if (playRoom != null) {
       Gameserver_controller.sendDataTo(
           "Stand by", playRoom, playRoom.player0?.socket, "");
+    } else {
+      playRoom = createRoom(mode == "friend");
     }
-
-    playRoom ??= createRoom(mode == "friend");
 
     playrequest.response.statusCode = HttpStatus.ok;
     playrequest.response
