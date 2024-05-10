@@ -1,8 +1,7 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/services/player_service.dart';
 import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
-
-import '../utils.dart';
+import 'package:tic_tac_toe_server/src/Data/utils.dart';
 
 class MongoPlayroomRepository {
   init() {
