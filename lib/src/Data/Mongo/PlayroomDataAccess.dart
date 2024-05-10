@@ -5,7 +5,7 @@ import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
 import '../utils.dart';
 
 class MongoPlayroomRepository {
-  init() async {
+  init() {
     playroomscollection = DbCollection(db, "playrooms");
   }
 

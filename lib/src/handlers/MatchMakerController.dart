@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/handlers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/models/Player_token.dart';
-import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
-
+import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
 import '../models/Player_Room.dart';
 
 Play_room? findFreeRoom(String? roomid, bool withFriend) {
@@ -120,7 +119,7 @@ startGame(Play_room playRoom) async {
         playRoom.player0!.socket, playRoom.player1?.Id.toHexString());
     Gameserver_controller.sendDataTo("Game started", playRoom,
         playRoom.player1!.socket, playRoom.player0?.Id.toHexString());
-    await PlayRoomService.instance.open_PlayRoom(play_room: playRoom);
+    await PlayRoomService.instance.openPlayRoom(play_room: playRoom);
     // start receiving data from players
     playRoom.hand = 0;
     Gameserver_controller.listen_to_player1(playRoom);

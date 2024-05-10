@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dotenv/dotenv.dart';
-import 'package:http/http.dart';
 import 'package:test/test.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -88,6 +87,8 @@ test_gameserver() {
           });
       response.stream.listen((event) async {
         expect(json.decode(event)["message"], message0);
+        message0 = "Stand by";
+
         if (json.decode(event)["message"] == "Game started") {
           Future.delayed(Duration(seconds: 5));
           await response.sink.close();

@@ -5,28 +5,28 @@ import 'package:tic_tac_toe_server/src/services/algs.dart/loose_score_alg.dart';
 import 'package:tic_tac_toe_server/src/services/algs.dart/win_score_alg.dart';
 
 class PlayRoomService {
-  MongoPlayroomRepository playroomService;
+  MongoPlayroomRepository playroomRepository;
   // Private constructor to prevent external instantiation
-  PlayRoomService._(this.playroomService);
+  PlayRoomService._(this.playroomRepository);
   static PlayRoomService instance =
       PlayRoomService._(MongoPlayroomRepository());
 
-  init() async {
-    await playroomService.init();
+  init() {
+    playroomRepository.init();
   }
 
   Future<void> closePlayRoom({required Play_room play_room}) async {
-    await playroomService.close_PlayRoom(
+    await playroomRepository.close_PlayRoom(
         play_room: play_room,
         winScoreAlg: winScoreAlg,
         looseScoreAlg: looseScoreAlg);
   }
 
   Future<void> deletePlayRoom({required ObjectId roomId}) async {
-    await playroomService.deletePlayroom(id: roomId);
+    await playroomRepository.deletePlayroom(id: roomId);
   }
 
   Future<ObjectId?> openPlayRoom({required Play_room play_room}) async {
-    return await playroomService.open_PlayRoom(play_room: play_room);
+    return await playroomRepository.open_PlayRoom(play_room: play_room);
   }
 }
