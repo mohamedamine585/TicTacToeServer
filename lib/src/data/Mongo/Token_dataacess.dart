@@ -6,10 +6,6 @@ import '../utils.dart';
 import '../../utils/utils.dart';
 
 class Mongo_Token_Repository {
-  init() async {
-    tokenscollection = DbCollection(db, "tokens");
-  }
-
   Future<void> make_available_all_tokens() async {
     try {
       await tokenscollection.update(

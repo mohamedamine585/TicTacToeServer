@@ -1,4 +1,5 @@
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:tic_tac_toe_server/src/Data/utils.dart';
 import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/data/Mongo/Token_dataacess.dart';
 
@@ -9,8 +10,8 @@ class Tokensservice {
   Tokensservice._(this.TokenDataservice);
   static Tokensservice instance = Tokensservice._(Mongo_Token_Repository());
 
-  init() async {
-    await TokenDataservice.init();
+  void init(Db db) {
+    tokenscollection = DbCollection(db, "tokens");
   }
 
   Future<void> make_available_all_tokens() async {

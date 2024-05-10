@@ -8,7 +8,7 @@ class PlayerService {
   PlayersDataAccess playersDataAccess = PlayersDataAccess();
   PlayerService._(this.playersDataAccess);
   static PlayerService instance = PlayerService._(PlayersDataAccess());
-  init() {
+  init(Db db) {
     playerscollection = DbCollection(db, "players");
   }
 

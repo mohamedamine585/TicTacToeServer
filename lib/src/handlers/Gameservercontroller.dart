@@ -6,7 +6,7 @@ import 'package:tic_tac_toe_server/src/handlers/RoomManagerController.dart';
 import 'package:tic_tac_toe_server/src/handlers/utils.dart';
 import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
-import 'package:tic_tac_toe_server/src/services/Tokensservice.dart';
+import 'package:tic_tac_toe_server/src/services/TokenService.dart';
 
 class Gameserver_controller {
   static var rooms = <Play_room>[];
