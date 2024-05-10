@@ -14,9 +14,9 @@ FROM scratch
 WORKDIR /app
 
 COPY --from=build /runtime/ /
-COPY --from=build /app/bin/gameserver /app/bin/
+COPY --from=build /app/bin/gameserver.exe /app/bin/
 COPY --from=build /app/.env /app/
 
 # Start server.
 EXPOSE 8080 
-CMD ["/app/bin/gameserver"]
+CMD ["/app/bin/gameserver.exe"]

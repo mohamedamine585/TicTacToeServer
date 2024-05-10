@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:http/http.dart';
-import 'package:tic_tac_toe_server/src/services/imagesService.dart';
+import 'package:tic_tac_toe_server/src/Services/imagesService.dart';
 
 Function(HttpRequest) updateImage = (HttpRequest request) async {
   final playerid = request.response.headers.value("playerid");

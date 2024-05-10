@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-import 'package:tic_tac_toe_server/src/services/player_service.dart';
-import 'package:tic_tac_toe_server/src/services/online_activity_service.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
+import 'package:tic_tac_toe_server/src/Services/online_activity_service.dart';
 
 Function(HttpRequest) subscribeToOnlineActivity = (HttpRequest request) async {
   final stream = OnlineActivityService.instance.getOnlineActivity();

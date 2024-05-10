@@ -1,6 +1,6 @@
 import 'package:tic_tac_toe_server/src/models/Player.dart';
 import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
-import 'package:tic_tac_toe_server/src/services/player_service.dart';
+import 'package:tic_tac_toe_server/src/Services/player_service.dart';
 
 Future<String> playGameWithSpecificPlayer(
     {required List<Play_room> playRooms, required int levelScore}) async {
