@@ -1,5 +1,5 @@
 
 .dart_tool/
 doc/api
-
+bin/*.exe
 upload/
