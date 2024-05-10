@@ -4,9 +4,19 @@ import 'package:tic_tac_toe_server/src/models/Player_Room.dart';
 
 import '../utils.dart';
 
-class Mongo_Playroom_Repository {
+class MongoPlayroomRepository {
   init() async {
     playroomscollection = DbCollection(db, "playrooms");
+  }
+
+  Future<void> deletePlayroom({required ObjectId id}) async {
+    try {
+      await playroomscollection.deleteOne(
+        where.id(id),
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> close_PlayRoom(

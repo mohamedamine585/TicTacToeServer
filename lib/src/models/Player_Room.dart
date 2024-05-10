@@ -1,5 +1,6 @@
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/handlers/Gameservercontroller.dart';
+import 'package:tic_tac_toe_server/src/handlers/RoomManagerController.dart';
 
 import 'Player_token.dart';
 
@@ -22,7 +23,7 @@ class Play_room {
       this.gameWithaFriend, this.opened) {
     timeout = Future.delayed(Duration(seconds: 30), (() {
       if (player0 == null && player1 == null) {
-        Gameserver_controller.rooms.remove(this);
+        RoomManagerController.delete_room(this);
       }
     }));
   }

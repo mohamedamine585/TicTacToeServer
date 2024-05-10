@@ -4,8 +4,7 @@ import 'dart:io';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:tic_tac_toe_server/src/handlers/Gameservercontroller.dart';
 import 'package:tic_tac_toe_server/src/models/Player_token.dart';
-import 'package:tic_tac_toe_server/src/services/PlayRoomService.dart';
-
+import 'package:tic_tac_toe_server/src/Services/PlayRoomService.dart';
 import '../models/Player_Room.dart';
 
 class RoomManagerController {
@@ -19,7 +18,7 @@ class RoomManagerController {
     }
     try {
       playRoom.roomid =
-          await PlayRoomService.instance.open_PlayRoom(play_room: playRoom);
+          await PlayRoomService.instance.openPlayRoom(play_room: playRoom);
       playRoom.player0?.socket.add(json.encode({
         "message": "Opponent found !",
         "Grid": [
@@ -63,7 +62,9 @@ class RoomManagerController {
   static Future<void> delete_room(Play_room playRoom) async {
     try {
       if (playRoom.player0 != null && playRoom.player1 != null) {
-        await PlayRoomService.instance.close_PlayRoom(play_room: playRoom);
+        await PlayRoomService.instance.closePlayRoom(play_room: playRoom);
+      } else if (playRoom.roomid != null) {
+        await PlayRoomService.instance.deletePlayRoom(roomId: playRoom.roomid!);
       }
 
       Gameserver_controller.rooms.remove(playRoom);
