@@ -62,6 +62,8 @@ class Gameserver_controller {
               playRoom.hand = 2;
 
               playRoom.player0?.socket.close(null, "won");
+            } else if (checkWin(Grid: playRoom.Grid) == 'D') {
+              sendDataToboth("Draw", playRoom, null);
             } else {
               playRoom.hand = 1;
               print("player1 turn");
@@ -90,6 +92,8 @@ class Gameserver_controller {
           }
           await RoomManagerController.delete_room(playRoom);
           await playRoom.player1?.socket.close();
+        } else if (checkWin(Grid: playRoom.Grid) == 'D') {
+          sendDataToboth("Draw", playRoom, null);
         } else {
           Gameserver_controller
               .rooms[Gameserver_controller.rooms.indexOf(playRoom)]

@@ -27,6 +27,20 @@ String checkWin({required List<List<String?>> Grid}) {
     return Grid[0][2] ?? '';
   }
 
-  // No winner yet
-  return '';
+  // Check for draw
+  bool isDraw = true;
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (Grid[i][j] == null) {
+        isDraw = false;
+        break;
+      }
+    }
+    if (!isDraw) {
+      break;
+    }
+  }
+
+  // Return 'D' if it's a draw, otherwise return an empty string
+  return isDraw ? 'D' : '';
 }
