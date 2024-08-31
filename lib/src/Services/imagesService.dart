@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart';
 import 'package:mime/mime.dart';
-import 'package:tic_tac_toe_server/src/Data/Mongo/ImageservicedataAccess.dart';
+import 'package:tic_tac_toe_server/src/data/Mongo/ImageservicedataAccess.dart';
 import 'package:tic_tac_toe_server/src/utils/consts.dart';
 
 class ImagesService {

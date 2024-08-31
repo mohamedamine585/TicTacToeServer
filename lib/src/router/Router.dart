@@ -15,23 +15,23 @@ void Function(HttpRequest) router = (HttpRequest request) async {
   Pipeline pipeline = Pipeline(request);
 
   try {
-    pipeline.addmiddleware(checkToken);
+    pipeline.addMiddleware(checkToken);
     String path = request.response.headers.value("path") ?? "";
     switch (path) {
       case "/":
-        await pipeline.addasynchandler(handlePlayRequestModern);
+        await pipeline.addAsyncHandler(handlePlayRequestModern);
         break;
       case "/player":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(getdoc);
+          await pipeline.addAsyncHandler(getdoc);
         } else if (request.method == "PUT") {
-          await pipeline.addasyncmiddleware(checkbodyForPlayerupdate);
-          await pipeline.addasyncmiddleware(checkemailuniqueness);
-          await pipeline.addasynchandler(updatedoc);
+          await pipeline.addAsyncMiddleware(checkbodyForPlayerupdate);
+          await pipeline.addAsyncMiddleware(checkemailuniqueness);
+          await pipeline.addAsyncHandler(updatedoc);
         } else if (request.method == "DELETE") {
-          await pipeline.addasynchandler(deleteImage);
+          await pipeline.addAsyncHandler(deleteImage);
 
-          await pipeline.addasynchandler(deletePlayer);
+          await pipeline.addAsyncHandler(deletePlayer);
         } else if (request.method == "POST") {
           request.response.statusCode = HttpStatus.notFound;
         }
@@ -43,14 +43,14 @@ void Function(HttpRequest) router = (HttpRequest request) async {
 
       case "/activity":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(subscribeToOnlineActivity);
+          await pipeline.addAsyncHandler(subscribeToOnlineActivity);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }
         break;
       case "/history":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(getPlayerHistory);
+          await pipeline.addAsyncHandler(getPlayerHistory);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }
@@ -58,18 +58,18 @@ void Function(HttpRequest) router = (HttpRequest request) async {
         break;
       case "/top":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(getTopPlayers);
+          await pipeline.addAsyncHandler(getTopPlayers);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }
         break;
       case "/player/image":
         if (request.method == "GET") {
-          await pipeline.addasynchandler(getImage);
+          await pipeline.addAsyncHandler(getImage);
         } else if (request.method == "POST") {
-          await pipeline.addasynchandler(updateImage);
+          await pipeline.addAsyncHandler(updateImage);
         } else if (request.method == 'DELETE') {
-          await pipeline.addasynchandler(deleteImage);
+          await pipeline.addAsyncHandler(deleteImage);
         } else {
           request.response.statusCode = HttpStatus.notFound;
         }

@@ -4,17 +4,17 @@ class Pipeline {
   final HttpRequest _request;
   Pipeline(this._request);
 
-  Pipeline addmiddleware(Function(HttpRequest) middleware) {
+  Pipeline addMiddleware(Function(HttpRequest) middleware) {
     middleware(_request);
     return this;
   }
 
-  Future<Pipeline> addasyncmiddleware(Function(HttpRequest) middleware) async {
+  Future<Pipeline> addAsyncMiddleware(Function(HttpRequest) middleware) async {
     await middleware(_request);
     return this;
   }
 
-  Future<void> addasynchandler(Function(HttpRequest) handler) async {
+  Future<void> addAsyncHandler(Function(HttpRequest) handler) async {
     await handler(_request);
   }
 
@@ -22,7 +22,7 @@ class Pipeline {
     await request.response.close();
   }
 
-  void addhandler(Function(HttpRequest) handler) {
+  void addHandler(Function(HttpRequest) handler) {
     handler(_request);
   }
 }

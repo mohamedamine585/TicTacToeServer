@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: image-server
+    env: docker
+    docker:
+      image: mohamedaminelili02/tictactoe:latest
+    plan: standard  # Choose a plan that suits your needs
+    autoDeploy: true
+    routes:
+      - type: http
+        path: /image
+        service: image-server
+        port: 8080
+
+  - type: web
+    name: game-server
+    env: docker
+    docker:
+      image: mohamedaminelili02/tictactoe:latest
+    plan: standard  # Choose a plan that suits your needs
+    autoDeploy: true
+    routes:
+      - type: websocket
+        path: /*  # Handle all other paths as WebSocket connections
+        service: game-server
+        port: 8081
+
+  - type: web
+    name: nginx
+    env: docker
+    docker:
+      image: mohamedaminelili02/tictactoe_nginx:latest
+    plan: standard  # Choose a plan that suits your needs
+    autoDeploy: true
+    routes:
+      - type: http
+        path: /*
+        service: nginx
+        port: 80

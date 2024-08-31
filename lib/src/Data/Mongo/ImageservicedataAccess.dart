@@ -1,5 +1,5 @@
 import 'package:mongo_dart/mongo_dart.dart';
-import 'package:tic_tac_toe_server/src/Data/utils.dart';
+import 'package:tic_tac_toe_server/src/data/utils.dart';
 
 class ImageLocationServiceDataAcess {
   static Future<WriteResult?> saveImageLocation(

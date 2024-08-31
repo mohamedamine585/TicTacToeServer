@@ -1,4 +1,4 @@
-import 'package:tic_tac_toe_server/src/Data/Mongo/players_dataaccess.dart';
+import 'package:tic_tac_toe_server/src/data/Mongo/players_dataaccess.dart';
 
 class OnlineActivityService {
   PlayersDataAccess playersDataAccess = PlayersDataAccess();

@@ -1,0 +1,28 @@
+services:
+  image-server:
+    container_name: image-server
+    image: tictactoe 
+    networks:
+      - my-network
+    ports:
+      - "8080:8080"
+
+  game-server:
+    container_name: game-server
+    image: tictactoe 
+    networks:
+      - my-network
+    ports:
+      - "8081:8080"
+
+  nginx:
+    image: gateway
+    build: .
+    networks:
+      - my-network
+    ports:
+      - "80:80"
+
+networks:
+  my-network:
+    driver: bridge
