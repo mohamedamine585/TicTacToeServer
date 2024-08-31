@@ -4,6 +4,7 @@ previews:
 services:
   - type: web
     name: image-server
+    env: docker
     image: 
       url: docker.io/mohamedaminelili02/tictactoe:latest
     plan: standard  
@@ -11,6 +12,7 @@ services:
 
   - type: web
     name: game-server
+    env: docker
     image:
       url:  docker.io/mohamedaminelili02/tictactoe:latest  
     plan: standard  
@@ -19,6 +21,7 @@ services:
 
   - type: web
     name: nginx
+    env: docker
     image:
       url:   docker.io/mohamedaminelili02/tictactoe_nginx:latest 
     plan: standard 
